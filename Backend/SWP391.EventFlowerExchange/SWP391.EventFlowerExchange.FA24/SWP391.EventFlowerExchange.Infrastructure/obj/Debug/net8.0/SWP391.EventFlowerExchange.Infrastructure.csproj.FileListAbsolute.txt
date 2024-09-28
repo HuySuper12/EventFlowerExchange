@@ -1,0 +1,15 @@
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\bin\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.deps.json
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\bin\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.dll
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\bin\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.pdb
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.AssemblyInfoInputs.cache
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.AssemblyInfo.cs
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.csproj.CoreCompileInputs.cache
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.dll
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\refint\SWP391.EventFlowerExchange.Infrastructure.dll
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.pdb
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\ref\SWP391.EventFlowerExchange.Infrastructure.dll
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\bin\Debug\net8.0\SWP391.EventFlowerExchange.Domain.dll
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\bin\Debug\net8.0\SWP391.EventFlowerExchange.Domain.pdb
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.csproj.AssemblyReference.cache
+D:\.NET_WEB\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Infrastructure\obj\Debug\net8.0\SWP391.E.944766F8.Up2Date
