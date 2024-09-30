@@ -10,6 +10,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using SWP391.EventFlowerExchange.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWP391.EventFlowerExchange.Infrastructure
 {
@@ -19,13 +21,15 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private readonly SignInManager<Account> signInManager;
         private readonly IConfiguration configuration;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly Swp391eventFlowerExchangePlatformContext _context;
 
-        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, Swp391eventFlowerExchangePlatformContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.roleManager = roleManager;
+            _context = context;
         }
 
         public async Task<string> SignInAsync(SignIn model)
@@ -84,6 +88,66 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 await userManager.AddToRoleAsync(user, ApplicationRoles.Buyer);
             }
             return result;
+        }
+
+        public async Task<IdentityResult> CreateStaffAccount(SignUpStaff model)
+        {
+            var user = new Account
+            {
+                Name = model.Name,
+                Salary = model.Salary,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                CreatedAt = DateTime.UtcNow,
+                Status = true
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                //Gan Role Customer
+                await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Admin));
+                await userManager.AddToRoleAsync(user, ApplicationRoles.Admin);
+            }
+            return result;
+        }
+
+        public async Task<List<Account>> ViewAllAccount()
+        {
+            return await _context.Accounts.ToListAsync();
+        }
+
+        public async Task<List<Account>> ViewAllAccountByRole(string role)
+        {
+            var result = new List<Account>();
+            var accounts = await _context.Accounts.ToListAsync();
+
+            foreach (var account in accounts)
+            {
+                var userRoles = await userManager.GetRolesAsync(account);
+                foreach (var userRole in userRoles)
+                {
+                    if (userRole.ToLower() == role.ToLower())
+                    {
+                        result.Add(account);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public async Task<IdentityResult> RemoveAccount(string id)
+        {
+            var deleteAccount = await _context.Accounts!.SingleOrDefaultAsync(b => b.Id == id);
+            if (deleteAccount != null)
+            {
+                var result = _context.Accounts!.Remove(deleteAccount);
+                await _context.SaveChangesAsync();
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(); // Account not found
         }
     }
 }
