@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
+using SWP391.EventFlowerExchange.Infrastructure;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -36,6 +38,52 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 return Unauthorized();
             }
             return Ok(result);
+        }
+
+        [HttpGet("ViewAllAccount")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+        public async Task<IActionResult> ViewAllAccount()
+        {
+            try
+            {
+                return Ok(await _service.ViewAllAccount());
+            }
+            catch
+            {
+                return Ok("Nothing!");    
+            }
+        }
+
+
+        [HttpGet("ViewAllAccountByRole/{role}")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+        public async Task<IActionResult> ViewAllAccountByRole(string role)
+        {
+            var accounts= await _service.ViewAllAccountByRole(role);
+
+            if (accounts != null) return Ok(accounts);
+            
+            return Ok("Nothing!");
+        }
+
+        [HttpPost("CreateStaffAccount")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+        public async Task<IActionResult> CreateStaff(SignUpStaff model)
+        {
+            var result = await _service.CreateStaffAccount(model);
+            if (result.Succeeded)
+            {
+                return Ok(result.Succeeded);
+            }
+            return Ok("Fail to create staff account.");
+        }
+
+        [HttpDelete("RemoveAccount/{id}")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+        public async Task<IActionResult> RemoveAccount(string id)
+        {
+            await _service.RemoveAccount(id);
+            return Ok();
         }
     }
 }
