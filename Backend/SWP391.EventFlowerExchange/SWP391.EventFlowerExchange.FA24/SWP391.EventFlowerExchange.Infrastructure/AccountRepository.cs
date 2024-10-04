@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SWP391.EventFlowerExchange.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace SWP391.EventFlowerExchange.Infrastructure
 {
@@ -21,7 +22,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private readonly SignInManager<Account> signInManager;
         private readonly IConfiguration configuration;
         private readonly RoleManager<IdentityRole> roleManager;
-        private readonly Swp391eventFlowerExchangePlatformContext _context;
+        private Swp391eventFlowerExchangePlatformContext _context;
 
         public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, Swp391eventFlowerExchangePlatformContext context)
         {
@@ -62,11 +63,14 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 claims: authenClaims,
                 signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256Signature)
                 );
+
             return new JwtSecurityTokenHandler().WriteToken(tokenDescription);
+
         }
 
         public async Task<IdentityResult> SignUpBuyerAsync(SignUp model)
         {
+
             var user = new Account
             {
                 Name = model.Name,
@@ -87,15 +91,20 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Buyer));
                 await userManager.AddToRoleAsync(user, ApplicationRoles.Buyer);
             }
+
             return result;
+            
         }
 
-        public async Task<IdentityResult> CreateStaffAccount(SignUpStaff model)
+        public async Task<IdentityResult> CreateStaffAccountAsync(SignUpStaff model)
         {
+
             var user = new Account
             {
                 Name = model.Name,
                 Salary = model.Salary,
+                UserName=model.Email,
+                //khi login thì identity tiến hành xác thực email qua NormalizedUserName và NormalizedEmail thì nó mới 
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
@@ -111,16 +120,81 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Admin));
                 await userManager.AddToRoleAsync(user, ApplicationRoles.Admin);
             }
+
             return result;
+
         }
 
-        public async Task<List<Account>> ViewAllAccount()
+        public async Task<IdentityResult> SignUpSellerAsync(SignUpSeller model)
         {
+
+            var user = new Account
+            {
+                Name = model.Name,
+                Email = model.Email,
+                UserName = model.Email,
+                Balance = model.Balance,
+                Address = model.Address,
+                PhoneNumber = model.Phone,
+                CreatedAt = DateTime.UtcNow,
+                Status = true
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                //Gan Role Seller
+                await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Seller));
+                await userManager.AddToRoleAsync(user, ApplicationRoles.Seller);
+            }
+
+            return result;
+
+        }
+
+        public async Task<IdentityResult> CreateShipperAccountAsync(SignUpShipper model)
+        {
+
+            var user = new Account
+            {
+                Name = model.Name,
+                Salary = model.Salary,
+                UserName = model.Email,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                CreatedAt = DateTime.UtcNow,
+                Status = true
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                //Gan Role Customer
+                await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Shipper));
+                await userManager.AddToRoleAsync(user, ApplicationRoles.Shipper);
+            }
+
+            return result;
+
+        }
+
+        public async Task<List<Account>> ViewAllAccountAsync()
+        {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
             return await _context.Accounts.ToListAsync();
+
         }
 
-        public async Task<List<Account>> ViewAllAccountByRole(string role)
+        public async Task<List<Account>> ViewAllAccountByRoleAsync(string role)
         {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
             var result = new List<Account>();
             var accounts = await _context.Accounts.ToListAsync();
 
@@ -129,25 +203,156 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 var userRoles = await userManager.GetRolesAsync(account);
                 foreach (var userRole in userRoles)
                 {
-                    if (userRole.ToLower() == role.ToLower())
+                    if (userRole.ToLower().Contains(role.ToLower()))
                     {
                         result.Add(account);
                     }
                 }
             }
-            return result;
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            return null;
+
         }
 
-        public async Task<IdentityResult> RemoveAccount(string id)
+        public async Task<IdentityResult> RemoveAccountAsync(string id)
         {
-            var deleteAccount = await _context.Accounts!.SingleOrDefaultAsync(b => b.Id == id);
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var deleteAccount = await this.GetUserByIdAsync(id);
+
             if (deleteAccount != null)
             {
-                var result = _context.Accounts!.Remove(deleteAccount);
-                await _context.SaveChangesAsync();
-                return IdentityResult.Success;
+                var userRoles=await userManager.GetRolesAsync(deleteAccount);
+                foreach (var role in userRoles)
+                {
+                    if (role.ToLower().Contains("admin")
+                        || role.ToLower().Contains("shipper"))
+                    {
+                        var result = _context.Accounts!.Remove(deleteAccount);
+                        await _context.SaveChangesAsync();
+                        return IdentityResult.Success;
+                    }
+                }
             }
-            return IdentityResult.Failed(); // Account not found
+
+            return IdentityResult.Failed();
+
+        }
+
+        public async Task<Account> GetUserByIdAsync(string id)
+        {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var user = await _context.Accounts!.FindAsync(id);
+
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null;
+
+        }
+
+
+        public async Task<IdentityResult> DisableAccountAsync(string id)
+        {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var disableAccount = await this.GetUserByIdAsync(id);
+
+            if (disableAccount != null)
+            {
+                var userRoles = await userManager.GetRolesAsync(disableAccount);
+                foreach (var role in userRoles)
+                {
+                    if (role.ToLower().Contains("buyer")
+                        || role.ToLower().Contains("seller"))
+                    {
+                        disableAccount.Status = false;
+                        await _context.SaveChangesAsync();
+                        return IdentityResult.Success;
+                    }
+                }
+            }
+
+            return IdentityResult.Failed();
+
+        }
+
+        public async Task<List<Account>> SearchAccountsByAddressAsync(string address)
+        {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var accounts = await _context.Accounts
+                .Where(b => b.Address.ToLower().Contains(address.ToLower()))
+                .ToListAsync();
+
+            if (accounts != null)
+            {
+                return accounts;
+            }
+
+            return null;
+
+        }
+
+        public async Task<List<Account>> SearchAccountsBySalaryAsync(float minSalary, float maxSalary)
+        {
+
+           _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var accounts = await _context.Accounts
+                .Where(s => s.Salary >= minSalary && s.Salary <= maxSalary)
+                .ToListAsync();
+
+            if (accounts != null)
+            {
+                return accounts;
+            }
+
+            return null;
+
+        }
+
+        
+
+        public async Task<List<Account>> SearchShipperByAddressAsync(string address)
+        {
+
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var result = new List<Account>();
+            var accounts = await _context.Accounts
+                .Where(b => b.Address.ToLower().Contains(address.ToLower()))
+                .ToListAsync();
+
+            if (accounts != null)
+            {
+                foreach (var account in accounts)
+                {
+                    var userRoles = await userManager.GetRolesAsync(account);
+                    foreach (var userRole in userRoles)
+                    {
+                        if (userRole.ToLower().Contains("shipper"))
+                        {
+                            result.Add(account);
+                        }
+                    }
+                }
+            }
+
+            return null;
+
         }
     }
 }
