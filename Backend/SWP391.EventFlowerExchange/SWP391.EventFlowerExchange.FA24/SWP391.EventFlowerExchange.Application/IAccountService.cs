@@ -13,9 +13,16 @@ namespace SWP391.EventFlowerExchange.Application
     {
         public Task<IdentityResult> SignUpBuyerFromAPIAsync(SignUp signUp);
         public Task<string> SignInFromAPIAsync(SignIn signIn);
-        public Task<List<Account>> ViewAllAccount();
-        public Task<List<Account>> ViewAllAccountByRole(string role);
-        public Task<IdentityResult> CreateStaffAccount(SignUpStaff staff);
-        public Task<IdentityResult> RemoveAccount(string id);
+        public Task<List<Account>> ViewAllAccountFromAPIAsync();
+        public Task<List<Account>> ViewAllAccountByRoleFromAPIAsync(string role);
+        public Task<IdentityResult> CreateStaffAccountFromAPIAsync(SignUpStaff staff);
+        public Task<IdentityResult> CreateShipperAccountFromAPIAsync(SignUpShipper shipper);
+        public Task<IdentityResult> RemoveAccountFromAPIAsync(string id);
+        public Task<IdentityResult> DisableAccountFromAPIAsync(string id);
+        public Task<List<Account>> SearchAccountsByAddressFromAPIAsync(string address);
+        public Task<List<Account>> SearchAccountsBySalaryFromAPIAsync(float minSalary, float maxSalary);
+        public Task<IdentityResult> SignUpSellerFromAPIAsync(SignUpSeller signUp);
+        public Task<List<Account>> SearchShipperByAddressFromAPIAsync(string address);
+        public Task<Account> GetUserByIdFromAPIAsync(string id);
     }
 }
