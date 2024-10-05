@@ -1,4 +1,5 @@
-
+﻿
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,11 @@ using SWP391.EventFlowerExchange.Domain;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Configuration;
+using SWP391.EventFlowerExchange;
+using SWP391.EventFlowerExchange.Domain.Entities;
 
 namespace SWP391.EventFlowerExchange.API
 {
@@ -62,6 +68,12 @@ namespace SWP391.EventFlowerExchange.API
         }
     });
             });
+
+            IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+
+
+            //Add Send Email
+            builder.Services.Configure<SmtpSetting>(config.GetSection("SmtpSettings"));
 
             //Dependency Injection
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
