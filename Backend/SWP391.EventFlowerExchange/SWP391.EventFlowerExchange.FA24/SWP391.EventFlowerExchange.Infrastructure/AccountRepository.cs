@@ -192,99 +192,68 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<List<Account>> ViewAllAccountByRoleAsync(string role)
         {
-
             _context = new Swp391eventFlowerExchangePlatformContext();
 
             var result = new List<Account>();
             var accounts = await _context.Accounts.ToListAsync();
 
-            foreach (var account in accounts)
+            foreach (var acc in accounts)
             {
-                var userRoles = await userManager.GetRolesAsync(account);
+                var userRoles = await userManager.GetRolesAsync(acc);
                 foreach (var userRole in userRoles)
                 {
                     if (userRole.ToLower().Contains(role.ToLower()))
                     {
-                        result.Add(account);
+                        result.Add(acc);
+                        break; 
                     }
                 }
             }
 
-            if (result != null)
+            if (result.Count > 0) 
             {
                 return result;
             }
 
             return null;
-
         }
 
-        public async Task<IdentityResult> RemoveAccountAsync(string id)
+
+        public async Task<IdentityResult> RemoveAccountAsync(Account account)
         {
 
             _context = new Swp391eventFlowerExchangePlatformContext();
 
-            var deleteAccount = await this.GetUserByIdAsync(id);
-
-            if (deleteAccount != null)
-            {
-                var userRoles=await userManager.GetRolesAsync(deleteAccount);
-                foreach (var role in userRoles)
-                {
-                    if (role.ToLower().Contains("admin")
-                        || role.ToLower().Contains("shipper"))
-                    {
-                        var result = _context.Accounts!.Remove(deleteAccount);
-                        await _context.SaveChangesAsync();
-                        return IdentityResult.Success;
-                    }
-                }
-            }
-
-            return IdentityResult.Failed();
+            _context.Accounts!.Remove(account); 
+            await _context.SaveChangesAsync();
+            return IdentityResult.Success;
 
         }
 
-        public async Task<Account> GetUserByIdAsync(string id)
+        public async Task<Account> GetUserByIdAsync(Account account)
         {
-
             _context = new Swp391eventFlowerExchangePlatformContext();
 
-            var user = await _context.Accounts!.FindAsync(id);
-
+            var user = await _context.Accounts.FirstOrDefaultAsync(x => x.Id == account.Id);
             if (user != null)
             {
                 return user;
             }
 
             return null;
-
         }
 
 
-        public async Task<IdentityResult> DisableAccountAsync(string id)
+        public async Task<IdentityResult> DeleteAccountAsync(Account account)
         {
 
             _context = new Swp391eventFlowerExchangePlatformContext();
 
-            var disableAccount = await this.GetUserByIdAsync(id);
+            var disableAccount = await this.GetUserByIdAsync(account);
 
-            if (disableAccount != null)
-            {
-                var userRoles = await userManager.GetRolesAsync(disableAccount);
-                foreach (var role in userRoles)
-                {
-                    if (role.ToLower().Contains("buyer")
-                        || role.ToLower().Contains("seller"))
-                    {
-                        disableAccount.Status = false;
-                        await _context.SaveChangesAsync();
-                        return IdentityResult.Success;
-                    }
-                }
-            }
-
-            return IdentityResult.Failed();
+            disableAccount.Status = false;
+            await _context.SaveChangesAsync();
+            return IdentityResult.Success;
 
         }
 

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
+using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
 using System.Data;
 
@@ -13,10 +16,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _service;
+        private readonly Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> roleManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<Account> userManager;
 
-        public AccountController(IAccountService service)
+        public AccountController(IAccountService service, Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> roleManager, Microsoft.AspNetCore.Identity.UserManager<Account> userManager)
         {
             _service = service;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
         }
 
         [HttpPost("SignUp/Buyer")]
@@ -60,6 +67,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize(Roles = ApplicationRoles.Manager)]
         public async Task<IActionResult> ViewAllAccountByRole(string role)
         {
+
             var accounts = await _service.ViewAllAccountByRoleFromAPIAsync(role);
 
             if (accounts != null) return Ok(accounts);
@@ -67,11 +75,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
-        [HttpGet("ViewAllAccount/{id}")]
+        [HttpGet("ViewAccount/{id}")]
         //[Authorize(Roles = ApplicationRoles.Manager)]
-        public async Task<IActionResult> ViewAllAccountById(string id)
+        public async Task<IActionResult> ViewAccountById(string id)
         {
-            var accounts = await _service.GetUserByIdFromAPIAsync(id);
+            Account acc=new Account();
+            acc.Id = id;
+
+            var accounts = await _service.GetUserByIdFromAPIAsync(acc);
 
             if (accounts != null) return Ok(accounts);
 
@@ -106,11 +117,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize(Roles = ApplicationRoles.Manager)]
         public async Task<ActionResult<bool>> RemoveAccount(string id)
         {
-            var result = await _service.RemoveAccountFromAPIAsync(id);
+            Account acc=new Account();
+            acc.Id = id;
+            var deleteAccount = await _service.GetUserByIdFromAPIAsync(acc);
 
-            if (result.Succeeded)
+
+            if (deleteAccount != null)
             {
-                return true;
+                var userRoles = await userManager.GetRolesAsync(deleteAccount);
+                foreach (var role in userRoles)
+                {
+                    if (role.ToLower().Contains("admin")
+                        || role.ToLower().Contains("shipper"))
+                    {
+                        await _service.RemoveAccountFromAPIAsync(deleteAccount);
+                        return true;
+                    }
+                }
             }
 
             return false;
@@ -118,13 +141,24 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         [HttpPut("DisableAccount/{id}")]
         //[Authorize(Roles = ApplicationRoles.Manager)]
-        public async Task<ActionResult<bool>> DisableAccount(string id)
+        public async Task<ActionResult<bool>> DeleteAccount(string id)
         {
-            var result= await _service.DisableAccountFromAPIAsync(id);
+            Account acc = new Account();
+            acc.Id = id;
+            var disableAccount = await _service.GetUserByIdFromAPIAsync(acc);
 
-            if (result.Succeeded)
+            if (disableAccount != null)
             {
-                return true;
+                var userRoles = await userManager.GetRolesAsync(disableAccount);
+                foreach (var role in userRoles)
+                {
+                    if (role.ToLower().Contains("buyer")
+                        || role.ToLower().Contains("seller"))
+                    {
+                        await _service.DeleteAccountFromAPIAsync(disableAccount);
+                        return true;
+                    }
+                }
             }
 
             return false;
@@ -156,7 +190,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         [HttpGet("SearchAccounts/{minSalary}/{maxSalary}")]
         //[Authorize(Roles = ApplicationRoles.Manager)]
         public async Task<IActionResult> SearchAccountsBySalary(float minSalary, float maxSalary)
-        {
+        { 
             if (minSalary < 0 || maxSalary < 0 )
             {
                 return Ok("minSalary or maxSalary must not be negative number");
