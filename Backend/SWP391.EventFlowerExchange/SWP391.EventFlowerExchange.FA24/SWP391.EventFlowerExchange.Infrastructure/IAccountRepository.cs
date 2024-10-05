@@ -17,12 +17,12 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<string> SignInAsync(SignIn signIn);
         public Task<List<Account>> ViewAllAccountAsync();
         public Task<List<Account>> ViewAllAccountByRoleAsync(string role);
-        public Task<IdentityResult> RemoveAccountAsync(string id);
-        public Task<IdentityResult> DisableAccountAsync(string id);
+        public Task<IdentityResult> RemoveAccountAsync(Account account);
+        public Task<IdentityResult> DeleteAccountAsync(Account account);
         public Task<List<Account>> SearchAccountsByAddressAsync(string address);
         public Task<List<Account>> SearchAccountsBySalaryAsync(float minSalary,float maxSalary);
         public Task<IdentityResult> SignUpSellerAsync(SignUpSeller signUp);
         public Task<List<Account>> SearchShipperByAddressAsync(string address);
-        public Task<Account> GetUserByIdAsync(string id);
+        public Task<Account> GetUserByIdAsync(Account account);
     }
 }

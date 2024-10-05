@@ -446,3 +446,4 @@ C:\Users\ASUS\Desktop\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExcha
 C:\Users\ASUS\Desktop\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\SWP391.EventFlowerExchange.API.pdb
 C:\Users\ASUS\Desktop\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\SWP391.EventFlowerExchange.API.genruntimeconfig.cache
 C:\Users\ASUS\Desktop\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\ref\SWP391.EventFlowerExchange.API.dll
+C:\Users\ASUS\Documents\SWP\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\bin\Debug\net8.0\Microsoft.AspNet.Identity.Core.dll

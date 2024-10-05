@@ -19,14 +19,14 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.CreateStaffAccountAsync(staff);
         }
 
-        public async Task<IdentityResult> DisableAccountFromAPIAsync(string id)
+        public async Task<IdentityResult> DeleteAccountFromAPIAsync(Account account)
         {
-            return await _repo.DisableAccountAsync(id);
+            return await _repo.DeleteAccountAsync(account);
         }
 
-        public async Task<IdentityResult> RemoveAccountFromAPIAsync(string id)
+        public async Task<IdentityResult> RemoveAccountFromAPIAsync(Account account)
         {
-            return await _repo.RemoveAccountAsync(id);
+            return await _repo.RemoveAccountAsync(account);
         }
 
         public async Task<List<Account>> SearchAccountsByAddressFromAPIAsync(string address)
@@ -74,9 +74,9 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.SearchShipperByAddressAsync(address);
         }
 
-        public async Task<Account> GetUserByIdFromAPIAsync(string id)
+        public async Task<Account> GetUserByIdFromAPIAsync(Account account)
         {
-            return await _repo.GetUserByIdAsync(id);
+            return await _repo.GetUserByIdAsync(account);
         }
     }
 }
