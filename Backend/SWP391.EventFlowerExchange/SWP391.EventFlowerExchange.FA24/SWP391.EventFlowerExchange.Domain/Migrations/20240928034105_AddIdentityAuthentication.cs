@@ -20,6 +20,8 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Salary = table.Column<double>(type: "float", nullable: true),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Otp = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    OtpExpiration = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),

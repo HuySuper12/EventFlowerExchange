@@ -6,18 +6,17 @@ namespace SWP391.EventFlowerExchange.Domain.ObjectValues;
 
 public class Account : IdentityUser
 {
-    //public int UserId { get; set; }
+    //public int UserId { get; set; }//
 
     public string? Name { get; set; }
 
-    //public string? Email { get; set; }
+    //public string? Email { get; set; }//
 
-    //public string? Password { get; set; }
+    //public string? Password { get; set; }//
 
-    //public string? Phone { get; set; }
+    //public string? Phone { get; set; }//
 
     //public string? Role { get; set; }
-
     public string? Address { get; set; }
 
     public double? Salary { get; set; }
@@ -27,6 +26,8 @@ public class Account : IdentityUser
     public DateTime? CreatedAt { get; set; }
 
     public bool? Status { get; set; }
+    public string? OtpCode { get; set; }
+    public DateTime? OtpExpiration { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
