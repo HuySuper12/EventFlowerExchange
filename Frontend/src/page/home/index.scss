@@ -1,0 +1,44 @@
+.header-nav-link {
+  position: relative;
+  text-decoration: none;
+  color: gray;  // default text color
+}
+
+.header-nav-link:hover::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;  // adjust this to control the distance of the underline from the text
+  left: 0;
+  width: 50%;  // width of the underline
+  border-bottom: 1.5px solid black;  // style of the underline
+}
+
+.header-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 50%;  // make the underline hidden initially
+  border-bottom: 1.5px solid transparent;  // invisible underline
+  transition: all 0.3s ease;  // smooth transition when hovering
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;  // Ensure it's on top
+}
+
+.banner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 400px;  // Adjust the height of the banner
+  position: relative;
+  margin-top: 70px;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+
