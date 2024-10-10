@@ -11,7 +11,7 @@ const Register = () => {
     console.log(values);
 
     try {
-      const response = await api.post("register", values);
+      const response = await api.post("Account/SignUp/Buyer", values);
       navigate("/login");
     } catch (err) {
       console.log(err);
