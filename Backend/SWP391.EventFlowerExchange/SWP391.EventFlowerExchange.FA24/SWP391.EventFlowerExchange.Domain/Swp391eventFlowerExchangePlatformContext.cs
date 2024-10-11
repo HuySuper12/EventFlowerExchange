@@ -43,6 +43,8 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
     public virtual DbSet<Transaction> Transactions { get; set; }
 
+    public virtual DbSet<Voucher> Vouchers { get; set; }
+
     private string GetConnectionString()
     {
         IConfiguration config = new ConfigurationBuilder()
@@ -205,8 +207,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.DeliveredAt)
-                .HasColumnType("datetime")
                 .HasColumnName("delivered_at");
+            entity.Property(e => e.PhoneNumber)
+                .HasColumnName("phoneNumber");
             entity.Property(e => e.DeliveryPersonId).HasColumnName("delivery_person_id");
             entity.Property(e => e.IssueReport).HasColumnName("issue_report");
             entity.Property(e => e.SellerId).HasColumnName("seller_id");
@@ -216,6 +219,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.TotalPrice)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("total_price");
+            entity.Property(e => e.VoucherId).HasColumnName("voucher_id");
 
             entity.HasOne(d => d.Buyer).WithMany(p => p.OrderBuyers)
                 .HasForeignKey(d => d.BuyerId)
@@ -228,6 +232,10 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.HasOne(d => d.Seller).WithMany(p => p.OrderSellers)
                 .HasForeignKey(d => d.SellerId)
                 .HasConstraintName("FK__Order__seller_id__3F466844");
+
+            entity.HasOne(d => d.Voucher).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.VoucherId)
+                .HasConstraintName("FK_Order_Voucher");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -279,6 +287,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
+            entity.Property(e => e.Category)
+                .HasMaxLength(50)
+                .HasColumnName("category");
 
             entity.HasOne(d => d.Seller).WithMany(p => p.Products)
                 .HasForeignKey(d => d.SellerId)
@@ -417,6 +428,35 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.HasOne(d => d.User).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Transacti__user___4F7CD00D");
+        });
+
+        modelBuilder.Entity<Voucher>(entity =>
+        {
+            entity.ToTable("Voucher");
+
+            entity.Property(e => e.VoucherId).HasColumnName("voucher_id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(50)
+                .HasColumnName("code");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.DiscountValue)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("discount_value");
+            entity.Property(e => e.ExpiryDate)
+                .HasColumnType("datetime")
+                .HasColumnName("expiry_date");
+            entity.Property(e => e.MinOrderValue)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("min_order_value");
+            entity.Property(e => e.StartDate)
+                .HasColumnType("datetime")
+                .HasColumnName("start_date");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
         });
 
         OnModelCreatingPartial(modelBuilder);

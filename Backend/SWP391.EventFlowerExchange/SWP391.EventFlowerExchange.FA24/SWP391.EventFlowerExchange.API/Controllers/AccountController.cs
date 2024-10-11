@@ -33,7 +33,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             };
             if (await _service.GetUserByEmailFromAPIAsync(account) != null) 
             {
-                return Ok("Email had been registered.");
+                return BadRequest("Email had been registered.");
             }
 
             
@@ -42,18 +42,22 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 return Ok(result.Succeeded);
             }
-            return Ok("Password must include digits, uppercase letters, lowercase letters, and special characters!");
+            return BadRequest("Password must include digits, uppercase letters, lowercase letters, and special characters!");
         }
 
         [HttpPost("SignUp/Seller")]
-        public async Task<ActionResult<bool>> SignUpSeller(SignUpSeller model)
+        public async Task<IActionResult> SignUpSeller(SignUpSeller model)
         {
             var result = await _service.SignUpSellerFromAPIAsync(model);
+            if (await _service.GetUserByEmailFromAPIAsync(new Account() { Email = model.Email}) != null)
+            {
+                return BadRequest("Email had been registered.");
+            }
             if (result.Succeeded)
             {
-                return true;
+                return Ok(result.Succeeded);
             }
-            return false;
+            return BadRequest("Password must include digits, uppercase letters, lowercase letters, and special characters!");
         }
 
         [HttpPost("CreateAccount/Staff")]
@@ -107,7 +111,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 {
                     Email = email,
                     Name = name,
-                    Balance = 0,
                     Password = "Abc123@"
                 };
                 await _service.SignUpBuyerFromAPIAsync(account);
@@ -153,7 +156,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 return account;
             }
-            return StatusCode(StatusCodes.Status404NotFound);
+            return BadRequest("Not found");
         }
 
         [HttpGet("GetAccountById/{id}")]
@@ -165,7 +168,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 return account;
             }
-            return StatusCode(StatusCodes.Status404NotFound);
+            return BadRequest("Not found");
         }
 
 
@@ -179,7 +182,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             catch
             {
-                return Ok("Not found!");
+                return BadRequest("Not found");
             }
         }
 
@@ -193,7 +196,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             if (accounts != null) return Ok(accounts);
 
-            return Ok("Not found!");
+            return BadRequest("Not found"); 
         }
 
         [HttpGet("SearchAccounts/{address}")]
@@ -224,19 +227,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             if (minSalary < 0 || maxSalary < 0)
             {
-                return Ok("minSalary or maxSalary must not be negative number");
+                return BadRequest("minSalary or maxSalary must not be negative number");
             }
 
             if (minSalary > maxSalary)
             {
-                return Ok("minSalary must be less than or equal to maxSalary");
+                return BadRequest("minSalary must be less than or equal to maxSalary");
             }
 
             var accounts = await _service.SearchAccountsBySalaryFromAPIAsync(minSalary, maxSalary);
 
             if (accounts != null) return Ok(accounts);
 
-            return Ok("Not found!");
+            return BadRequest("Not found!");
         }
 
         [HttpPut("UpdateAccount")]
@@ -289,7 +292,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                     return true;
                 }
             }
-
             return false;
         }
 
