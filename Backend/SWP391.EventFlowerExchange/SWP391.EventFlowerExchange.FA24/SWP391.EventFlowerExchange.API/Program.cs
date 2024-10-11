@@ -80,6 +80,10 @@ namespace SWP391.EventFlowerExchange.API
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+            builder.Services.AddScoped<IVoucherService, VoucherService>();
 
             // Add DbContext
             builder.Services.AddDbContext<Swp391eventFlowerExchangePlatformContext>(options =>
