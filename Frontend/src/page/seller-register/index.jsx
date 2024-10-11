@@ -11,7 +11,7 @@ const SellerRegister = () => {
     console.log(values);
 
     try {
-      const response = await api.post("register", values);
+      const response = await api.post("Account/SignUp/Seller", values);
       navigate("/login");
     } catch (err) {
       console.log(err);
@@ -111,7 +111,7 @@ const SellerRegister = () => {
               },
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Password"
               className="w-full px-3 py-2 border border-gray-800 text-base"
@@ -138,7 +138,7 @@ const SellerRegister = () => {
               }),
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Confirm Password"
               className="px-3 py-2 border border-gray-800 w-[500px] text-base"

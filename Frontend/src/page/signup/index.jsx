@@ -3,6 +3,8 @@ import Header from "../../component/header";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,8 +13,9 @@ const Register = () => {
     console.log(values);
 
     try {
-      const response = await api.post("register", values);
+      const response = await api.post("Account/SignUp/Buyer", values);
       navigate("/login");
+      toast.success("Sign Up Success");
     } catch (err) {
       console.log(err);
       alert(err.response.data);
@@ -21,6 +24,7 @@ const Register = () => {
 
   return (
     <>
+      <ToastContainer />
       <Header />
 
       <div className="flex flex-col items-center w-[90%] sm:max-w m-auto mt-14 gap-4 text-gray-800">
@@ -111,7 +115,7 @@ const Register = () => {
               },
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Password"
               className="w-full px-3 py-2 border border-gray-800 text-base"
@@ -138,7 +142,7 @@ const Register = () => {
               }),
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Confirm Password"
               className="px-3 py-2 border border-gray-800 w-[500px] text-base"

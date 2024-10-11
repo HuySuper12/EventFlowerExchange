@@ -5,27 +5,39 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 function Header() {
   const [visible, setVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
   const handleOrder = () => {
     navigate("/order");
   };
 
+  const handleProfile = () => {
+    navigate("/profile-customer");
+  };
+
+  const handleProduct = () => {
+    navigate("/product");
+  };
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("email");
-    setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
-    navigate("/login");
+    setIsLoggedIn(false);
+    setRole(null);
+    navigate("/");
   };
 
   useEffect(() => {
-    // Check if a token exists in localStorage
     const token = sessionStorage.getItem("token");
+    const userRole = sessionStorage.getItem("role");
     if (token) {
       setIsLoggedIn(true);
+      setRole(userRole); // Set the role based on sessionStorage
     } else {
       setIsLoggedIn(false);
+      setRole(null);
     }
   }, []);
 
@@ -78,13 +90,26 @@ function Header() {
               />
               <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
                 <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
-                  <p className="cursor-pointer hover:text-black">My profile</p>
+                  <p
+                    className="cursor-pointer hover:text-black"
+                    onClick={handleProfile}
+                  >
+                    My profile
+                  </p>
                   <p
                     className="cursor-pointer hover:text-black"
                     onClick={handleOrder}
                   >
                     Order
                   </p>
+                  {role === "Seller" && (
+                    <p
+                      className="cursor-pointer hover:text-black"
+                      onClick={handleProduct}
+                    >
+                      Product
+                    </p>
+                  )}
                   <p
                     className="cursor-pointer hover:text-black"
                     onClick={handleLogout}
