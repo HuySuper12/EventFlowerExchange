@@ -11,6 +11,12 @@ import SellerRegister from "./page/seller-register";
 import Cart from "./page/Buyer-Seller/cart-page";
 import Checkout from "./page/Buyer-Seller/checkout";
 import Order_Page from "./page/Buyer-Seller/order";
+import Page_OTP from "./page/Buyer-Seller/OTP";
+import TransactionCustomer from "./page/Buyer-Seller/transaction-customer";
+import ProfileCustomer from "./page/Buyer-Seller/profile-customer";
+import WalletCustomer from "./page/Buyer-Seller/wallet-customer";
+import ChangePasswordCustomer from "./page/Buyer-Seller/changpassword-customer";
+import ProductCustomer from "./page/Buyer-Seller/product-customer";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -53,6 +59,32 @@ const App = () => {
     {
       path: "order",
       element: <Order_Page />,
+    },
+    {
+      path: "otp",
+      element: <Page_OTP />,
+    },
+    {
+      path: "transaction-customer",
+      element: <TransactionCustomer />,
+    },
+
+    {
+      path: "profile-customer",
+      element: <ProfileCustomer />,
+    },
+
+    {
+      path: "wallet-customer",
+      element: <WalletCustomer />,
+    },
+    {
+      path: "changpassword-customer",
+      element: <ChangePasswordCustomer />,
+    },
+    {
+      path: "product-customer",
+      element: <ProductCustomer />,
     },
 
     // {

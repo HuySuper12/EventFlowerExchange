@@ -44,10 +44,12 @@ const Login = () => {
         navigate("/"); // Người mua sẽ được điều hướng về trang chính
       } else if (role === "staff") {
         navigate("/admin/dashboard"); // Nhân viên sẽ được điều hướng về dashboard
+      } else if (role === "Seller") {
+        navigate("/");
       }
     } catch (err) {
       console.log(err);
-      alert("Đăng nhập không thành công. Vui lòng thử lại.");
+      alert(err.response.data);
     }
   };
 
@@ -95,7 +97,7 @@ const Login = () => {
               },
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Password"
               className="w-full px-3 py-2 border border-gray-800 text-base"
