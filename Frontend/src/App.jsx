@@ -11,7 +11,7 @@ import SellerRegister from "./page/seller-register";
 import Cart from "./page/Buyer-Seller/cart-page";
 import Checkout from "./page/Buyer-Seller/checkout";
 import Order_Page from "./page/Buyer-Seller/order";
-import Page_OTP from "./page/Buyer-Seller/OTP";
+// import Page_OTP from "./page/Buyer-Seller/otp";
 import TransactionCustomer from "./page/Buyer-Seller/transaction-customer";
 import ProfileCustomer from "./page/Buyer-Seller/profile-customer";
 import WalletCustomer from "./page/Buyer-Seller/wallet-customer";
@@ -60,10 +60,10 @@ const App = () => {
       path: "order",
       element: <Order_Page />,
     },
-    {
-      path: "otp",
-      element: <Page_OTP />,
-    },
+    // {
+    //   path: "otp",
+    //   element: <Page_OTP />,
+    // },
     {
       path: "transaction-customer",
       element: <TransactionCustomer />,
