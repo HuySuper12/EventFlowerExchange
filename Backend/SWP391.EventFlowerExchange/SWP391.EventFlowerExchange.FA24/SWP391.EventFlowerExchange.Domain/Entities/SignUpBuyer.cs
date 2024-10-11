@@ -14,9 +14,7 @@ namespace SWP391.EventFlowerExchange.Domain.Entities
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid Email Address format.")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Balance is required.")]
-        [Range(0, float.MaxValue, ErrorMessage = "Balance must be a positive number.")]
-        public decimal Balance { get; set; }
+
         public string Address { get; set; }
         [Required(ErrorMessage = "Phone Number is required.")]
         [Phone(ErrorMessage = "Invalid Phone Number format.")]
