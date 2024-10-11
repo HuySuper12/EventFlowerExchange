@@ -214,8 +214,9 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     total_price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: true),
-                    delivered_at = table.Column<DateTime>(type: "datetime", nullable: true),
-                    issue_report = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    delivered_at = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    issue_report = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    phoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -250,6 +251,7 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     quantity = table.Column<int>(type: "int", nullable: true),
                     price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -465,6 +467,56 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.AddColumn<int>(
+               name: "voucher_id",
+               table: "Order",
+               type: "int",
+               nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "OtpCode",
+                table: "Account",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "OtpExpiration",
+                table: "Account",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "Voucher",
+                columns: table => new
+                {
+                    voucher_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    min_order_value = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    start_date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    expiry_date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    created_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    discount_value = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Voucher", x => x.voucher_id);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Order_voucher_id",
+                table: "Order",
+                column: "voucher_id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Order_Voucher",
+                table: "Order",
+                column: "voucher_id",
+                principalTable: "Voucher",
+                principalColumn: "voucher_id");
+
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
@@ -666,6 +718,30 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "Account");
+
+            migrationBuilder.DropForeignKey(
+               name: "FK_Order_Voucher",
+               table: "Order");
+
+            migrationBuilder.DropTable(
+                name: "Voucher");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Order_voucher_id",
+                table: "Order");
+
+            migrationBuilder.DropColumn(
+                name: "voucher_id",
+                table: "Order");
+
+            migrationBuilder.DropColumn(
+                name: "OtpCode",
+                table: "Account");
+
+            migrationBuilder.DropColumn(
+                name: "OtpExpiration",
+                table: "Account");
+
         }
     }
 }

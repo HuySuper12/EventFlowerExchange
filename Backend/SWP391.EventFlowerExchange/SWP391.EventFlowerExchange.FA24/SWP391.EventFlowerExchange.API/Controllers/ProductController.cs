@@ -36,7 +36,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/InProgress")]
-        [Authorize(Roles = ApplicationRoles.Admin)]
+        [Authorize(Roles = ApplicationRoles.Staff)]
         public async Task<IActionResult> GetAllInProgressProductList()
         {
             return Ok(await _service.GetInProgressProductListFromAPIAsync());
@@ -44,7 +44,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Rejected")]
-        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> GetAllRejectedProductList()
         {
             return Ok(await _service.GetRejectedProductListFromAPIAsync());
@@ -59,7 +59,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var checkProduct = await _service.SearchProductByIdFromAPIAsync(product);
             if (checkProduct == null)
             {
-                return NotFound();
+                return BadRequest("Not found product");
             }
             return Ok(checkProduct);
         }
@@ -69,7 +69,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var checkProduct = await _service.SearchProductByNameFromAPIAsync(name);
             if (checkProduct == null)
             {
-                return NotFound();
+                return BadRequest("Not found product");
             }
             return Ok(checkProduct);
         }
@@ -79,23 +79,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             if (from < 0 || to < 0)
             {
-                return Ok("minSalary or maxSalary must not be negative number");
+                return BadRequest("minPrice or maxSalary must not be negative number");
             }
 
             if (from > to)
             {
-                return Ok("minSalary must be less than or equal to maxSalary");
+                return BadRequest("minPrice must be less than or equal to maxPrice");
             }
             var checkProduct = await _service.SearchProductByPriceRangeFromAPIAsync(from, to);
             if (checkProduct == null)
             {
-                return NotFound();
+                return BadRequest("Not found product");
             }
             return Ok(checkProduct);
         }
 
         [HttpPost("CreateProduct")]
-        [Authorize(ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
         {
             var check = await _service.CreateNewProductFromAPIAsync(product);
@@ -115,7 +115,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var checkProduct = await _service.SearchProductByIdFromAPIAsync(product);
             if (checkProduct == null)
             {
-                return BadRequest();
+                return BadRequest("Not found product");
             }
             bool status = await _service.RemoveProductFromAPIAsync(checkProduct);
             return Ok(status);

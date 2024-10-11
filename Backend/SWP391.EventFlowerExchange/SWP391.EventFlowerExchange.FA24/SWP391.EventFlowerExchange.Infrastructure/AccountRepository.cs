@@ -150,7 +150,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Name = model.Name,
                 Email = model.Email,
                 UserName = model.Email,
-                Balance = model.Balance,
                 Address = model.Address,
                 PhoneNumber = model.Phone,
                 CreatedAt = DateTime.UtcNow,
@@ -191,8 +190,8 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             if (result.Succeeded)
             {
                 //Gan Role Customer
-                await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Admin));
-                await userManager.AddToRoleAsync(user, ApplicationRoles.Admin);
+                await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Staff));
+                await userManager.AddToRoleAsync(user, ApplicationRoles.Staff);
             }
 
             return result;

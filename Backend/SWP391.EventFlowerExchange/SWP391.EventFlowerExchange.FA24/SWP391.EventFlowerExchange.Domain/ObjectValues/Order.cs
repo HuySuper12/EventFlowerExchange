@@ -19,7 +19,10 @@ public partial class Order
 
     public DateTime? CreatedAt { get; set; }
 
-    public DateTime? DeliveredAt { get; set; }
+    public string? DeliveredAt { get; set; }
+    public string? PhoneNumber { get; set; }
+
+    public int? VoucherId { get; set; }
 
     public string? IssueReport { get; set; }
 
@@ -36,4 +39,6 @@ public partial class Order
     public virtual Account? Seller { get; set; }
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    public virtual Voucher? Voucher { get; set; }
 }
