@@ -9,6 +9,14 @@ import { GoogleLogin } from "@react-oauth/google";
 const Login = () => {
   const navigate = useNavigate();
 
+  const handleSignup = () => {
+    navigate("/register");
+  };
+
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
   const handleLogin = async (values) => {
     try {
       const response = await api.post("Account/Login", values);
@@ -134,16 +142,19 @@ const Login = () => {
           </Form.Item>
 
           <div className="w-full flex justify-between text-sm mt-[-8px]">
-            <a
-              href="/forgot-password"
+            <div
               className="cursor-pointer mb-[8px] text-sm"
+              onClick={handleForgotPassword}
             >
               Forgot your password?
-            </a>
+            </div>
 
-            <a href="/register" className="cursor-pointer mb-[8px] text-sm ">
+            <div
+              className="cursor-pointer mb-[8px] text-sm"
+              onClick={handleSignup}
+            >
               Create account?
-            </a>
+            </div>
           </div>
 
           <Form.Item>

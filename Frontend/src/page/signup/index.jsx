@@ -9,6 +9,10 @@ import { ToastContainer } from "react-toastify";
 const Register = () => {
   const navigate = useNavigate();
 
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
   const handleRegister = async (values) => {
     console.log(values);
 
@@ -150,9 +154,12 @@ const Register = () => {
           </Form.Item>
 
           <div className="w-full flex justify-end text-sm mt-[-8px]">
-            <a href="/login" className="cursor-pointer mb-[8px] text-sm ">
+            <div
+              className="cursor-pointer mb-[8px] text-sm "
+              onClick={handleLogin}
+            >
               I already have a account?
-            </a>
+            </div>
           </div>
 
           <Form.Item>
