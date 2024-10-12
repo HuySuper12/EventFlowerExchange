@@ -239,30 +239,29 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Product",
-                columns: table => new
-                {
-                    product_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    seller_id = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    product_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    freshness_duration = table.Column<int>(type: "int", nullable: true),
-                    combo_type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    quantity = table.Column<int>(type: "int", nullable: true),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    created_at = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Product__47027DF52E9F0063", x => x.product_id);
-                    table.ForeignKey(
-                        name: "FK__Product__seller___3B75D760",
-                        column: x => x.seller_id,
-                        principalTable: "Account",
-                        principalColumn: "Id");
-                });
+               name: "Product",
+               columns: table => new
+               {
+                   product_id = table.Column<int>(type: "int", nullable: false)
+                       .Annotation("SqlServer:Identity", "1, 1"),
+                   seller_id = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                   product_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                   freshness_duration = table.Column<int>(type: "int", nullable: true),
+                   combo_type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                   quantity = table.Column<int>(type: "int", nullable: true),
+                   price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                   status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                   created_at = table.Column<DateTime>(type: "datetime", nullable: true)
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK__Product__47027DF52E9F0063", x => x.product_id);
+                   table.ForeignKey(
+                       name: "FK__Product__seller___3B75D760",
+                       column: x => x.seller_id,
+                       principalTable: "Account",
+                       principalColumn: "Id");
+               });
 
             migrationBuilder.CreateTable(
                 name: "Delivery_Log",
@@ -505,6 +504,27 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     table.PrimaryKey("PK_Voucher", x => x.voucher_id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ImageProduct",
+                columns: table => new
+                {
+                    product_id = table.Column<int>(type: "int", nullable: false),
+                    LinkImage = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.ForeignKey(
+                        name: "FK__ImageProd__produ__2B0A656D",
+                        column: x => x.product_id,
+                        principalTable: "Product",
+                        principalColumn: "product_id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageProduct_product_id",
+                table: "ImageProduct",
+                column: "product_id");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Order_voucher_id",
                 table: "Order",
@@ -712,6 +732,9 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "ImageProduct");
 
             migrationBuilder.DropTable(
                 name: "Order");
