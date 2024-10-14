@@ -45,9 +45,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
-    
     public virtual DbSet<ImageProduct> ImageProducts { get; set; }
-
 
     private string GetConnectionString()
     {
@@ -291,7 +289,11 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
-
+            entity.Property(e => e.Description)
+                .HasColumnName("description");
+            entity.Property(e => e.Category)
+                .HasMaxLength(50)
+                .HasColumnName("category");
             entity.HasOne(d => d.Seller).WithMany(p => p.Products)
                 .HasForeignKey(d => d.SellerId)
                 .HasConstraintName("FK__Product__seller___3B75D760");
