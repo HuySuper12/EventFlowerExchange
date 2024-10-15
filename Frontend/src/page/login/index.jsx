@@ -5,6 +5,7 @@ import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Login = () => {
     navigate("/register");
   };
 
-  const handleForgotPassword = () => {
+  const handleForgetPassword = () => {
     navigate("/forgot-password");
   };
 
@@ -48,12 +49,11 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
-      alert(err.response.data);
+      toast.error("Your email or password is incorrect");
     }
   };
 
-  // HandleLoginGoogle cho Google Login
+  // Thêm handleLoginGoogle cho Google Login
   const handleLoginGoogle = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential; // Lấy token từ Google
@@ -144,13 +144,13 @@ const Login = () => {
           <div className="w-full flex justify-between text-sm mt-[-8px]">
             <div
               className="cursor-pointer mb-[8px] text-sm"
-              onClick={handleForgotPassword}
+              onClick={handleForgetPassword}
             >
               Forgot your password?
             </div>
 
             <div
-              className="cursor-pointer mb-[8px] text-sm"
+              className="cursor-pointer mb-[8px] text-sm "
               onClick={handleSignup}
             >
               Create account?
@@ -175,7 +175,7 @@ const Login = () => {
             <GoogleLogin
               onSuccess={handleLoginGoogle}
               onError={() => {
-                console.log("Login Failed");
+                toast.error("Login Failed");
               }}
             />
           </span>

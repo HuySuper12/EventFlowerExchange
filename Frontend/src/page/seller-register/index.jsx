@@ -3,6 +3,7 @@ import Header from "../../component/header";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
+import { toast } from "react-toastify";
 
 const SellerRegister = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const SellerRegister = () => {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      alert(err.response.data);
+      toast.error(err.response.data);
     }
   };
 
