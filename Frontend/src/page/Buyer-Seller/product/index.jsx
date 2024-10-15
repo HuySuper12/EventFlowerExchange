@@ -337,12 +337,12 @@ export default Product;
 
 // export default Product;
 
-//----------------------------------------------------------------Đã có checkbox----------------------------------------------------------------
+// ----------------------------------------------------------------Đã có checkbox----------------------------------------------------------------
 
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
-// import Header from "../../component/header";
-// import ProductCard from "../../component/product-card";
+// import Header from "../../../component/header";
+// import ProductCard from "../../../component/product-card";
 
 // function Product() {
 //   const [sortOrder, setSortOrder] = useState(""); // State để lưu trạng thái sắp xếp
@@ -368,7 +368,7 @@ export default Product;
 //   useEffect(() => {
 //     const fetchAllProducts = async () => {
 //       try {
-//         const response = await axios.get("YOUR_API_ENDPOINT_FOR_ALL_PRODUCTS");
+//         const response = await axios.get("Product/GetProductList/Enable");
 //         setProducts(response.data);
 //       } catch (error) {
 //         console.error("Error fetching all products:", error);
@@ -403,15 +403,21 @@ export default Product;
 //           productsList = [...weddingResponse.data, ...birthdayResponse.data]; // Gộp dữ liệu từ cả hai API
 //         } else if (filterWedding) {
 //           // Chỉ gọi API cho Hoa tiệc cưới
-//           const weddingResponse = await axios.get("YOUR_API_ENDPOINT_FOR_WEDDING");
+//           const weddingResponse = await axios.get(
+//             "YOUR_API_ENDPOINT_FOR_WEDDING"
+//           );
 //           productsList = weddingResponse.data;
 //         } else if (filterBirthday) {
 //           // Chỉ gọi API cho Hoa sinh nhật
-//           const birthdayResponse = await axios.get("YOUR_API_ENDPOINT_FOR_BIRTHDAY");
+//           const birthdayResponse = await axios.get(
+//             "YOUR_API_ENDPOINT_FOR_BIRTHDAY"
+//           );
 //           productsList = birthdayResponse.data;
 //         } else {
 //           // Nếu không có bộ lọc nào được chọn, hiển thị tất cả sản phẩm
-//           const response = await axios.get("YOUR_API_ENDPOINT_FOR_ALL_PRODUCTS");
+//           const response = await axios.get(
+//             "YOUR_API_ENDPOINT_FOR_ALL_PRODUCTS"
+//           );
 //           productsList = response.data;
 //         }
 

@@ -1,12 +1,34 @@
 // Transaction.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SidebarCustomer from "../../../component/slidebar-customer";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import { Modal } from "antd";
+import { toast } from "react-toastify";
 
 const WalletCustomer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [link, setLink] = useState(
+    "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=1000000000&vnp_Command=pay&vnp_CreateDate=20241011074528&vnp_CurrCode=VND&vnp_IpAddr=10.3.80.7&vnp_Locale=vn&vnp_OrderInfo=N%E1%BA%A1p+ti%E1%BB%81n+t%E1%BB%AB%3A+dfasdfadsf&vnp_OrderType=Qu%C3%A0+t%E1%BA%B7ng&vnp_ReturnUrl=https%3A%2F%2Flocalhost%3A7219%2Fapi%2FVNPAY%2Fpayment-callback&vnp_TmnCode=GOSLR1AW&vnp_TxnRef=638642547361681120&vnp_Version=2.1.0&vnp_SecureHash=c65934a4410e692d1c01821de11d77c269860f8024baa5fab39b454bacc8a7b5237a82802c2f6fbccf9117f9660e6a25b4861abe64ce764a0a2d131409729373"
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const role = sessionStorage.getItem("role");
+    if (role === "Seller") {
+      navigate("/");
+    } else if (role === "Admin") {
+      navigate("/admin");
+    } else if (role === "Staff") {
+      navigate("/staff");
+    } else if (role === "Shipper") {
+      navigate("/staff");
+    } else if (!role) {
+      navigate("/login");
+      toast.error("Please login first.");
+    }
+  }, [navigate]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -14,11 +36,13 @@ const WalletCustomer = () => {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    window.location.href = link;
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   return (
     <>
       <Header />

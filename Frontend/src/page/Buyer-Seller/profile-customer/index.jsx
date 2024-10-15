@@ -1,11 +1,35 @@
-// Transaction.jsx
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import SidebarCustomer from "../../../component/slidebar-customer";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
+import api from "../../../config/axios";
 
 const ProfileCustomer = () => {
+  const [accountData, setAccountData] = useState(null);
+  const email = sessionStorage.getItem("email");
+  console.log("Email:", email);
+
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      if (email) {
+        try {
+          const encodedEmail = encodeURIComponent(email);
+          const response = await api.get(
+            `Account/GetAccountByEmail/${encodedEmail}`
+          );
+          setAccountData(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error fetching account data:", error);
+        }
+      } else {
+        console.error("Email is not set in sessionStorage.");
+      }
+    };
+
+    fetchAccountData();
+  }, [email]); // Chạy lại khi email thay đổi
+
   return (
     <>
       <Header />
