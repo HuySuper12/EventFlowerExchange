@@ -4,6 +4,7 @@ import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ChangePasswordCustomer = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const ChangePasswordCustomer = () => {
 
         if (response.data === true) {
           navigate("/otp");
+          toast.success("Please enter OTP to continue.");
         } else {
           console.error(`Error: Status code ${response.status}`);
         }

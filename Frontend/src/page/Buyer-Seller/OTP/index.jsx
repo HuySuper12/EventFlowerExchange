@@ -8,29 +8,65 @@ import { toast } from "react-toastify";
 
 function OTP() {
   const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
 
   const handleSendOTP = async (values, api) => {
     const email = sessionStorage.getItem("email");
+    const emailLocal = localStorage.getItem("email");
 
-    if (!email || !values.otp) {
-      console.error("Email or OTP is not set.");
-      return; // Ngừng thực hiện nếu email hoặc OTP không hợp lệ
-    }
-
-    try {
-      const response = await api.post("Account/VerifyOTP", null, {
-        params: {
-          otp: values.otp,
-          email: email,
-        },
-      });
-      if (response.data == true) {
-        navigate("/profile-customer");
-      } else {
-        toast.error("OTP verification is not match.");
+    if (!token) {
+      if (!emailLocal || !values.otp) {
+        console.error("Email or OTP is not set. fail1");
+        return; // Ngừng thực hiện nếu email hoặc OTP không hợp lệ
       }
-    } catch (error) {
-      console.error("Error verifying OTP:", error.response.data);
+
+      try {
+        const response = await api.post("Account/VerifyOTP", null, {
+          params: {
+            otp: values.otp,
+            email: emailLocal,
+          },
+        });
+
+        // Kiểm tra phản hồi từ API
+        if (response.data == true) {
+          // Kiểm tra mã trạng thái
+          navigate("/reset-password");
+          toast.success("Please enter your new password.");
+        } else {
+          toast.error("OTP verification does not match."); // Sửa thông báo cho rõ ràng
+        }
+      } catch (error) {
+        console.error(
+          "Error verifying OTP:",
+          error.response ? error.response.data : error.message
+        );
+        toast.error("An error occurred while verifying OTP."); // Thêm thông báo lỗi cho người dùng
+      }
+
+      //if trường hợp đã đăng nhập
+    } else {
+      if (!email || !values.otp) {
+        console.error("Email or OTP is not set. fail2");
+        return; // Ngừng thực hiện nếu email hoặc OTP không hợp lệ
+      }
+
+      try {
+        const response = await api.post("Account/VerifyOTP", null, {
+          params: {
+            otp: values.otp,
+            email: email,
+          },
+        });
+        if (response.data == true) {
+          navigate("/reset-password");
+          toast.success("Please enter your new password.");
+        } else {
+          toast.error("OTP verification is not match.");
+        }
+      } catch (error) {
+        console.error("Error verifying OTP:", error.response.data);
+      }
     }
   };
 

@@ -20,6 +20,8 @@ import ProductCustomer from "./page/Buyer-Seller/product-customer";
 import AddProduct from "./page/Buyer-Seller/addprocduct";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import InputNewPassword from "./page/Buyer-Seller/inputnewpassword";
+import ProductSeller from "./page/Buyer-Seller/Product-seller";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -43,7 +45,7 @@ const App = () => {
       element: <ForgotPassword />,
     },
     {
-      path: "product-page",
+      path: "product-page/:id",
       element: <ProductPage />,
     },
     {
@@ -93,7 +95,14 @@ const App = () => {
       path: "add-product",
       element: <AddProduct />,
     },
-
+    {
+      path: "reset-password",
+      element: <InputNewPassword />,
+    },
+    {
+      path: "product-seller",
+      element: <ProductSeller />,
+    },
     // {
     //   path: "admin",
     //   element: <PrivateRoute />,
