@@ -159,7 +159,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var checkProduct = await _context.Products.FindAsync(product.ProductId);
             var newValue = ConvertProductToGetProduct(checkProduct);
 
-
             return newValue;
         }
 
@@ -310,5 +309,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
+        public async Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var productImage = await _context.ImageProducts.FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
+            return productImage;
+        }
     }
 }

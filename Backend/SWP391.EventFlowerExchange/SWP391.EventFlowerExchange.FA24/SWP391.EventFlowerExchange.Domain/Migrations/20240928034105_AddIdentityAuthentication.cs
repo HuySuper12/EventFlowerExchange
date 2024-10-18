@@ -17,6 +17,7 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Salary = table.Column<double>(type: "float", nullable: true),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: true),

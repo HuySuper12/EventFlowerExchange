@@ -1,89 +1,109 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\",
+  "WorkspaceRootPath": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\updateaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\updateaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\followcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\followcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\ratingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\ratingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\createnotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\createnotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\inotificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\inotificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\imageproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\imageproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\getproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\getproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\createproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\createproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\swp391eventflowerexchangeplatformcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\swp391eventflowerexchangeplatformcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\swp391eventflowerexchangeplatformcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|d:\\git_main_swp391\\eventflowerexchange\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\migrations\\20240928034105_addidentityauthentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\updateaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\updateaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{365AA1D4-E969-4591-9B6D-279CC7DD75A0}|SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj|solutionrelative:swp391.eventflowerexchange.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.application\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7AC51EFE-1F4D-4288-AAA1-66BB606B0B55}|SWP391.EventFlowerExchange.Application\\SWP391.EventFlowerExchange.Application.csproj|solutionrelative:swp391.eventflowerexchange.application\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\createnotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\createnotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\inotificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\inotificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.infrastructure\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{807ADF22-323F-401C-A61F-F3FEBBD8509E}|SWP391.EventFlowerExchange.Infrastructure\\SWP391.EventFlowerExchange.Infrastructure.csproj|solutionrelative:swp391.eventflowerexchange.infrastructure\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\imageproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\imageproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\objectvalues\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\objectvalues\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\getproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\getproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\entities\\createproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\entities\\createproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|c:\\users\\asus\\desktop\\backend\\swp391.eventflowerexchange\\swp391.eventflowerexchange.fa24\\swp391.eventflowerexchange.domain\\migrations\\20240928034105_addidentityauthentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{27F8574C-2B19-432D-AD73-0BC7D3CFDA4D}|SWP391.EventFlowerExchange.Domain\\SWP391.EventFlowerExchange.Domain.csproj|solutionrelative:swp391.eventflowerexchange.domain\\migrations\\20240928034105_addidentityauthentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -94,261 +114,326 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Account.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAAaAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-18T06:35:54.573Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
-              "ViewState": "AQIAACUBAAAAAAAAAAAAAC0BAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-14T09:27:32.594Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Program.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Program.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Program.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Program.cs",
-              "ViewState": "AQIAAGgAAAAAAAAAAAAgwFIAAAAMAAAA",
+              "Title": "RatingController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\RatingController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\RatingController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\RatingController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\RatingController.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAowCwAAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T09:38:46.156Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "NotificationService.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\NotificationService.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\NotificationService.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\NotificationService.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\NotificationService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADIAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:56:34.293Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "INotificationService.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\INotificationService.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\INotificationService.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\INotificationService.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\INotificationService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:55:59.482Z"
+              "WhenOpened": "2024-10-18T09:37:33.284Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "NotificationController.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFEAAAAFAAAA",
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\ProductController.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:46:47.225Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IProductService.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\IProductService.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\IProductService.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\IProductService.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\IProductService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACwAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T02:56:15.347Z"
+              "WhenOpened": "2024-10-18T09:35:23.406Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "UpdateAccount.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAFAAAA",
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
+              "ViewState": "AQIAAEcAAAAAAAAAAAAIwFUAAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-14T09:26:07.133Z"
+              "WhenOpened": "2024-10-18T09:36:43.121Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FollowController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAwwEkAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:35:19.56Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\AccountService.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\AccountService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\AccountService.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\AccountService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:33:35.508Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\ProductService.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\ProductService.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\ProductService.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\ProductService.cs",
-              "ViewState": "AQIAAFcAAAAAAAAAAADwvygAAAAIAAAA",
+              "Title": "CartService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\CartService.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\CartService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\CartService.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\CartService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T02:56:35.922Z"
+              "WhenOpened": "2024-10-18T09:33:35.047Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "NotificationRepository.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAE4AAAAFAAAA",
+              "DocumentIndex": 0,
+              "Title": "NotificationController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\NotificationController.cs",
+              "ViewState": "AQIAAHoAAAAAAAAAAAAuwI4AAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:44:01.32Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "CreateNotification.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAASAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:42:10.277Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "INotificationRepository.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:40:50.709Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "ProductRepository.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADgBAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:39:52.195Z"
+              "WhenOpened": "2024-10-18T09:23:23.751Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "IAccountRepository.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
-              "ViewState": "AQIAACAAAAAAAAAAAAA7wCsAAAAFAAAA",
+              "Title": "IProductService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\IProductService.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\IProductService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\IProductService.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\IProductService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACwAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:38:34.055Z"
+              "WhenOpened": "2024-10-18T09:23:23.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UpdateAccount.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\UpdateAccount.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.758Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 14,
-              "Title": "Notification.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\ProductService.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\ProductService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\ProductService.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\ProductService.cs",
+              "ViewState": "AQIAAFcAAAAAAAAAAADwvygAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T08:35:33.223Z"
+              "WhenOpened": "2024-10-18T09:23:23.761Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Product.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
-              "ViewState": "AQIAAB8AAAAAAAAAAAAywCYAAAABAAAA",
+              "DocumentIndex": 5,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAADoBAAAAAAAAAAAuwDgBAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T03:01:16.17Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Swp391eventFlowerExchangePlatformContext.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
-              "ViewState": "AQIAACkAAAAAAAAAAADwvzEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T03:01:54.35Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "20240928034105_AddIdentityAuthentication.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIDAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T03:07:41.601Z"
+              "WhenOpened": "2024-10-18T09:23:23.737Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "ImageProduct.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAEAAAA",
+              "Title": "NotificationRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\NotificationRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAE4AAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T03:00:54.184Z"
+              "WhenOpened": "2024-10-18T09:23:23.764Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Account.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Account.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "NotificationService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\NotificationService.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Application\\NotificationService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Application\\NotificationService.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Application\\NotificationService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADIAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.744Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Swp391eventFlowerExchangePlatformContext.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Swp391eventFlowerExchangePlatformContext.cs",
+              "ViewState": "AQIAAJ0AAAAAAAAAAAAjwDAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.785Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Program.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Program.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Program.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Program.cs",
+              "ViewState": "AQIAAGgAAAAAAAAAAAAgwFIAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "CreateNotification.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateNotification.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.768Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 17,
-              "Title": "GetProduct.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
-              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
-              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACIAAAAFAAAA",
+              "Title": "INotificationRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\INotificationRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T02:58:28.017Z"
+              "WhenOpened": "2024-10-18T09:23:23.77Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 18,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADgBAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.774Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "IAccountRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\IAccountRepository.cs",
+              "ViewState": "AQIAACAAAAAAAAAAAAA7wCsAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Notification.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Notification.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.781Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Product.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\Product.cs",
+              "ViewState": "AQIAAB8AAAAAAAAAAAAywCYAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.783Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "20240928034105_AddIdentityAuthentication.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Migrations\\20240928034105_AddIdentityAuthentication.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIDAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.788Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ImageProduct.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\ObjectValues\\ImageProduct.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.79Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "GetProduct.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\GetProduct.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACIAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T09:23:23.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
               "Title": "CreateProduct.cs",
-              "DocumentMoniker": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
               "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
-              "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
               "RelativeToolTip": "SWP391.EventFlowerExchange.Domain\\Entities\\CreateProduct.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAACcAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T02:57:49.683Z"
+              "WhenOpened": "2024-10-18T09:23:23.796Z"
             }
           ]
         }

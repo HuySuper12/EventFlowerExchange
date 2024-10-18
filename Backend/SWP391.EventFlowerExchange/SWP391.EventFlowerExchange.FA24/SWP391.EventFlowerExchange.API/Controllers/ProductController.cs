@@ -20,7 +20,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Enable")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllEnableProductList()
         {
             return Ok(await _service.GetEnableProductListFromAPIAsync());
@@ -28,7 +28,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Disable")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllDisableProductList()
         {
             return Ok(await _service.GetDisableProductListFromAPIAsync());

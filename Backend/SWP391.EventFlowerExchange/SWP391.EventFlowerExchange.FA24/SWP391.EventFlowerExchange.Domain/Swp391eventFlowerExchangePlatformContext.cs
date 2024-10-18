@@ -18,6 +18,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
         : base(options)
     {
     }
+    public virtual DbSet<Follow> Follows { get; set; }
 
     public virtual DbSet<Account> Accounts { get; set; }
 
@@ -44,6 +45,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
+
 
     public virtual DbSet<ImageProduct> ImageProducts { get; set; }
 
@@ -101,13 +103,31 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
         //    entity.Property(e => e.Status).HasColumnName("status");
         //});
 
+        modelBuilder.Entity<Follow>(entity =>
+        {
+            entity.HasKey(e => e.FollowId).HasName("PK__Follow__15A691443703BF66");
+
+            entity.ToTable("Follow");
+
+            entity.HasIndex(e => new { e.FollowerId, e.SellerId }, "IX_Follow_Unique").IsUnique();
+
+            entity.Property(e => e.FollowId).HasColumnName("follow_id");
+            entity.Property(e => e.FollowerId).HasColumnName("follower_id");
+            entity.Property(e => e.SellerId).HasColumnName("seller_id");
+
+            entity.HasOne(d => d.Seller).WithMany(p => p.Follows)
+                .HasForeignKey(d => d.SellerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Follow__seller_i__395884C4");
+        });
+
         modelBuilder.Entity<Cart>(entity =>
         {
             entity.HasKey(e => new { e.CartId, e.BuyerId }).HasName("PK__Cart__15583D3220AC18D4");
 
             entity.ToTable("Cart");
 
-            entity.Property(e => e.CartId).HasColumnName("cart_id");
+            entity.Property(e => e.CartId).HasColumnName("cart_id").ValueGeneratedOnAdd();
             entity.Property(e => e.BuyerId).HasColumnName("buyer_id");
 
             entity.HasOne(d => d.Buyer).WithMany(p => p.Carts)
@@ -464,6 +484,8 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
         modelBuilder.Entity<ImageProduct>(entity =>
         {
+            entity.ToTable("ImageProduct");
+
             entity.HasKey(e => e.Id).HasName("PK__ImagePro__3213E83FBC8D53A3");
 
             entity.Property(e => e.LinkImage).HasMaxLength(450);

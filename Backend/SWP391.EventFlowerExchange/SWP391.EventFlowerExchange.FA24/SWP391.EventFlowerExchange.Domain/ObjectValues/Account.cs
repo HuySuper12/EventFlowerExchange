@@ -33,6 +33,8 @@ public class Account : IdentityUser
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
+    public virtual ICollection<Follow> Follows { get; set; } = new List<Follow>();
+
     public virtual ICollection<DeliveryLog> DeliveryLogs { get; set; } = new List<DeliveryLog>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
