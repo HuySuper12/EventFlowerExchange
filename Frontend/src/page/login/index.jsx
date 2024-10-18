@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Form, Input } from "antd";
 import Header from "../../component/header";
-import api from "../../config/axios";
+// import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { GoogleLogin } from "@react-oauth/google";
