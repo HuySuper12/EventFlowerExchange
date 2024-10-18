@@ -88,6 +88,10 @@ namespace SWP391.EventFlowerExchange.API
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IFollowService, FollowService>();
             builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IRequestService, RequestService>();
 
             // Add DbContext
             builder.Services.AddDbContext<Swp391eventFlowerExchangePlatformContext>(options =>

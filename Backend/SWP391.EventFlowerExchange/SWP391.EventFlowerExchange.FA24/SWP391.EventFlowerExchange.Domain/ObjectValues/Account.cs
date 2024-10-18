@@ -56,4 +56,6 @@ public class Account : IdentityUser
     public virtual ICollection<ShopNotification> ShopNotificationSellers { get; set; } = new List<ShopNotification>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Payment> Payment { get; set; } = new List<Payment>();
+
 }

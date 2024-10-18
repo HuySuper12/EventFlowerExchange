@@ -13,7 +13,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
     public class ProductRepository : IProductRepository
     {
         private Swp391eventFlowerExchangePlatformContext _context;
-
+        private IRequestRepository _request;
 
         private GetProduct ConvertProductToGetProduct(Product value)
         {
@@ -31,7 +31,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 ProductId = value.ProductId,
                 Status = value.Status,
             };
-
             //Lấy list đối tượng có chứ hình ảnh của Id product và sau đó lấy list  
             var productImageList = _context.ImageProducts.Where(x => x.ProductId == newValue.ProductId).ToList().Select(x => x.LinkImage).ToList();
 
@@ -40,11 +39,28 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return newValue;
         }
 
+        private void CheckExpiredDateProduct()
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var list = _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains("Enable")).ToList();
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (DateTime.Now > list[i].ExpiredAt)
+                {
+                    list[i].Status = "Disable";
+                    _context.Products.Update(list[i]);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
         public async Task<List<GetProduct?>> GetEnableProductListAsync()
         {
+            CheckExpiredDateProduct();
             string status = "Enable";
             _context = new Swp391eventFlowerExchangePlatformContext();
             var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
+
             var getProductList = new List<GetProduct?>();
             foreach (var product in productList)
             {
@@ -65,7 +81,9 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             {
                 var newValue = ConvertProductToGetProduct(product);
                 getProductList.Add(newValue);
+
             }
+
             return getProductList;
         }
 
@@ -99,19 +117,27 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
-        public async Task<bool> CreateNewProductAsync(CreateProduct product)
+        public async Task<bool> CreateNewProductAsync(CreateProduct product, Account account)
         {
+            int? check;
+
+            if (product.FreshnessDuration == 1)
+                check = 1;
+            else
+                check = product.FreshnessDuration - 1;
+
             Product newProduct = new Product()
             {
                 ProductName = product.ProductName,
                 FreshnessDuration = product.FreshnessDuration,
                 Price = product.Price,
                 ComboType = product.ComboType,
-                CreatedAt = product.CreatedAt,
+                CreatedAt = DateTime.Now,
                 Quantity = product.Quantity,
-                SellerId = product.SellerId,
+                SellerId = account.Id,
                 Description = product.Description,
-                Category = product.Category
+                Category = product.Category,
+                ExpiredAt = DateTime.Now.AddDays((int)check)
             };
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Products.Add(newProduct);
@@ -125,14 +151,25 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                     LinkImage = product.ListImage[i]
                 };
                 _context.ImageProducts.Add(newValue);
-
             }
+            await _context.SaveChangesAsync();
+            Request request = new Request()
+            {
+                ProductId = newProduct.ProductId,
+                CreatedAt = newProduct.CreatedAt,
+                Status = "Pending",
+                RequestType = "Post",
+                UserId = account.Id,
+            };
+            _context.Requests.Add(request);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> RemoveProductAsync(GetProduct product)
         {
+
+
             Product newProduct = new Product()
             {
                 ProductId = product.ProductId,
@@ -155,15 +192,19 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<GetProduct?> SearchProductByIdAsync(GetProduct product)
         {
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             var checkProduct = await _context.Products.FindAsync(product.ProductId);
             var newValue = ConvertProductToGetProduct(checkProduct);
 
+
             return newValue;
         }
 
+
         public async Task<List<GetProduct?>> SearchProductByNameAsync(string name)
         {
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             string status = "Enable";
             var productList = await _context.Products.Where(p => p.ProductName.ToLower().Contains(name.ToLower()) && p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
@@ -176,103 +217,9 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
-        public async Task<List<GetProduct?>> SearchProductByPriceRangeAsync(decimal from, decimal to)
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            var productList = await _context.Products.Where(p => p.Price >= from && p.Price <= to).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> SearchProductByComboType_BatchesAsync()
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            string comboType = "Batches";
-            string status = "Enable";
-            var productList = await _context.Products.Where(p => p.ComboType.ToLower().Contains(comboType.ToLower()) && p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> SearchProductByComboType_EventsAsync()
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            string comboType = "Events";
-            string status = "Enable";
-
-            var productList = await _context.Products.Where(p => p.ComboType.ToLower().Contains(comboType.ToLower()) && p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> SearchProductByCategory_WeddingAsync()
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            string category = "Wedding";
-            string status = "Enable";
-
-            var productList = await _context.Products.Where(p => p.Category.ToLower().Contains(category.ToLower()) && p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> SearchProductByCategory_ConferenceAsync()
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            string category = "Conference";
-            string status = "Enable";
-
-            var productList = await _context.Products.Where(p => p.Category.ToLower().Contains(category.ToLower()) && p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> SearchProductByCategory_BirthdayAsync()
-        {
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            string category = "Birthday";
-            string status = "Enable";
-
-            var productList = await _context.Products.Where(p =>
-                p.Category.ToLower().Contains(category.ToLower())
-                && p.Status != null
-                && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                getProductList.Add(newValue);
-            }
-            return getProductList;
-        }
-
         public async Task<List<GetProduct?>> GetLatestProductsAsync()
         {
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             string status = "Enable";
             var productList = await _context.Products
@@ -292,6 +239,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<List<GetProduct?>> GetOldestProductsAsync()
         {
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             string status = "Enable";
             var productList = await _context.Products
@@ -309,11 +257,51 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
+        //BỔ SUNG THÊM HÀM
+
+        public async Task<List<GetProduct?>> GetEnableAndDisableProductListAsync()
+        {
+            var disable = await GetDisableProductListAsync();
+            var enable = await GetEnableProductListAsync();
+            var combinedList = enable.Concat(disable).ToList();
+            return combinedList;
+        }
+
+        public async Task<List<GetProduct?>> GetEnableProductListBySellerEmailAsync(Account value)
+        {
+            var list = await GetEnableProductListAsync();
+            var filter = list.Where(p => p.SellerId == value.Id).ToList();
+            return filter;
+        }
+
+        public async Task<List<GetProduct?>> GetDisableProductListBySellerEmailAsync(Account value)
+        {
+            var list = await GetDisableProductListAsync();
+            var filter = list.Where(p => p.SellerId == value.Id).ToList();
+            return filter;
+        }
+
+        public async Task<List<GetProduct?>> GetInProgressProductListBySellerEmailAsync(Account value)
+        {
+            var list = await GetInProgressProductListAsync();
+            var filter = list.Where(p => p.SellerId == value.Id).ToList();
+            return filter;
+        }
+
+        public async Task<List<GetProduct?>> GetRejectedProductListBySellerEmailAsync(Account value)
+        {
+            var list = await GetRejectedProductListAsync();
+            var filter = list.Where(p => p.SellerId == value.Id).ToList();
+            return filter;
+        }
+
         public async Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             var productImage = await _context.ImageProducts.FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
             return productImage;
         }
+
+
     }
 }
