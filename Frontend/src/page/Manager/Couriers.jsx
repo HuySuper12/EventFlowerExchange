@@ -50,12 +50,6 @@ const Couriers = () => {
       key: 'phone',
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
-      render: (rating) => <Rate disabled defaultValue={rating} />,
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
@@ -65,23 +59,7 @@ const Couriers = () => {
         </span>
       ),
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <span>
-          <Button onClick={() => showEditModal(record)} className="mr-2">Edit</Button>
-          <Popconfirm
-            title="Are you sure you want to delete this courier?"
-            onConfirm={() => handleDeleteCourier(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </span>
-      ),
-    },
+    
   ];
 
   const showModal = () => {

@@ -1,69 +1,46 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Select, Upload, message, Popconfirm, Rate } from 'antd';
-import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-
-const { Option } = Select;
-const { confirm } = Modal;
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Input, message, Popconfirm } from 'antd';
+import api from "../../config/axios";
 
 const Couriers = () => {
-  const [couriers, setCouriers] = useState([
-    {
-      id: '1',
-      avatar: 'https://www.booska-p.com/wp-content/uploads/2024/03/One-Punch-Man-1024x750.png',
-      name: 'Thi san',
-      vehicleId: '4884',
-      phone: '0123456789',
-      rating: 4.5,
-      status: 'Active',
-    },
-  ]);
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [couriers, setCouriers] = useState([]);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingCourier, setEditingCourier] = useState(null);
 
+  // Fetch couriers list from API
+  const fetchCouriers = async () => {
+    const role = "shipper"; 
+    try {
+      const response = await api.get(`Account/ViewAllAccount/${role}`);
+      setCouriers(response.data);
+    } catch (error) {
+      message.error('Failed to fetch couriers list');
+      console.error('API error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCouriers(); 
+  }, []);
+
+  // Table columns
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Avatar',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      render: (avatar) => <img src={avatar} alt="Courier" className="w-10 h-10 rounded-full" />,
-    },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Vehicle ID',
-      dataIndex: 'vehicleId',
-      key: 'vehicleId',
-    },
-    {
       title: 'Phone',
-      dataIndex: 'phone',
+      dataIndex: 'phoneNumber',
       key: 'phone',
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
-      render: (rating) => <Rate disabled defaultValue={rating} />,
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <span className={`px-2 py-1 rounded ${status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-          {status}
-        </span>
-      ),
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
     },
     {
       title: 'Actions',
@@ -84,100 +61,173 @@ const Couriers = () => {
     },
   ];
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    setEditingCourier(null);
-    form.resetFields();
+  // Show modal for creating a new courier
+  const showCreateModal = () => {
+    setIsCreateModalVisible(true);
+    form.resetFields(); 
   };
 
+  // Show modal for editing an existing courier
   const showEditModal = (courier) => {
-    setIsModalVisible(true);
+    setIsEditModalVisible(true);
     setEditingCourier(courier);
-    form.setFieldsValue(courier);
+    form.setFieldsValue(courier); 
   };
 
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      if (editingCourier) {
-        setCouriers(couriers.map(courier => courier.id === editingCourier.id ? { ...courier, ...values } : courier));
-        message.success('Courier updated successfully');
-      } else {
-        const newCourier = {
-          id: (couriers.length + 1).toString(),
-          ...values,
-          rating: 0,
-        };
-        setCouriers([...couriers, newCourier]);
-        message.success('New courier added successfully');
+  // Handle creating a new courier
+  const handleCreateCourier = async () => {
+    form.validateFields().then(async (values) => {
+      try {
+        await api.post(`Account/CreateAccount/Shipper`, values);
+        
+        message.success('New shipper added successfully');
+        setIsCreateModalVisible(false);
+        fetchCouriers();
+      } catch (error) {
+        message.error('Failed to add new shipper');
+        console.error('API error:', error);
       }
-      setIsModalVisible(false);
     }).catch((info) => {
       console.log('Validate Failed:', info);
     });
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handleEditCourier = async () => {
+    form.validateFields().then(async (values) => {
+      try {
+        await api.put(`Account/UpdateAccount`, { ...values, id: editingCourier.id });
+        message.success('Courier updated successfully');
+        setIsEditModalVisible(false);
+        fetchCouriers(); 
+      } catch (error) {
+        message.error('Failed to update courier');
+        console.error('API error:', error);
+      }
+    }).catch((info) => {
+      console.log('Validate Failed:', info);
+    });
   };
 
-  const handleDeleteCourier = (id) => {
-    setCouriers(couriers.filter(courier => courier.id !== id));
-    message.success('Courier deleted successfully');
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
+  const handleDeleteCourier = async (id) => {
+    try {
+      const response = await api.delete(`Account/RemoveAccount/${id}`);
+      if (response.data === true) {
+        message.success('Courier deleted successfully');
+        setCouriers(couriers.filter(courier => courier.id !== id));
+      } else {
+        message.error('Failed to delete courier');
+      }
+    } catch (error) {
+      message.error('Failed to delete courier');
+      console.error('API error:', error);
     }
-    return e?.fileList;
   };
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Couriers</h1>
-      <Button onClick={showModal} type="primary" className="mb-4">
-        Add New Courier
+      <Button onClick={showCreateModal} type="primary" className="mb-4">
+        Create New Courier
       </Button>
       <Table columns={columns} dataSource={couriers} rowKey="id" />
 
+      {/* Modal for creating new courier */}
       <Modal
-        title={editingCourier ? "Edit Courier" : "Add New Courier"}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        title="Add New Courier"
+        visible={isCreateModalVisible}
+        onOk={handleCreateCourier}
+        onCancel={() => setIsCreateModalVisible(false)}
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="avatar"
-            label="Avatar"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input the name!' }]}
           >
-            
-            <Upload name="avatar" listType="picture-card" maxCount={1}>
-              <div>
-                <UploadOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </div>
-            </Upload>
-          </Form.Item>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input the courier name!' }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="vehicleId" label="Vehicle ID" rules={[{ required: true, message: 'Please input the vehicle ID!' }]}>
+          <Form.Item
+            name="salary"
+            label="Salary"
+            rules={[{ required: true, message: 'Please input the salary!' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: 'Please input the email!' }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="phone" label="Phone" rules={[{ required: true, message: 'Please input the phone number!' }]}>
+          <Form.Item
+            name="phoneNumber"
+            label="Phone"
+            rules={[{ required: true, message: 'Please input the phone number!' }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select the courier status!' }]}>
-            <Select>
-              <Option value="Active">Active</Option>
-              <Option value="Inactive">Inactive</Option>
-            </Select>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: 'Please input the address!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please input the password!' }]}
+          >
+            <Input.Password />
           </Form.Item>
         </Form>
-        
+      </Modal>
+
+      {/* Modal for editing courier */}
+      <Modal
+        title="Edit Courier"
+        visible={isEditModalVisible}
+        onOk={handleEditCourier}
+        onCancel={() => setIsEditModalVisible(false)}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input the name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="salary"
+            label="Salary"
+            rules={[{ required: true, message: 'Please input the salary!' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: 'Please input the email!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="phoneNumber"
+            label="Phone"
+            rules={[{ required: true, message: 'Please input the phone number!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: 'Please input the address!' }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );

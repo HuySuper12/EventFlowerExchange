@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, List, Avatar, Badge, Typography, Button } from 'antd';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { Row, Col, Card, List, Avatar, Badge, Typography, Button, Table, Dropdown, Menu } from 'antd';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from 'recharts';
+import {
+  MoreOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
+import { message } from 'antd';
 
 const Dashboard = () => {
-  const [timePeriod, setTimePeriod] = useState('weekly'); // State to manage the selected time period
+  const [timePeriod, setTimePeriod] = useState('weekly');
 
   // Weekly data
   const weeklyRevenueData = [
@@ -59,20 +75,113 @@ const Dashboard = () => {
   ];
 
   const trendingProducts = [
-    { name: 'Red Rose Bouquet', price: 120, sales: 120, image: 'https://tapchivietnamhuongsac.vn/Upload/quoc-hoa-cac-nuoc-tg/mexico_hoathuocduoc.jpg' },
-    { name: 'Sunflower Arrangement', price: 95, sales: 95, image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/48-300x300.png' },
-    { name: 'Orchid Plant', price: 80, sales: 80, image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/8-300x300.png' },
-    { name: 'Tulip Mix', price: 75, sales: 75, image: 'https://noithatmeta.com/wp-content/uploads/2022/02/Hoa-Anh-Dao.jpg' },
+    {
+      name: 'Red Rose Bouquet',
+      price: 120,
+      sales: 120,
+      image: 'https://tapchivietnamhuongsac.vn/Upload/quoc-hoa-cac-nuoc-tg/mexico_hoathuocduoc.jpg',
+    },
+    {
+      name: 'Sunflower Arrangement',
+      price: 95,
+      sales: 95,
+      image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/48-300x300.png',
+    },
+    {
+      name: 'Orchid Plant',
+      price: 80,
+      sales: 80,
+      image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/8-300x300.png',
+    },
+    {
+      name: 'Tulip Mix',
+      price: 75,
+      sales: 75,
+      image: 'https://noithatmeta.com/wp-content/uploads/2022/02/Hoa-Anh-Dao.jpg',
+    },
   ];
+
+  const [orders, setOrders] = useState([
+    { key: 1, orderId: '1001', customerName: 'Alice', productName: 'Red Rose Bouquet', quantity: 2, amount: '$30.59' },
+    { key: 2, orderId: '1002', customerName: 'Bob', productName: 'Sunflower Arrangement', quantity: 3, amount: '$25.79' },
+    { key: 3, orderId: '1003', customerName: 'Charlie', productName: 'Orchid Plant', quantity: 1, amount: '$40.00' },
+  ]);
 
   const handleTimePeriodChange = (period) => {
     setTimePeriod(period);
   };
 
-  // Choose the correct data set based on the selected time period
+  const handleAccept = (orderId) => {
+    setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
+    message.success(`Order ${orderId} accepted!`);
+  };
+
+  const handleReject = (orderId) => {
+    setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
+    message.error(`Order ${orderId} rejected!`);
+  };
+
   const revenueData = timePeriod === 'weekly' ? weeklyRevenueData : monthlyRevenueData;
   const ordersData = timePeriod === 'weekly' ? weeklyOrdersData : monthlyOrdersData;
   const customersData = timePeriod === 'weekly' ? weeklyCustomersData : monthlyCustomersData;
+
+  const columns = [
+    {
+      title: 'Order ID',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      render: (text) => <Typography.Text strong>{text}</Typography.Text>
+    },
+    {
+      title: 'Customer Name',
+      dataIndex: 'customerName',
+      key: 'customerName',
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      render: (text, record) => (
+        <span>
+          {text} <Typography.Text type="secondary"> x{record.quantity}</Typography.Text>
+        </span>
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (text, record) => (
+        <div className="flex items-center justify-between">
+          <Typography.Text>{record.amount}</Typography.Text>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key="accept"
+                  icon={<CheckCircleOutlined style={{ color: 'green', fontSize: '17px' }} />}
+                  style={{ fontSize: '15px' }}
+                  onClick={() => handleAccept(record.orderId)}
+                >
+                  Accept
+                </Menu.Item>
+                <Menu.Item
+                  key="reject"
+                  icon={<CloseCircleOutlined style={{ color: 'red', fontSize: '17px' }} />}
+                  style={{ fontSize: '15px' }}
+                  onClick={() => handleReject(record.orderId)}
+                >
+                  Reject
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button icon={<MoreOutlined />} />
+          </Dropdown>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -80,10 +189,16 @@ const Dashboard = () => {
 
       <div className="flex justify-end mb-4">
         <Button.Group>
-          <Button onClick={() => handleTimePeriodChange('weekly')} className={timePeriod === 'weekly' ? 'bg-blue-500 text-white' : ''}>
+          <Button
+            onClick={() => handleTimePeriodChange('weekly')}
+            className={timePeriod === 'weekly' ? 'bg-blue-300 text-white' : ''}
+          >
             Weekly
           </Button>
-          <Button onClick={() => handleTimePeriodChange('monthly')} className={timePeriod === 'monthly' ? 'bg-blue-500 text-white' : ''}>
+          <Button
+            onClick={() => handleTimePeriodChange('monthly')}
+            className={timePeriod === 'monthly' ? 'bg-blue-300 text-white' : ''}
+          >
             Monthly
           </Button>
         </Button.Group>
@@ -131,26 +246,34 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <Card className="mt-4">
-        <h2 className="text-xl font-semibold mb-4">Trending Products</h2>
-        <List
-          itemLayout="horizontal"
-          dataSource={trendingProducts}
-          renderItem={(item, index) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={
-                  <Badge count={index + 1} offset={[-10, 10]}>
-                    <Avatar shape="square" size={80} src={item.image} />
-                  </Badge>
-                }
-                title={<Typography.Text strong>{item.name}</Typography.Text>}
-                description={<Typography.Text>${item.price} - {item.sales} sales</Typography.Text>}
-              />
-            </List.Item>
-          )}
-        />
-      </Card>
+      <Row gutter={16} className="mt-4">
+      <Col span={16}>
+          <Card title="Recent Orders">
+            <Table dataSource={orders} columns={columns} pagination={false} bordered={false} showHeader={false} />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card className="h-full" title="Trending Products">
+            <List
+              itemLayout="horizontal"
+              dataSource={trendingProducts}
+              renderItem={(item, index) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={
+                      <Badge count={index + 1} offset={[-10, 10]}>
+                        <Avatar shape="square" size={80} src={item.image} />
+                      </Badge>
+                    }
+                    title={item.name}
+                    description={`Price: $${item.price} | Sales: ${item.sales}`}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

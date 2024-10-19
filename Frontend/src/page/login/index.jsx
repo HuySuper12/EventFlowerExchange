@@ -1,22 +1,13 @@
 import React from "react";
 import { Button, Form, Input } from "antd";
 import Header from "../../component/header";
-// import api from "../../config/axios";
+import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { GoogleLogin } from "@react-oauth/google";
-import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  const handleSignup = () => {
-    navigate("/register");
-  };
-
-  const handleForgetPassword = () => {
-    navigate("/forgot-password");
-  };
 
   const handleLogin = async (values) => {
     try {
@@ -49,11 +40,12 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      toast.error("Your email or password is incorrect");
+      console.log(err);
+      alert(err.response.data);
     }
   };
 
-  // Thêm handleLoginGoogle cho Google Login
+  // HandleLoginGoogle cho Google Login
   const handleLoginGoogle = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential; // Lấy token từ Google
@@ -82,7 +74,7 @@ const Login = () => {
       if (role === "Buyer") {
         navigate("/");
       } else if (role === "staff") {
-        navigate("/admin/dashboard");
+        navigate("/Admin/Dashboard");
       } else if (role === "Seller") {
         navigate("/");
       }
@@ -142,19 +134,16 @@ const Login = () => {
           </Form.Item>
 
           <div className="w-full flex justify-between text-sm mt-[-8px]">
-            <div
+            <a
+              href="/forgot-password"
               className="cursor-pointer mb-[8px] text-sm"
-              onClick={handleForgetPassword}
             >
               Forgot your password?
-            </div>
+            </a>
 
-            <div
-              className="cursor-pointer mb-[8px] text-sm "
-              onClick={handleSignup}
-            >
+            <a href="/register" className="cursor-pointer mb-[8px] text-sm ">
               Create account?
-            </div>
+            </a>
           </div>
 
           <Form.Item>
@@ -175,7 +164,7 @@ const Login = () => {
             <GoogleLogin
               onSuccess={handleLoginGoogle}
               onError={() => {
-                toast.error("Login Failed");
+                console.log("Login Failed");
               }}
             />
           </span>

@@ -9,18 +9,18 @@ const Posts = () => {
   const [posts, setPosts] = useState([
     {
       id: '#P1001',
-      image: '/path/to/image1.jpg',
+      image: 'https://hoasapbienhoa.com/wp-content/uploads/2024/05/hoa-hong-sap-thom-99-bong-hong-1.jpg',
       title: 'Rose Bouquet',
       postedAt: '2024-10-12 14:00',
       status: 'Pending',
       price: 50,
       description: 'Beautiful bouquet of red roses for sale. Freshly cut and perfect for any occasion.',
-      images: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
+      images: ['https://hoasapbienhoa.com/wp-content/uploads/2024/05/hoa-hong-sap-thom-99-bong-hong-1.jpg', 'https://saigonflowers.vn/wp-content/uploads/2016/07/bo-hoa-tien-2k-hoa-hong-1.jpg'],
       rejectionReason: '',
     },
     {
       id: '#P1002',
-      image: '/path/to/image2.jpg',
+      image: 'https://saigonflowers.vn/wp-content/uploads/2016/07/bo-hoa-tien-2k-hoa-hong-1.jpg',
       title: 'Sunflower Arrangement',
       postedAt: '2024-10-10 16:00',
       status: 'Pending',
@@ -73,6 +73,29 @@ const Posts = () => {
     });
   };
 
+  const showDisableConfirm = (postId) => {
+    const inputRef = React.createRef();
+    confirm({
+      title: `Disable Post ${postId}`,
+      icon: <ExclamationCircleOutlined />,
+      content: (
+        <Input.TextArea ref={inputRef} placeholder="Please provide a reason for disabling" rows={4} />
+      ),
+      onOk() {
+        const reason = inputRef.current.resizableTextArea?.textArea.value;
+        if (!reason) {
+          message.error('You must provide a reason for disabling.');
+          return Promise.reject();
+        }
+        setPosts(posts.map(post =>
+          post.id === postId ? { ...post, status: 'Disabled', rejectionReason: reason } : post
+        ));
+        message.success(`Post ${postId} has been disabled.`);
+      },
+      onCancel() {},
+    });
+  };
+
   const renderList = () => {
     const paginatedPosts = posts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
@@ -106,7 +129,7 @@ const Posts = () => {
               dataIndex: 'status',
               key: 'status',
               render: (status) => (
-                <Tag color={status === 'Pending' ? 'gold' : status === 'Accepted' ? 'green' : 'red'}>
+                <Tag color={status === 'Pending' ? 'gold' : status === 'Enable' ? 'green' : status === 'Disabled' ? 'grey' : 'red'}>
                   {status.toUpperCase()}
                 </Tag>
               ),
@@ -129,7 +152,13 @@ const Posts = () => {
                       <Button danger onClick={() => showRejectConfirm(record.id)}>Reject</Button>
                     </>
                   )}
+                  {record.status === 'Enable' && (
+                    <Button danger onClick={() => showDisableConfirm(record.id)}>Disable</Button>
+                  )}
                   {record.status === 'Rejected' && (
+                    <Button onClick={() => showReason(record)}>View Reason</Button>
+                  )}
+                  {record.status === 'Disabled' && (
                     <Button onClick={() => showReason(record)}>View Reason</Button>
                   )}
                 </Space>
@@ -138,7 +167,7 @@ const Posts = () => {
           ]}
           dataSource={paginatedPosts} 
           rowKey="id" 
-          pagination={false} // Tắt phân trang mặc định
+          pagination={false}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
           <Pagination
@@ -173,6 +202,9 @@ const Posts = () => {
                       <Button danger onClick={() => showRejectConfirm(post.id)}>Reject</Button>
                     </>
                   ),
+                  post.status === 'Accepted' && (
+                    <Button danger onClick={() => showDisableConfirm(post.id)}>Disable</Button>
+                  ),
                   post.status === 'Rejected' && (
                     <Button onClick={() => showReason(post)}>View Reason</Button>
                   )
@@ -180,62 +212,49 @@ const Posts = () => {
               >
                 <Card.Meta title={post.title} description={`Price: $${post.price.toFixed(2)}`} />
                 <div style={{ marginTop: 8 }}>{post.postedAt}</div>
-                <Tag color={post.status === 'Pending' ? 'gold' : post.status === 'Accepted' ? 'green' : 'red'}>
+                <Tag color={post.status === 'Pending' ? 'gold' : post.status === 'Accepted' ? 'green' : post.status === 'Disabled' ? 'grey' : 'red'}>
                   {post.status.toUpperCase()}
                 </Tag>
               </Card>
             </List.Item>
           )}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
           <Pagination
             current={currentPage}
             pageSize={pageSize}
             total={posts.length}
-            onChange={page => setCurrentPage(page)}
-            showSizeChanger={false}
+            onChange={page => setCurrentPage(page)} 
           />
         </div>
       </>
     );
   };
 
+  const handleAccept = (postId) => {
+    setPosts(posts.map(post =>
+      post.id === postId ? { ...post, status: 'Enable' } : post
+    ));
+    message.success(`Post ${postId} has been accepted.`);
+  };
+
   const showReason = (post) => {
     Modal.info({
-      title: `Reason for Rejection - ${post.id}`,
-      width: 600,
-      content: (
-        <div style={{ textAlign: 'center' }}>
-          <h3>Reason for Rejection:</h3>
-          <p style={{ fontSize: '16px', lineHeight: '1.5' }}>{post.rejectionReason || 'No reason provided.'}</p>
-        </div>
-      ),
+      title: post.status === 'Rejected' ? `Rejection Reason for ${post.id}` : `Disable Reason for ${post.id}`,
+      content: post.rejectionReason,
       onOk() {},
     });
   };
 
-  const handleAccept = (postId) => {
-    setPosts(posts.map(post =>
-      post.id === postId ? { ...post, status: 'Accepted' } : post
-    ));
-    message.success(`Post ${postId} has been accepted and added to Products.`);
-  };
-
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Posts</h1>
-      <div style={{ marginBottom: 16 }}>
-        <Button
-          icon={viewMode === 'list' ? <UnorderedListOutlined /> : <AppstoreOutlined />}
-          onClick={() => setViewMode(viewMode === 'list' ? 'kanban' : 'list')}
-        >
-          {viewMode === 'list' ? 'Switch to Kanban' : 'Switch to List'}
-        </Button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <Button.Group>
+          <Button icon={<UnorderedListOutlined />} onClick={() => setViewMode('list')} type={viewMode === 'list' ? 'primary' : 'default'} />
+          <Button icon={<AppstoreOutlined />} onClick={() => setViewMode('kanban')} type={viewMode === 'kanban' ? 'primary' : 'default'} />
+        </Button.Group>
       </div>
       {viewMode === 'list' ? renderList() : renderKanban()}
-      <div style={{ textAlign: 'left', marginTop: -32, marginLeft: 10 }}>
-        <p style={{ opacity: 0.5 }}>{posts.length} posts in total</p>
-      </div>
     </div>
   );
 };

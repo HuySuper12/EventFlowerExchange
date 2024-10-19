@@ -1,79 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams
-import { Image } from "antd";
+import React, { useState } from "react";
+import { Image } from "antd"; // Import Image from antd
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
-import api from "../../../config/axios";
 
 const ProductPage = () => {
-  const { id } = useParams(); 
-  const [productDetails, setProductDetails] = useState(null); // Product details state
-  const [mainImage, setMainImage] = useState(""); // Main image state
-  const [activeTab, setActiveTab] = useState("Description"); // Tab state
+  const images = [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC01AjS0H7Ozg2PviTOc1L1W8T7cVZP-SIVw&s",
+    "https://baoxaydung.com.vn/stores/news_dataimages/vananh/022020/06/11/in_article/0813_image001.jpg",
+    "https://tobeigo.com/wp-content/uploads/2021/03/nhung-loai-hoa-gan-lien-voi-cac-tinh-thanh-viet-nam-1-696x522.jpg",
+    "https://hatgiongphuongnam.com/asset/upload/image/hat-giong-hoa-cuc-trang-1.1_1.jpg",
+  ];
 
-  // Function to fetch product details from API
-  const fetchProductDetails = async () => {
-    try {
-      const response = await api.get(`Product/SearchProduct/${id}`); // Sử dụng ID từ URL
-      setProductDetails(response.data); // Update product details
-      setMainImage(response.data.productImage[0] || ""); // Set main image
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-    }
-  };
-
-  // Fetch product details when the component mounts or ID changes
-  useEffect(() => {
-    fetchProductDetails();
-  }, [id]);
+  // Trạng thái cho hình ảnh chính
+  const [mainImage, setMainImage] = useState(images[0]);
+  // Trạng thái cho tab nội dung
+  const [activeTab, setActiveTab] = useState("Description");
 
   return (
     <>
       <Header />
       <div className="container mx-auto px-4 py-8 mt-10 ml-[120px] mr-[120px] w-[1450px] shadow-md">
         <div className="flex flex-wrap -mx-4">
-          {/* Product Image Section */}
+          {/* Hình ảnh sản phẩm */}
           <div className="w-full justify-center md:w-1/2 px-4 mb-8">
             <Image
-              width={650}
-              height={500}
-              src={mainImage} // Display main image from state
+              width={650} // set width for main image
+              height={500} // Set height for the main image
+              src={mainImage} // Hiển thị hình ảnh chính
               alt="Product"
-              className="rounded-lg ml-[25px] shadow-md mb-4"
+              className="rounded-lg ml-[25px] shadow-md mb-4" // Thiết lập kiểu dáng cho hình ảnh chính
             />
             <div className="flex gap-4 py-4 justify-center overflow-x-auto">
-              {productDetails?.productImage?.map((src, index) => (
+              {images.map((src, index) => (
                 <img
                   key={index}
-                  width={100}
-                  height={100}
+                  width={100} // Width for thumbnails
+                  height={100} // Height for thumbnails
                   src={src}
                   alt={`Thumbnail ${index + 1}`}
                   className="rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                  onClick={() => setMainImage(src)} // Change main image on click
+                  onClick={() => setMainImage(src)} // Thay đổi hình ảnh chính khi nhấp
                 />
               ))}
             </div>
           </div>
 
-          {/* Product Details Section */}
+          {/* Chi tiết sản phẩm */}
           <div className="w-full md:w-1/2 px-4">
-            <h2 className="text-3xl font-bold mb-2">
-              {productDetails?.productName || "Loading..."}
-            </h2>
+            <h2 className="text-3xl font-bold mb-2">Hoa</h2>
             <div className="mb-4">
-              <span className="text-2xl font-bold mr-2">
-                ${productDetails?.price || "0.00"}
-              </span>
-              {productDetails?.originalPrice && (
-                <span className="text-gray-500 line-through">
-                  ${productDetails.originalPrice}
-                </span>
-              )}
+              <span className="text-2xl font-bold mr-2">$349.99</span>
+              <span className="text-gray-500 line-through">$399.99</span>
             </div>
-            <p className="text-gray-700 mb-6">
-              {productDetails?.description || "No description available"}
-            </p>
+
+            <p className="text-gray-700 mb-6">No description</p>
+
             <div className="flex items-center gap-4 mb-6">
               <button className="px-6 py-3 bg-gray-600 text-white font-bold rounded-lg hover:bg-gray-500 transition">
                 Add to Cart
@@ -83,7 +64,7 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Seller Profile Section */}
+      {/* Phần hồ sơ */}
       <div className="container mx-auto px-4 py-4 w-[1480px] mt-10 ml-[105px] mr-[120px]">
         <div className="flex gap-20 items-center p-4 rounded-lg shadow-md">
           <div className="flex items-center gap-4">
@@ -114,6 +95,7 @@ const ProductPage = () => {
               </div>
             </div>
           </div>
+
           <div className="flex gap-4 text-gray-600">
             <div>
               <p>Sản Phẩm</p>
@@ -135,7 +117,7 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Tab Section for Description and Reviews */}
+      {/* Các tab Mô tả và Đánh giá */}
       <div className="mx-20 px-4 py-8 ml-[105px]">
         <div className="flex mb-[10px]">
           <b
@@ -160,12 +142,29 @@ const ProductPage = () => {
           </p>
         </div>
 
-        {/* Content Display Based on Active Tab */}
-        <div className="flex flex-col gap-4 border px-6 py-6 text-sm w-[1450px] text-gray-500">
+        {/* Hiển thị nội dung tùy theo tab hoạt động */}
+        <div className="flex flex-col gap-4 border px-6 py-6 text-sm  w-[1450px] text-gray-500">
           {activeTab === "Description" ? (
-            <p>{productDetails?.description || "No description available"}</p>
+            <>
+              {/* <p>Hồng Huệ siêu cute</p> */}
+              <p></p>
+              <p></p>
+              <p>
+                Punch Entertainment (Việt Nam) là chi nhánh của DeNA, một công
+                ty hàng đầu tại Nhật cung cấp dịch vụ trực tuyến với doanh thu
+                công bố đạt 3 tỉ USD, điều hành các trang web thương mại điện tử
+                và mạng xã hội, đồng thời là công ty tiên phong trong việc sử
+                dụng platform Mobage cho các ứng dụng trò chơi xã hội trên điện
+                thoại đi động. Chúng tôi đang tìm kiếm những ứng viên tài năng
+                tham gia và góp phần xây dựng công ty ngày càng lớn mạnh, đồng
+                thời là những người sẽ hòa nhập vào môi trường làm việc năng
+                động, sáng tạo và hiệu quả.
+              </p>
+            </>
           ) : (
             <>
+              {/* Đánh giá */}
+              {/* Đánh giá 1 */}
               <div className="flex items-start gap-4">
                 <img
                   src="https://www.w3schools.com/howto/img_avatar.png"
@@ -181,6 +180,8 @@ const ProductPage = () => {
                   <p>This product is amazing! I love the quality.</p>
                 </div>
               </div>
+
+              {/* Đánh giá 2 */}
               <div className="flex items-start gap-4">
                 <img
                   src="https://www.w3schools.com/howto/img_avatar2.png"

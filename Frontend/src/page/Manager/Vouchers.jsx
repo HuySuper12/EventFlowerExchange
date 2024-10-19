@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, DatePicker, Select, message, Popconfirm } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from 'antd';
 
-const { Option } = Select;
-const { confirm } = Modal;
 
 const Vouchers = () => {
   const [vouchers, setVouchers] = useState([
@@ -15,7 +12,6 @@ const Vouchers = () => {
       discount: 20,
       expiryDate: '2024-08-31',
       minOrderValue: 50,
-      productLimit: ['Birthday flowers', 'Wedding flowers'],
     },
     
   ]);
@@ -44,6 +40,7 @@ const Vouchers = () => {
       title: 'Expiry Date',
       dataIndex: 'expiryDate',
       key: 'expiryDate',
+      render: (text) => new Date(text).toLocaleDateString(),
     },
     {
       title: 'Min Order Value',
@@ -81,16 +78,20 @@ const Vouchers = () => {
     setEditingVoucher(voucher);
     form.setFieldsValue({
       ...voucher,
-      expiryDate: moment(voucher.expiryDate),
+      expiryDate: Math.ceil((new Date(voucher.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)), // Calculate days until expiry
     });
   };
 
   const handleOk = () => {
     form.validateFields().then((values) => {
+      const daysUntilExpiry = values.expiryDate; // Get the number of days from input
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + daysUntilExpiry); // Calculate the actual expiry date
+
       const formattedValues = {
         ...values,
         code: values.code.toUpperCase(),
-        expiryDate: values.expiryDate.format('YYYY-MM-DD'),
+        expiryDate: expiryDate.toISOString().split('T')[0], // Format to 'YYYY-MM-DD'
       };
 
       if (editingVoucher) {
@@ -119,15 +120,6 @@ const Vouchers = () => {
     message.success('Voucher deleted successfully');
   };
 
-  const categoryOptions = [
-    'Birthday flowers',
-    'Wedding flowers',
-    'Funeral flowers',
-    'Event decoration flowers',
-    'Holiday flowers',
-    'Tet flowers',
-    'Decorative flowers',
-  ];
 
   return (
     <div>
@@ -156,19 +148,13 @@ const Vouchers = () => {
           <Form.Item name="discount" label="Percentage Discount" rules={[{ required: true, message: 'Please input the discount percentage!' }]}>
             <InputNumber min={0} max={100} />
           </Form.Item>
-          <Form.Item name="expiryDate" label="Expiry Date" rules={[{ required: true, message: 'Please select the expiry date!' }]}>
-            <DatePicker />
+          <Form.Item name="expiryDate" label="Expiry Date" rules={[{ required: true, message: 'Please input the number of days until expiry!' }]}>
+            <InputNumber min={1}/>
           </Form.Item>
           <Form.Item name="minOrderValue" label="Minimum Order Value" rules={[{ required: true, message: 'Please input the minimum order value!' }]}>
             <InputNumber min={0} prefix="$" />
           </Form.Item>
-          <Form.Item name="productLimit" label="Product Limit" rules={[{ required: true, message: 'Please select at least one category!' }]}>
-            <Select mode="multiple" placeholder="Select categories">
-              {categoryOptions.map(category => (
-                <Option key={category} value={category}>{category}</Option>
-              ))}
-            </Select>
-          </Form.Item>
+    
         </Form>
       </Modal>
     </div>
