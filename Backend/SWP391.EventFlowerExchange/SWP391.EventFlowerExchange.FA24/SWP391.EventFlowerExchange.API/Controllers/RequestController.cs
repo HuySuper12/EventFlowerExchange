@@ -59,7 +59,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateRequest")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<bool>> UpdateRequest(CreateRequest value)
         {
             if (value.RequestType == "Post")

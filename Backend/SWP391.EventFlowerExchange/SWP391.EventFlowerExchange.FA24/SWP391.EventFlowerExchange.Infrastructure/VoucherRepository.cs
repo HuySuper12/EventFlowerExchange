@@ -17,6 +17,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public async Task<bool> CreateVoucherAsync(CreateVoucher createVoucher)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
+            var discount = createVoucher.DiscountValue / 100;
             Voucher voucher = new Voucher()
             {
                 Code = createVoucher.Code,
@@ -24,7 +25,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 MinOrderValue = createVoucher.MinOrderValue,
                 StartDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddDays(createVoucher.ExpiryDate),
-                DiscountValue = createVoucher.DiscountValue,
+                DiscountValue = discount,
                 CreatedAt = DateTime.UtcNow,
             };
             _context.Vouchers.Add(voucher);

@@ -215,6 +215,7 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     total_price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     delivered_at = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     issue_report = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     phoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -254,7 +255,8 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                    status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                    category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                   created_at = table.Column<DateTime>(type: "datetime", nullable: true)
+                   created_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                   expired_at = table.Column<DateTime>(type: "datetime", nullable: true)
                },
                constraints: table =>
                {
@@ -277,7 +279,8 @@ namespace SWP391.EventFlowerExchange.Domain.Migrations
                     status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     reason = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     photo_url = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    created_at = table.Column<DateTime>(type: "datetime", nullable: true)
+                    created_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    delivery_at = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -19,6 +19,8 @@ public partial class DeliveryLog
 
     public DateTime? CreatedAt { get; set; }
 
+    public DateTime? DeliveryAt { get; set; }
+
     public virtual Account? DeliveryPerson { get; set; }
 
     public virtual Order? Order { get; set; }

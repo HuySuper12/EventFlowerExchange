@@ -90,7 +90,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         }
 
-        [HttpGet("GetProductList/Enable/{email}")]
+        [HttpGet("GetProductList/Enable/Seller")]
         //[Authorize]
         public async Task<IActionResult> GetEnableProductListBySellerEmail(string email)
         {
@@ -100,7 +100,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
 
-        [HttpGet("GetProductList/Disable/{email}")]
+        [HttpGet("GetProductList/Disable/Seller")]
         //[Authorize]
         public async Task<IActionResult> GetDisableProductListBySellerEmail(string email)
         {
@@ -109,7 +109,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
 
-        [HttpGet("GetProductList/InProgress/{email}")]
+        [HttpGet("GetProductList/InProgress/Seller")]
         //[Authorize(Roles = ApplicationRoles.Admin)]
         public async Task<IActionResult> GetInProgressProductListBySellerEmail(string email)
         {
@@ -118,7 +118,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
 
-        [HttpGet("GetProductList/Rejected/{email}")]
+        [HttpGet("GetProductList/Rejected/Seller")]
         //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
         public async Task<IActionResult> GetRejectedProductListBySellerEmail(string email)
         {

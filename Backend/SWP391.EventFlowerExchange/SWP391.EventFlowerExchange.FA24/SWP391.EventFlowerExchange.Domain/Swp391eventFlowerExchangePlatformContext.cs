@@ -174,6 +174,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.DeliveryAt)
+                .HasColumnType("datetime")
+                .HasColumnName("delivery_at");
             entity.Property(e => e.DeliveryPersonId).HasColumnName("delivery_person_id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.PhotoUrl)
@@ -229,16 +232,19 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.UpdateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
             entity.Property(e => e.DeliveredAt)
                 .HasColumnName("delivered_at");
-            entity.Property(e => e.PhoneNumber)
-                .HasColumnName("phoneNumber");
             entity.Property(e => e.DeliveryPersonId).HasColumnName("delivery_person_id");
             entity.Property(e => e.IssueReport).HasColumnName("issue_report");
             entity.Property(e => e.SellerId).HasColumnName("seller_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
+            entity.Property(e => e.PhoneNumber)
+                .HasColumnName("phoneNumber");
             entity.Property(e => e.TotalPrice)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("total_price");
@@ -357,7 +363,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.HasOne(d => d.User).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Request__user_id__619B8048");
-        }); modelBuilder.Entity<Request>(entity =>
+        });
+
+        modelBuilder.Entity<Request>(entity =>
         {
             entity.HasKey(e => e.RequestId).HasName("PK__Request__18D3B90FFFABB483");
 
@@ -427,6 +435,12 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
             entity.ToTable("Shop_Notification");
 
+            entity.HasIndex(e => e.FollowerId, "IX_Shop_Notification_follower_id");
+
+            entity.HasIndex(e => e.ProductId, "IX_Shop_Notification_product_id");
+
+            entity.HasIndex(e => e.SellerId, "IX_Shop_Notification_seller_id");
+
             entity.Property(e => e.ShopNotificationId).HasColumnName("shop_notification_id");
             entity.Property(e => e.Content)
                 .HasColumnType("text")
@@ -443,7 +457,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
             entity.HasOne(d => d.Follower).WithMany(p => p.ShopNotificationFollowers)
                 .HasForeignKey(d => d.FollowerId)
-                .HasConstraintName("FK__Shop_Noti__follo__5629CD9C");
+                .HasConstraintName("FK_Shop_Notification_Account");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ShopNotifications)
                 .HasForeignKey(d => d.ProductId)
@@ -451,7 +465,12 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
             entity.HasOne(d => d.Seller).WithMany(p => p.ShopNotificationSellers)
                 .HasForeignKey(d => d.SellerId)
-                .HasConstraintName("FK__Shop_Noti__selle__571DF1D5");
+                .HasConstraintName("FK_Shop_Notification_Account2");
+
+            entity.HasOne(d => d.Follow).WithMany(p => p.ShopNotifications)
+                .HasPrincipalKey(p => new { p.FollowerId, p.SellerId })
+                .HasForeignKey(d => new { d.FollowerId, d.SellerId })
+                .HasConstraintName("FK_Shop_Notification_Follow");
         });
 
         modelBuilder.Entity<Transaction>(entity =>

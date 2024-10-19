@@ -59,8 +59,8 @@ namespace SWP391.EventFlowerExchange.Application
                 cart = allCarts.FirstOrDefault(c => c.BuyerId == user.Id);
             }
 
-            // Lấy danh sách các sản phẩm đang trong trạng thái "In Progress" và kiểm tra nếu sản phẩm tồn tại.
-            var resultList = await _productRepository.GetInProgressProductListAsync();
+            // Lấy danh sách các sản phẩm đang trong trạng thái "Enable" và kiểm tra nếu sản phẩm tồn tại.
+            var resultList = await _productRepository.GetEnableProductListAsync();
             var result = resultList.FirstOrDefault(c => c.ProductId == cartItem.ProductId);
 
             // Nếu sản phẩm tồn tại, thực hiện các hành động thêm sản phẩm vào giỏ hàng.

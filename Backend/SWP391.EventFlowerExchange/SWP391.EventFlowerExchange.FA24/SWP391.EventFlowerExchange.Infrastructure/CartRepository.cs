@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using SWP391.EventFlowerExchange.Domain;
+using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
     public class CartRepository : ICartRepository
     {
         private Swp391eventFlowerExchangePlatformContext _context;
+        private IProductRepository _productRepository;
 
-        public CartRepository(Swp391eventFlowerExchangePlatformContext context)
+        public CartRepository(IProductRepository productRepository)
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
         public async Task<IdentityResult> CreateCartAsync(Account account)
@@ -97,6 +99,26 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return null;
         }
 
+        public async Task<CartItem> ViewCartItemDetailAsync(CartItem cartItemDetail)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.ProductId == cartItemDetail.ProductId && x.BuyerId == cartItemDetail.BuyerId);
+            return cartItem;
+        }
+
+        public async Task<bool> RemoveCartItemToCreateOrderAsync(CartItem cartItemDetail)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var productDetail = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = cartItemDetail.ProductId });
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.ProductId == cartItemDetail.ProductId && x.BuyerId == cartItemDetail.BuyerId);
+
+            //Cap nhat status product = disable
+            await _productRepository.RemoveProductAsync(productDetail);
+            _context.CartItems.Remove(cartItem);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 }

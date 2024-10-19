@@ -15,5 +15,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<IdentityResult> CreateCartItemAsync(CartItem cartItem);
         public Task<List<Cart>> ViewAllCartAsync();
         public Task<IdentityResult> RemoveItemFromCartAsync(CartItem cartItem);
+        public Task<CartItem> ViewCartItemDetailAsync(CartItem cartItemDetail);
+        public Task<bool> RemoveCartItemToCreateOrderAsync(CartItem cartItemDetail);
     }
 }
