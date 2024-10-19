@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "MRl+Bg2lvQk=",
+  "dgSpecHash": "hSeSNift6gw=",
   "success": true,
-  "projectFilePath": "D:\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj",
+  "projectFilePath": "D:\\EventFlowerExchange\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\SWP391.EventFlowerExchange.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

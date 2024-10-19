@@ -24,6 +24,20 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _smtpSettings = option.CurrentValue;
         }
 
+        [HttpPut("UpdateAccountImage")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> UpdateAccountImageAsync(string email, string url)
+        {
+            var user = await _service.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            if (user != null)
+            {
+                user.Picture = url;
+                await _service.UpdateAccountFromAPIAsync(user);
+                return true;
+            }
+            return false;
+        }
+
         [HttpPost("SignUp/Buyer")]
         public async Task<IActionResult> SignUpBuyerFromAPIAsync(SignUpBuyer model)
         {
@@ -244,12 +258,15 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         [HttpPut("UpdateAccount")]
         //[Authorize]
-        public async Task<ActionResult<bool>> UpdateAccountFromAPIAsync(Account account)
+        public async Task<ActionResult<bool>> UpdateAccountFromAPIAsync(UpdateAccount account)
         {
-            var user = await _service.GetUserByIdFromAPIAsync(new Account() { Id = account.Id });
+            var user = await _service.GetUserByEmailFromAPIAsync(new Account() { Email = account.Email });
             if (user != null)
             {
-                await _service.UpdateAccountFromAPIAsync(account);
+                user.Address = account.Address;
+                user.PhoneNumber = account.Phone;
+                user.Name = account.Name;
+                await _service.UpdateAccountFromAPIAsync(user);
                 return true;
             }
             return false;
@@ -294,6 +311,5 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
-
     }
 }

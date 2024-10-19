@@ -1,11 +1,43 @@
-// Transaction.jsx
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import SidebarCustomer from "../../../component/slidebar-customer";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
+import api from "../../../config/axios";
 
 const ProfileCustomer = () => {
+  const [accountData, setAccountData] = useState(null);
+  const email = sessionStorage.getItem("email");
+  console.log("Email:", email);
+
+  const getFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày và thêm số 0 nếu cần
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng (tháng bắt đầu từ 0)
+    const year = date.getFullYear(); // Lấy năm
+    return `${day}/${month}/${year}`; // Định dạng ngày/tháng/năm
+  };
+
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      if (email) {
+        try {
+          const encodedEmail = encodeURIComponent(email);
+          const response = await api.get(
+            `Account/GetAccountByEmail/${encodedEmail}`
+          );
+          setAccountData(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error fetching account data:", error);
+        }
+      } else {
+        console.error("Email is not set in sessionStorage.");
+      }
+    };
+
+    fetchAccountData();
+  }, [email]); // Chạy lại khi email thay đổi
+
   return (
     <>
       <Header />
@@ -25,10 +57,15 @@ const ProfileCustomer = () => {
                 className="w-16 h-16 rounded-full"
               />
               <div>
-                <h3 className="text-xl font-bold">Rafiqur Rahman</h3>
+                <h3 className="text-xl font-bold">
+                  {accountData ? accountData.name : "Loading..."}
+                </h3>
+                <button className="text-gray-800 border border-black rounded-lg px-3 py-1 hover:bg-gray-200 mt-[10px]">
+                  Upload{" "}
+                </button>
               </div>
             </div>
-            <button className="text-blue-500 border border-blue-500 rounded-lg px-3 py-1 hover:bg-blue-50">
+            <button className="text-blue-500 border border-blue-500 rounded-lg px-3 py-1 hover:bg-blue-100">
               Edit
             </button>
           </div>
@@ -39,23 +76,27 @@ const ProfileCustomer = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <p className="text-gray-500">First Name</p>
-                <p>Rafiqur</p>
+                <p>{accountData ? accountData.name : "Loading..."}</p>
               </div>
               <div>
-                <p className="text-gray-500">Last Name</p>
-                <p>Rahman</p>
+                <p className="text-gray-500">Address</p>
+                <p>{accountData ? accountData.address : "Loading..."}</p>
               </div>
               <div>
                 <p className="text-gray-500">Email address</p>
-                <p>rafiqurrahman51@gmail.com</p>
+                <p>{accountData ? accountData.email : "Loading..."}</p>
               </div>
               <div>
                 <p className="text-gray-500">Phone</p>
-                <p>+09 345 346 46</p>
+                <p>{accountData ? accountData.phoneNumber : "Loading..."}</p>
               </div>
               <div className="col-span-2">
-                <p className="text-gray-500">Address</p>
-                <p>Team Manager</p>
+                <p className="text-gray-500">Create at</p>
+                <p>
+                  {accountData
+                    ? getFormattedDate(accountData.createdAt)
+                    : "Loading..."}
+                </p>
               </div>
             </div>
           </div>

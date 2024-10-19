@@ -15,5 +15,10 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<List<Notification>> ViewAllNotificationByUserIdFromApiAsync(Account account);
         public Task<Notification> ViewNotificationByIdFromApiAsync(Notification notification);
         public Task<IdentityResult> CreateNotificationFromApiAsync(CreateNotification notification);
+
+        public Task<List<ShopNotification>> ViewAllShopNotificationFromApiAsync();
+        public Task<List<ShopNotification>> ViewAllShopNotificationByUserIdFromApiAsync(Account account);
+        public Task<ShopNotification> ViewShopNotificationByIdFromApiAsync(ShopNotification notification);
+        public Task<IdentityResult> CreateShopNotificationFromApiAsync(CreateShopNotification notification);
     }
 }

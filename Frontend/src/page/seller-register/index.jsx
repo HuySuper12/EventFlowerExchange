@@ -3,9 +3,14 @@ import Header from "../../component/header";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
+import { toast } from "react-toastify";
 
 const SellerRegister = () => {
   const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
 
   const handleRegister = async (values) => {
     console.log(values);
@@ -15,7 +20,7 @@ const SellerRegister = () => {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      alert(err.response.data);
+      toast.error(err.response.data);
     }
   };
 
@@ -146,9 +151,12 @@ const SellerRegister = () => {
           </Form.Item>
 
           <div className="w-full flex justify-end text-sm mt-[-8px]">
-            <a href="/login" className="cursor-pointer mb-[8px] text-sm ">
+            <div
+              className="cursor-pointer mb-[8px] text-sm "
+              onClick={handleLogin}
+            >
               You already have a account?
-            </a>
+            </div>
           </div>
 
           <Form.Item>

@@ -179,8 +179,8 @@ function Header() {
           <NavLink className="py-2 pl-6 border" to={"/"}>
             HOME
           </NavLink>
-          <NavLink className="py-2 pl-6 border" to={"/collection"}>
-            COLLECTION
+          <NavLink className="py-2 pl-6 border" to={"/product"}>
+            PRODUCT
           </NavLink>
           <NavLink className="py-2 pl-6 border" to={"/contact"}>
             CONTACT

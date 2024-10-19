@@ -4,20 +4,24 @@ import Home from "././page/Buyer-Seller/home";
 import Login from "./page/login";
 import Product from "./page/Buyer-Seller/product";
 import PrivateRoute from "./component/private-route";
-import ForgotPassword from "./page/Buyer-Seller/forgetPassword"; // Thêm import cho ForgotPassword
+import ForgotPassword from "./page/Buyer-Seller/forgetPassword";
 import Register from "./page/signup";
 import ProductPage from "./page/Buyer-Seller/productpage";
 import SellerRegister from "./page/seller-register";
 import Cart from "./page/Buyer-Seller/cart-page";
 import Checkout from "./page/Buyer-Seller/checkout";
 import Order_Page from "./page/Buyer-Seller/order";
-// import Page_OTP from "./page/Buyer-Seller/otp";
+import Page_OTP from "./page/Buyer-Seller/otp";
 import TransactionCustomer from "./page/Buyer-Seller/transaction-customer";
 import ProfileCustomer from "./page/Buyer-Seller/profile-customer";
 import WalletCustomer from "./page/Buyer-Seller/wallet-customer";
 import ChangePasswordCustomer from "./page/Buyer-Seller/changpassword-customer";
 import ProductCustomer from "./page/Buyer-Seller/product-customer";
-
+import AddProduct from "./page/Buyer-Seller/addprocduct";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import InputNewPassword from "./page/Buyer-Seller/inputnewpassword";
+import ProductSeller from "./page/Buyer-Seller/Product-seller";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -41,7 +45,7 @@ const App = () => {
       element: <ForgotPassword />,
     },
     {
-      path: "product-page",
+      path: "product-page/:id",
       element: <ProductPage />,
     },
     {
@@ -60,10 +64,10 @@ const App = () => {
       path: "order",
       element: <Order_Page />,
     },
-    // {
-    //   path: "otp",
-    //   element: <Page_OTP />,
-    // },
+    {
+      path: "otp",
+      element: <Page_OTP />,
+    },
     {
       path: "transaction-customer",
       element: <TransactionCustomer />,
@@ -87,6 +91,18 @@ const App = () => {
       element: <ProductCustomer />,
     },
 
+    {
+      path: "add-product",
+      element: <AddProduct />,
+    },
+    {
+      path: "reset-password",
+      element: <InputNewPassword />,
+    },
+    {
+      path: "product-seller",
+      element: <ProductSeller />,
+    },
     // {
     //   path: "admin",
     //   element: <PrivateRoute />,
@@ -101,6 +117,7 @@ const App = () => {
 
   return (
     <>
+      <ToastContainer />
       <RouterProvider router={router} />
     </>
   );

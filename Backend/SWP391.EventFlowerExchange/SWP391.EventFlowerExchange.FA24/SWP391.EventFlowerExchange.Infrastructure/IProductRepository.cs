@@ -1,4 +1,5 @@
-﻿using SWP391.EventFlowerExchange.Domain.Entities;
+﻿using Org.BouncyCastle.Pqc.Crypto.Lms;
+using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using System;
 using System.Collections.Generic;
@@ -18,26 +19,32 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public Task<List<GetProduct?>> GetRejectedProductListAsync();
 
-        public Task<bool> CreateNewProductAsync(CreateProduct product);
+
+
+        public Task<bool> CreateNewProductAsync(CreateProduct product, Account account);
 
         public Task<bool> RemoveProductAsync(GetProduct product);
-
-        public Task<List<GetProduct?>> SearchProductByPriceRangeAsync(decimal from, decimal to);
 
         public Task<GetProduct?> SearchProductByIdAsync(GetProduct product);
 
         public Task<List<GetProduct?>> SearchProductByNameAsync(string name);
 
-        public Task<List<GetProduct?>> SearchProductByComboType_BatchesAsync();
-        public Task<List<GetProduct?>> SearchProductByComboType_EventsAsync();
-
-        public Task<List<GetProduct?>> SearchProductByCategory_WeddingAsync();
-        public Task<List<GetProduct?>> SearchProductByCategory_ConferenceAsync();
-        public Task<List<GetProduct?>> SearchProductByCategory_BirthdayAsync();
-
         public Task<List<GetProduct?>> GetLatestProductsAsync();
 
         public Task<List<GetProduct?>> GetOldestProductsAsync();
+
+        //BỔ SUNG
+        public Task<List<GetProduct?>> GetEnableAndDisableProductListAsync();
+
+        public Task<List<GetProduct?>> GetEnableProductListBySellerEmailAsync(Account value);
+
+        public Task<List<GetProduct?>> GetDisableProductListBySellerEmailAsync(Account value);
+
+        public Task<List<GetProduct?>> GetInProgressProductListBySellerEmailAsync(Account value);
+
+        public Task<List<GetProduct?>> GetRejectedProductListBySellerEmailAsync(Account value);
+
+        public Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product);
 
     }
 }

@@ -10,6 +10,8 @@ public class Account : IdentityUser
 
     public string? Name { get; set; }
 
+    public string? Picture { get; set; }
+
     //public string? Email { get; set; }//
 
     //public string? Password { get; set; }//
@@ -30,6 +32,8 @@ public class Account : IdentityUser
     public DateTime? OtpExpiration { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+    public virtual ICollection<Follow> Follows { get; set; } = new List<Follow>();
 
     public virtual ICollection<DeliveryLog> DeliveryLogs { get; set; } = new List<DeliveryLog>();
 
@@ -52,4 +56,6 @@ public class Account : IdentityUser
     public virtual ICollection<ShopNotification> ShopNotificationSellers { get; set; } = new List<ShopNotification>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Payment> Payment { get; set; } = new List<Payment>();
+
 }

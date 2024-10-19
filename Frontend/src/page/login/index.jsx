@@ -1,13 +1,22 @@
 import React from "react";
 import { Button, Form, Input } from "antd";
 import Header from "../../component/header";
-import api from "../../config/axios";
+// import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const handleSignup = () => {
+    navigate("/register");
+  };
+
+  const handleForgetPassword = () => {
+    navigate("/forgot-password");
+  };
 
   const handleLogin = async (values) => {
     try {
@@ -40,12 +49,11 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
-      alert(err.response.data);
+      toast.error("Your email or password is incorrect");
     }
   };
 
-  // HandleLoginGoogle cho Google Login
+  // Thêm handleLoginGoogle cho Google Login
   const handleLoginGoogle = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential; // Lấy token từ Google
@@ -134,16 +142,19 @@ const Login = () => {
           </Form.Item>
 
           <div className="w-full flex justify-between text-sm mt-[-8px]">
-            <a
-              href="/forgot-password"
+            <div
               className="cursor-pointer mb-[8px] text-sm"
+              onClick={handleForgetPassword}
             >
               Forgot your password?
-            </a>
+            </div>
 
-            <a href="/register" className="cursor-pointer mb-[8px] text-sm ">
+            <div
+              className="cursor-pointer mb-[8px] text-sm "
+              onClick={handleSignup}
+            >
               Create account?
-            </a>
+            </div>
           </div>
 
           <Form.Item>
@@ -164,7 +175,7 @@ const Login = () => {
             <GoogleLogin
               onSuccess={handleLoginGoogle}
               onError={() => {
-                console.log("Login Failed");
+                toast.error("Login Failed");
               }}
             />
           </span>

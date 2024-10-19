@@ -80,10 +80,18 @@ namespace SWP391.EventFlowerExchange.API
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
+            builder.Services.AddScoped<IRatingRepository, RatingRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
-            builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
-            builder.Services.AddScoped<IVoucherService, VoucherService>();
+            builder.Services.AddScoped<IFollowService, FollowService>();
+            builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IRequestService, RequestService>();
 
             // Add DbContext
             builder.Services.AddDbContext<Swp391eventFlowerExchangePlatformContext>(options =>

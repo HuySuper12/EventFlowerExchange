@@ -13,9 +13,15 @@ namespace SWP391.EventFlowerExchange.API.Controllers
     public class ProductController : ControllerBase
     {
         private IProductService _service;
-        public ProductController(IProductService service)
+        private IAccountService _account;
+        private IConfiguration _config;
+        private IRequestService _requestService;
+        public ProductController(IProductService service, IConfiguration config, IAccountService account, IRequestService requestService)
         {
             _service = service;
+            _account = account;
+            _config = config;
+            _requestService = requestService;
         }
 
 
@@ -24,6 +30,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         public async Task<IActionResult> GetAllEnableProductList()
         {
             return Ok(await _service.GetEnableProductListFromAPIAsync());
+
         }
 
 
@@ -56,7 +63,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var products = await _service.GetLatestProductsFromAPIAsync();
             if (products == null || !products.Any())
             {
-                return BadRequest(NotFound());
+                return NotFound();
             }
             return Ok(products);
         }
@@ -67,9 +74,56 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var products = await _service.GetOldestProductsFromAPIAsync();
             if (products == null || !products.Any())
             {
-                return BadRequest(NotFound());
+                return NotFound();
             }
             return Ok(products);
+        }
+
+
+        //BỔ SUNG API
+        [HttpGet("GetProductList/EnableAndDisable")]
+        //[Authorize]
+        public async Task<IActionResult> GetEnableAndDisableProductList()
+        {
+
+            return Ok(await _service.GetEnableAndDisableProductListFromAPIAsync());
+
+        }
+
+        [HttpGet("GetProductList/Enable/{email}")]
+        //[Authorize]
+        public async Task<IActionResult> GetEnableProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetEnableProductListBySellerEmailFromAPIAsync(acc));
+
+        }
+
+
+        [HttpGet("GetProductList/Disable/{email}")]
+        //[Authorize]
+        public async Task<IActionResult> GetDisableProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetDisableProductListBySellerEmailFromAPIAsync(acc));
+        }
+
+
+        [HttpGet("GetProductList/InProgress/{email}")]
+        //[Authorize(Roles = ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetInProgressProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetInProgressProductListBySellerEmailFromAPIAsync(acc));
+        }
+
+
+        [HttpGet("GetProductList/Rejected/{email}")]
+        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetRejectedProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetRejectedProductListBySellerEmailFromAPIAsync(acc));
         }
 
         [HttpGet("SearchProduct/{id:int}")]
@@ -79,7 +133,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var checkProduct = await _service.SearchProductByIdFromAPIAsync(product);
             if (checkProduct == null)
             {
-                return BadRequest(NotFound());
+                return NotFound();
             }
             return Ok(checkProduct);
         }
@@ -90,96 +144,27 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var checkProduct = await _service.SearchProductByNameFromAPIAsync(name);
             if (checkProduct == null)
             {
-                return BadRequest(NotFound());
+                return NotFound();
             }
             return Ok(checkProduct);
         }
-
-        [HttpGet("SearchProducts/ComboType/Batches")]
-        public async Task<IActionResult> SearchProductByComboType_Batches()
-        {
-            var checkProduct = await _service.SearchProductByComboType_BatchesFromAPIAsync();
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-        [HttpGet("SearchProducts/ComboType/Events")]
-        public async Task<IActionResult> SearchProductByComboType_Events()
-        {
-            var checkProduct = await _service.SearchProductByComboType_EventsFromAPIAsync();
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-        [HttpGet("SearchProducts/Category/Wedding")]
-        public async Task<IActionResult> SearchProductByCategory_Wedding()
-        {
-            var checkProduct = await _service.SearchProductByCategory_WeddingFromAPIAsync();
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-        [HttpGet("SearchProducts/Category/Conference")]
-        public async Task<IActionResult> SearchProductByCategory_Conference()
-        {
-            var checkProduct = await _service.SearchProductByCategory_ConferenceFromAPIAsync();
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-        [HttpGet("SearchProducts/Category/Birthday")]
-        public async Task<IActionResult> SearchProductByCategory_Birthday()
-        {
-            var checkProduct = await _service.SearchProductByCategory_BirthdayFromAPIAsync();
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-        [HttpGet("SearchProductsByPriceRange/{from},{to}")]
-        public async Task<IActionResult> SearchProductByPriceRange(decimal from, decimal to)
-        {
-            if (from < 0 || to < 0)
-            {
-                return BadRequest("minPrice or maxPrice must not be negative number");
-            }
-
-            if (from > to)
-            {
-                return BadRequest("minPrice must be less than or equal to maxPrice");
-            }
-            var checkProduct = await _service.SearchProductByPriceRangeFromAPIAsync(from, to);
-            if (checkProduct == null)
-            {
-                return BadRequest(NotFound());
-            }
-            return Ok(checkProduct);
-        }
-
-
 
         [HttpPost("CreateProduct")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
         {
-            var check = await _service.CreateNewProductFromAPIAsync(product);
+            var account = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = product.SellerEmail });
+            var check = await _service.CreateNewProductFromAPIAsync(product, account);
             if (check)
             {
+                var checkProduct = await _service.SearchProductByNameFromAPIAsync(product.ProductName);
+                var request = new Request()
+                {
+                    Amount = product.Price,
+
+                };
                 return true;
+
             }
             return false;
         }
@@ -198,6 +183,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             bool status = await _service.RemoveProductFromAPIAsync(checkProduct);
             return Ok(status);
         }
+
+
+
 
     }
 }
