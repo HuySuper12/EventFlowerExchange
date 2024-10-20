@@ -32,7 +32,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 UserId = acc.Id,
                 Content = notification.Content,
                 CreatedAt = DateTime.UtcNow,
-                Status = "enable"
+                Status = "Enable"
             };
 
             await _context.Notifications.AddAsync(noti);
@@ -60,7 +60,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 FollowerId = acc.Id,
                 Content = notification.Content,
                 CreatedAt = DateTime.UtcNow,
-                Status = "enable"
+                Status = "Enable"
             };
 
             await _context.ShopNotifications.AddAsync(noti);
@@ -105,7 +105,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
 
-            var noti = await _context.ShopNotifications.Where(x => x.SellerId == account.Id && x.Status.Contains("enable")).ToListAsync();
+            var noti = await _context.ShopNotifications.Where(x => x.FollowerId == account.Id && x.Status.Contains("enable")).ToListAsync();
             if (noti != null)
             {
                 return noti;

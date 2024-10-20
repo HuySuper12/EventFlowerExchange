@@ -86,14 +86,36 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return await _context.Carts.ToListAsync();
         }
 
-        public async Task<List<CartItem>> ViewAllCartItemByUserIdAsync(Account account)
+        public async Task<List<GetCartItem>> ViewAllCartItemByUserIdAsync(Account account)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
 
             var cart = await _context.CartItems.Where(x => x.BuyerId == account.Id).ToListAsync();
             if (cart != null)
             {
-                return cart;
+                List<GetCartItem> cartItems = new List<GetCartItem>();
+
+                foreach (var item in cart)
+                {
+                    var product = _context.Products.FirstOrDefault(x => x.ProductId == item.ProductId);
+                    var cartItem = new GetCartItem
+                    {
+                        CartId = item.CartId,
+                        ProductId = item.ProductId,
+                        BuyerId = item.BuyerId,
+                        Quantity = item.Quantity,
+                        Price = item.Price,
+                        CreatedAt = item.CreatedAt,
+                        ProductImage = item.ProductImage,
+                        ComboType = product.ComboType,
+                        ProductName = product.ProductName,
+
+                    };
+
+                    cartItems.Add(cartItem);
+                }
+
+                return cartItems;
             }
 
             return null;

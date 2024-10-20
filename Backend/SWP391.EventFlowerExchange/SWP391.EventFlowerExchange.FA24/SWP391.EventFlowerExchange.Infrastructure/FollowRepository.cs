@@ -26,22 +26,27 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             var foAccount = _context.Accounts.FirstOrDefault(x => x.Id == follower.FollowerEmail);
 
-            var noti = new ShopNotification
+            if (foAccount == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Follower not found." });
+            }
+
+            /*var noti = new ShopNotification
             {
                 SellerId = follower.SellerEmail,        //FollowerEmail chứa giá trị id
                 FollowerId = follower.FollowerEmail,    //SellerEmail chứa giá trị id
                 Content = $"{foAccount.Name} has followed you.",
                 CreatedAt = DateTime.UtcNow,
                 Status = "enable"
-            };
+            };*/
 
             var fo = new Follow
             {
                 FollowerId = follower.FollowerEmail,        // FollowerEmail chứa giá trị id
                 SellerId = follower.SellerEmail             // SellerEmail chứa giá trị id
             };
-            
-            await _context.ShopNotifications.AddAsync(noti);
+
+            /*await _context.ShopNotifications.AddAsync(noti);*/
             await _context.Follows.AddAsync(fo);
 
             int result = await _context.SaveChangesAsync();
@@ -72,17 +77,35 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
 
-            var disableFollower = _context.ShopNotifications
-                .FirstOrDefault(x => x.FollowerId == follower.FollowerId && x.SellerId == follower.SellerId 
-                && !x.ProductId.HasValue);
-            var removeFollower = _context.Follows
-                .FirstOrDefault(x => x.SellerId == follower.SellerId && x.FollowerId == follower.FollowerId);
+            var removeFollower = await _context.Follows
+                .FirstOrDefaultAsync(x => x.SellerId == follower.SellerId && x.FollowerId == follower.FollowerId);
 
-            disableFollower.Status = "disable";
+            if (removeFollower == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Follower not found." });
+            }
+
+            var notificationsToRemove = _context.ShopNotifications
+        .Where(n => n.FollowerId == follower.FollowerId && n.SellerId == follower.SellerId);
+
+            _context.ShopNotifications.RemoveRange(notificationsToRemove);
+
             _context.Follows.Remove(removeFollower);
-            await _context.SaveChangesAsync();
+            int result = await _context.SaveChangesAsync();
 
-            return IdentityResult.Success;   
+            if (result > 0)
+            {
+                return IdentityResult.Success;
+            }
+
+            return IdentityResult.Failed(new IdentityError { Description = "Failed to remove follower." });
         }
     }
 }
+
+
+
+
+
+
+

@@ -82,9 +82,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         [HttpPost("CheckProductHasSameSeller")]
         //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
-        public async Task<ActionResult<bool>> CheckProductHasSameSellerAsync(List<int> productIdList)
-        { 
-            return await _service.CheckProductHasSameSellerFromAPIAsync(productIdList);
+        public async Task<ActionResult<bool>> CheckProductHasSameSellerAsync(List<string> productIdList)
+        {
+            List<int> list = new List<int>();
+            for (int i = 0; i < productIdList.Count; i++)
+            {
+                list.Add(int.Parse(productIdList[i]));
+            }
+            return await _service.CheckProductHasSameSellerFromAPIAsync(list);
         }
 
         [HttpPost("CheckOutOrder")]
@@ -92,7 +97,13 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore)
         {
             var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
-            var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
+
+            List<int> list = new List<int>();
+            for (int i = 0; i < checkOutBefore.ListProduct.Count; i++)
+            {
+                list.Add(int.Parse(checkOutBefore.ListProduct[i]));
+            }
+            var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, list, voucher);
             return Ok(result);
         }
 

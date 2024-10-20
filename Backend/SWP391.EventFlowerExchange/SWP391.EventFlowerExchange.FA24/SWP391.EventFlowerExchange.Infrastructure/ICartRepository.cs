@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 {
     public interface ICartRepository
     {
-        public Task<List<CartItem>> ViewAllCartItemByUserIdAsync(Account account);
+        public Task<List<GetCartItem>> ViewAllCartItemByUserIdAsync(Account account);
         public Task<IdentityResult> CreateCartAsync(Account account);
         public Task<IdentityResult> CreateCartItemAsync(CartItem cartItem);
         public Task<List<Cart>> ViewAllCartAsync();

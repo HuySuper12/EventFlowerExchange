@@ -27,13 +27,15 @@ namespace SWP391.EventFlowerExchange.Application
         public async Task<bool> CreateOrderFromAPIAsync(DeliveryInformation deliveryInformation, Voucher voucher)
         {
             var account = await _accountRepository.GetUserByEmailAsync(new Account() { Email = deliveryInformation.Email });
+            var list = new List<int>();
             for (var i = 0; i < deliveryInformation.Product.Count(); i++)
             {
-                var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = deliveryInformation.Product[i] });
+                var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = int.Parse(deliveryInformation.Product[i]) });
                 if (product.Status == "Disable")
                     return false;
+                list.Add(int.Parse(deliveryInformation.Product[i]));
             }
-            return await _repo.CreateOrderAsync(deliveryInformation, account, deliveryInformation.Product, voucher);
+            return await _repo.CreateOrderAsync(deliveryInformation, account, list, voucher);
         }
 
         public async Task<List<OrderItem>> ViewOrderDetailFromAPIAsync(Order order)

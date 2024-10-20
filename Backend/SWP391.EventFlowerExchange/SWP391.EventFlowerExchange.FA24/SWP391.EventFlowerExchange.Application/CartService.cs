@@ -110,15 +110,27 @@ namespace SWP391.EventFlowerExchange.Application
                 var itemList = await _repo.ViewAllCartItemByUserIdAsync(new Account() { Id = cartItem.BuyerId });
 
                 // Tìm sản phẩm cần xóa khỏi giỏ hàng dựa trên ProductId
-                var itemToRemove = itemList.FirstOrDefault(c => c.ProductId == cartItem.ProductId);
+                var itemToCheck = itemList.FirstOrDefault(c => c.ProductId == cartItem.ProductId);
+
+                var itemToRemove = new CartItem()
+                {
+                    CartId = itemToCheck.CartId,
+                    BuyerId = itemToCheck.BuyerId,
+                    ProductId = itemToCheck.ProductId,
+                    Quantity = itemToCheck.Quantity,
+                    Price = itemToCheck.Price,
+                    ProductImage = itemToCheck.ProductImage,
+                    CreatedAt = itemToCheck.CreatedAt
+
+                };
 
                 // Nếu tìm thấy sản phẩm cần xóa trong giỏ hàng
                 // Xóa sản phẩm khỏi giỏ hàng bằng phương thức bất đồng bộ RemoveItemFromCartAsync
                 if (itemToRemove != null)
-                {       
+                {
                     await _repo.RemoveItemFromCartAsync(itemToRemove);
 
-   
+
                     return IdentityResult.Success;
                 }
             }
@@ -128,7 +140,7 @@ namespace SWP391.EventFlowerExchange.Application
         }
 
 
-        public async Task<List<CartItem>> ViewAllCartItemByUserIdFromApiAsync(Account account)
+        public async Task<List<GetCartItem>> ViewAllCartItemByUserIdFromApiAsync(Account account)
         {
             return await _repo.ViewAllCartItemByUserIdAsync(account);
         }
