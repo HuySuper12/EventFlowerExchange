@@ -12,4 +12,6 @@ public partial class Follow
     public string FollowerId { get; set; } = null!;
 
     public virtual Account Seller { get; set; } = null!;
+
+    public virtual ICollection<ShopNotification> ShopNotifications { get; set; } = new List<ShopNotification>();
 }

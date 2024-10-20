@@ -116,21 +116,7 @@ const Orders = () => {
       key: 'createdAt',
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="middle">
-          <Button onClick={() => showOrderDetails(record)}>View Details</Button>
-          {record.status === 'Pending' && (
-            <>
-              <Button type="primary" onClick={() => handleStatusChange(record.id, 'Ready')}>Accept</Button>
-              <Button danger onClick={() => handleStatusChange(record.id, 'Cancel')}>Reject</Button>
-            </>
-          )}
-        </Space>
-      ),
-    },
+    
   ];
 
   const showOrderDetails = (order) => {

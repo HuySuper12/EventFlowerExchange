@@ -22,11 +22,10 @@ const Customers = () => {
       createdAt: '2024-03-16',
       status: 'Locked',
     },
-    // Add more dummy data as needed for testing
   ]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5; // Number of items per page
+  const pageSize = 5; //  page
 
   const availableCustomers = customers.filter(customer => customer.status === 'Active');
   const unavailableCustomers = customers.filter(customer => customer.status === 'Locked');
@@ -94,18 +93,7 @@ const Customers = () => {
       ],
       onFilter: (value, record) => record.status.includes(value),
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Switch
-          checked={record.status === 'Active'}
-          onChange={(checked) => toggleStatus(record.id, checked)}
-          checkedChildren="Unlock"
-          unCheckedChildren="Lock"
-        />
-      ),
-    },
+    
   ];
 
   const handleExport = () => {
