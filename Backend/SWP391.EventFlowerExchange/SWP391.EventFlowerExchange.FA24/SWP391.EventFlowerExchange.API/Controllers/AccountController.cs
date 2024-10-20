@@ -45,20 +45,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Password must include digits, uppercase letters, lowercase letters, and special characters!");
         }
 
-        [HttpPost("SignUp/Seller")]
+        [HttpPost("signUp/Seller")]
         public async Task<IActionResult> SignUpSeller(SignUpSeller model)
         {
-            var result = await _service.SignUpSellerFromAPIAsync(model);
-            if (await _service.GetUserByEmailFromAPIAsync(new Account() { Email = model.Email}) != null)
+            if (await _service.GetUserByEmailFromAPIAsync(new Account() { Email = model.Email }) != null)
             {
                 return BadRequest("Email had been registered.");
             }
+
+            var result = await _service.SignUpSellerFromAPIAsync(model);
+
             if (result.Succeeded)
             {
                 return Ok(result.Succeeded);
             }
             return BadRequest("Password must include digits, uppercase letters, lowercase letters, and special characters!");
         }
+
 
         [HttpPost("CreateAccount/Staff")]
         //[Authorize(Roles = ApplicationRoles.Manager)]

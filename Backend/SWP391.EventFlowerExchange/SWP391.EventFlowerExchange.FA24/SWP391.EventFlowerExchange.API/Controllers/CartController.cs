@@ -20,7 +20,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("ViewCartByUserEmail")]
+        [HttpGet("ViewCartByUserEmail/{email}")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewCartByUserEmail(string email)
         {
@@ -61,7 +61,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPost("CreateCartByUserEmail")]
+        [HttpPost("CreateCartByUserEmail/{email}")]
         //[Authorize]
         public async Task<ActionResult<bool>> CreateCartByUserEmail(string email)
         {
@@ -82,7 +82,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpDelete("RemoveCartItem")]
+        [HttpDelete("RemoveCartItem/{email}/{productid}")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> RemoveCartItem(string email, int productid)
         {

@@ -457,6 +457,7 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
             entity.HasOne(d => d.Follower).WithMany(p => p.ShopNotificationFollowers)
                 .HasForeignKey(d => d.FollowerId)
+                .OnDelete(DeleteBehavior.SetNull) // Thay đổi hành vi xóa thành SetNull
                 .HasConstraintName("FK_Shop_Notification_Account");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ShopNotifications)
@@ -465,11 +466,13 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
             entity.HasOne(d => d.Seller).WithMany(p => p.ShopNotificationSellers)
                 .HasForeignKey(d => d.SellerId)
+                .OnDelete(DeleteBehavior.SetNull) // Thay đổi hành vi xóa thành SetNull
                 .HasConstraintName("FK_Shop_Notification_Account2");
 
             entity.HasOne(d => d.Follow).WithMany(p => p.ShopNotifications)
                 .HasPrincipalKey(p => new { p.FollowerId, p.SellerId })
                 .HasForeignKey(d => new { d.FollowerId, d.SellerId })
+                .OnDelete(DeleteBehavior.SetNull) // Thay đổi hành vi xóa thành SetNull
                 .HasConstraintName("FK_Shop_Notification_Follow");
         });
 

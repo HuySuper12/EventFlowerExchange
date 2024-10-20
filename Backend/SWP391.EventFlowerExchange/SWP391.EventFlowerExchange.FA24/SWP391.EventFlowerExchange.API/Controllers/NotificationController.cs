@@ -34,7 +34,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
         }
 
-        [HttpGet("ViewNotificationByUserEmail")]
+        [HttpGet("ViewNotificationByUserEmail/{email}")]
         //[Authorize(Roles = ApplicationRoles.Seller + " , " + ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewNotificationByUserEmail(string email)
         {
@@ -103,7 +103,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
         }
 
-        [HttpGet("ViewShopNotificationByUserEmail")]
+        [HttpGet("ViewShopNotificationByUserEmail/{email}")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> ViewShopNotificationByUserEmail(string email)
         {

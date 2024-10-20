@@ -11,7 +11,7 @@ namespace SWP391.EventFlowerExchange.Application
 {
     public interface ICartService
     {
-        public Task<List<CartItem>> ViewAllCartItemByUserIdFromApiAsync(Account account);
+        public Task<List<GetCartItem>> ViewAllCartItemByUserIdFromApiAsync(Account account);
         public Task<IdentityResult> RemoveItemFromCartFromApiAsync(CartItem cartItem);
         public Task<IdentityResult> CreateCartItemFromApiAsync(CreateCartItem cartItem);
         public Task<IdentityResult> CreateCartFromApiAsync(Account account);
