@@ -22,5 +22,7 @@ namespace SWP391.EventFlowerExchange.Domain.Entities
 
         [Required]
         public List<int> Product { get; set; }
+
+        public string VoucherCode { get; set; }
     }
 }

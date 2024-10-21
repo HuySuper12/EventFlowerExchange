@@ -20,7 +20,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("ViewCartByUserEmail}")]
+        [HttpGet("ViewCartByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewCartByUserEmail(string email)
         {

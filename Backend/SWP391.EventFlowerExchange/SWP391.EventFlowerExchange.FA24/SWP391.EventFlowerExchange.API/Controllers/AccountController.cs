@@ -45,7 +45,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Password must include digits, uppercase letters, lowercase letters, and special characters!");
         }
 
-        [HttpPost("signUp/Seller")]
+        [HttpPost("SignUp/Seller")]
         public async Task<IActionResult> SignUpSeller(SignUpSeller model)
         {
             if (await _service.GetUserByEmailFromAPIAsync(new Account() { Email = model.Email }) != null)

@@ -93,14 +93,18 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
             var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
+            if (result.SubTotal < voucher.MinOrderValue && DateTime.UtcNow > voucher.ExpiryDate)
+            {
+                return BadRequest("Voucher is invalid.");
+            }
             return Ok(result);
         }
 
         [HttpPost("CreateOrder")]
         //[Authorize(Roles = ApplicationRoles.Buyer + "," + ApplicationRoles.Seller)]
-        public async Task<ActionResult<bool>> CreateOrderAsync(DeliveryInformation deliveryInformation, string code)
+        public async Task<ActionResult<bool>> CreateOrderAsync(DeliveryInformation deliveryInformation)
         {
-            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(code);
+            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
             if (checkVoucher != null)
             {
                 return await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
@@ -109,7 +113,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateOrderStatus/{orderId}")]
-        //[Authorize(Roles =ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId)
         {
             var delivery = await _deliveryLogService.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
