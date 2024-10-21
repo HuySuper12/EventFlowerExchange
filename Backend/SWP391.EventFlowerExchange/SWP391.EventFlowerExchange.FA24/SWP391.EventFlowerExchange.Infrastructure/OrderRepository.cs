@@ -228,13 +228,13 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public decimal CheckFeeShipForOrderBatch(string address)
         {
-            if (address.ToLower().Contains("binh chanh") || address.ToLower().Contains("can gio") || address.ToLower().Contains("cu chi") || address.ToLower().Contains("hoc mon") || address.ToLower().Contains("nha be"))
+            if (address.ToLower().Contains("binh chanh") || address.ToLower().Contains("can gio") || address.ToLower().Contains("cu chi") || address.ToLower().Contains("hoc mon") || address.ToLower().Contains("nha be") || address.ToLower().Contains("District 12"))
             {
-                return 80000;
+                return 100000;
             }
             else
             {
-                return 10000;
+                return 80000;
             }
         }
 
