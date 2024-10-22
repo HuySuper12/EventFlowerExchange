@@ -316,7 +316,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.AccountController",
     "Method": "SignUpSeller",
-    "RelativePath": "api/Account/signUp/Seller",
+    "RelativePath": "api/Account/SignUp/Seller",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -446,7 +446,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "CreateCartByUserEmail",
-    "RelativePath": "api/Cart/CreateCartByUserEmail/{email}",
+    "RelativePath": "api/Cart/CreateCartByUserEmail",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -454,7 +454,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -498,7 +498,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "RemoveCartItem",
-    "RelativePath": "api/Cart/RemoveCartItem/{email}/{productid}",
+    "RelativePath": "api/Cart/RemoveCartItem",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -506,12 +506,12 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "productid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -529,7 +529,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "ViewCartByUserEmail",
-    "RelativePath": "api/Cart/ViewCartByUserEmail/{email}",
+    "RelativePath": "api/Cart/ViewCartByUserEmail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -537,7 +537,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -912,7 +912,7 @@
     "Parameters": [
       {
         "Name": "productIdList",
-        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": true
       }
     ],
@@ -930,21 +930,16 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
-    "Method": "CreateOrderAsync",
-    "RelativePath": "api/Order/CreateOrder",
+    "Method": "CreateOrderBySellerFromAPIAsync",
+    "RelativePath": "api/Order/CreateOrderBySeller",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "deliveryInformation",
-        "Type": "SWP391.EventFlowerExchange.Domain.Entities.DeliveryInformation",
+        "Name": "createOrderBySeller",
+        "Type": "SWP391.EventFlowerExchange.Domain.Entities.CreateOrderBySeller",
         "IsRequired": true
-      },
-      {
-        "Name": "code",
-        "Type": "System.String",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -982,7 +977,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "UpdateOrderStatusAsync",
-    "RelativePath": "api/Order/UpdateOrderStatus/{orderId}",
+    "RelativePath": "api/Order/UpdateOrderStatusCreatedBySeller/{orderId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,

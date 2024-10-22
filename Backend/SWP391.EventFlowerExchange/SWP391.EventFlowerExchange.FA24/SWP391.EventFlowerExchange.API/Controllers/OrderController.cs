@@ -18,8 +18,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         private IDeliveryLogService _deliveryLogService;
         private ITransactionService _transactionService;
         private INotificationService _notificationService;
+        private IProductService _productService;
 
-        public OrderController(IOrderService service, IVoucherService voucherService, IAccountService accountService, IDeliveryLogService deliveryLogService, ITransactionService transactionService, INotificationService notificationService)
+        public OrderController(IOrderService service, IVoucherService voucherService, IAccountService accountService, IDeliveryLogService deliveryLogService, ITransactionService transactionService, INotificationService notificationService, IProductService productService)
         {
             _deliveryLogService = deliveryLogService;
             _accountService = accountService;
@@ -27,6 +28,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _service = service;
             _transactionService = transactionService;
             _notificationService = notificationService;
+            _productService = productService;
         }
 
         [HttpGet("GetMonthlyOrderStatistics")]
@@ -81,7 +83,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CheckProductHasSameSeller")]
-        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CheckProductHasSameSellerAsync(List<int> productIdList)
         {
             return await _service.CheckProductHasSameSellerFromAPIAsync(productIdList);
@@ -101,34 +103,59 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        //[Authorize(Roles = ApplicationRoles.Buyer + "," + ApplicationRoles.Seller)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CreateOrderAsync(DeliveryInformation deliveryInformation)
         {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
             var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
-            if (checkVoucher != null)
+            if (account != null)
             {
                 return await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
             }
             return false;
         }
 
-        [HttpPut("UpdateOrderStatus/{orderId}")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId)
+        [HttpPost("CreateOrderBySeller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller)
         {
-            var delivery = await _deliveryLogService.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
-            if (delivery != null && delivery.Status == "Delivery Success")
+            var accountBuyer = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.BuyerEmail });
+            var accountSeller = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.SellerEmail });
+            if (accountBuyer != null)
             {
-                var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
-
-                if (order != null)
+                var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = createOrderBySeller.ProductId });
+                if (product.SellerId == accountSeller.Id)
                 {
-                    order.Status = "Success";
-                    order.UpdateAt = DateTime.Now;
-                    return await _service.UpdateOrderStatusFromAPIAsync(order);
+                    //Tao don hang neu cung chu ko tao
+                    var order = await _service.ViewOrderByBuyerIdFromAPIAsync(new Account() { Id = accountBuyer.Id });
+                    for (int i = 0; i < order.Count; i++)
+                    {
+                        //Lay thong tin don hang 
+                        var orderDetail = await _service.ViewOrderDetailFromAPIAsync(new Order() { OrderId = order[i].OrderId });
+                        if (orderDetail.Count != 0)
+                        {
+                            if (order[i].BuyerId == accountBuyer.Id && product.ProductId == orderDetail[0].ProductId)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return await _service.CreateOrderBySellerFromAPIAsync(createOrderBySeller);
                 }
             }
+            return false;
+        }
 
+        [HttpPut("UpdateOrderStatusCreatedBySeller/{orderId}")]
+        //[Authorize(Roles =ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId)
+        {
+            //Cap nhat trang thai status
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                return await _service.UpdateOrderPendingStatusFromAPIAsync(order);
+            }
             return false;
         }
 

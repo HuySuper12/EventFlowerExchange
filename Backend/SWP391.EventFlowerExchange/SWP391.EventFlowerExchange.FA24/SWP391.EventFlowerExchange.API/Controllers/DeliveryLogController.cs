@@ -106,20 +106,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             //Cap nhat thoi gian chuyen tien cho seller
             var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
-            order.UpdateAt = DateTime.Now.AddDays(2);
-            await _orderService.UpdateOrderStatusFromAPIAsync(order);
-
-            var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
-
-            CreateNotification notification = new CreateNotification()
+            
+            if (order.UpdateAt == null)
             {
-                UserEmail = account.Email,
-                Content = "Your order has been delivered successfully."
-            };
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
-            await _notificationService.CreateNotificationFromApiAsync(notification);
+                var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
 
-            return true;
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "Your order has been delivered successfully."
+                };
+
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
         }
 
         [HttpPut("UpdateDeliveryLogFailStatus/{orderId}/{url}/{reason}")]

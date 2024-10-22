@@ -55,7 +55,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             if (account != null)
             {
-                return Ok(await _service.ViewAllTransactionFromAPIAsync());
+                return Ok(await _service.ViewAllTransactionByUserIdFromAPIAsync(account));
             }
             return BadRequest("Not found");
         }

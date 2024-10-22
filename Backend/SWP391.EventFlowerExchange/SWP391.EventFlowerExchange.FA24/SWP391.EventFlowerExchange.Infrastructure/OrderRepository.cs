@@ -181,16 +181,76 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return true;
         }
 
+        public async Task<bool> CreateOrderBySellerAsync(CreateOrderBySeller createOrderBySeller, Account account, GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var accountSeller = await _accountRepository.GetUserByEmailAsync(new Account() { Email = createOrderBySeller.SellerEmail });
+
+            var productList = new List<int>();
+            productList.Add(product.ProductId);
+            decimal? totalPrice = createOrderBySeller.Price;
+
+            var check = await CheckFeeShipEventOrBatchAsync(productList);
+            if (check)
+                totalPrice += CheckFeeShipForOrderEvent(createOrderBySeller.Address);
+            else
+                totalPrice += CheckFeeShipForOrderBatch(createOrderBySeller.Address);
+
+            //Tao don hang
+            Order order = new Order()
+            {
+                BuyerId = account.Id,
+                CreatedAt = DateTime.Now,
+                SellerId = product.SellerId,
+                TotalPrice = totalPrice,        //Gia ban + ship
+                DeliveredAt = createOrderBySeller.Address,
+                PhoneNumber = createOrderBySeller.PhoneNumber
+            };
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            //Tao don hang chi tiet
+            for (var i = 0; i < productList.Count; i++)
+            {
+                OrderItem orderItem = new OrderItem()
+                {
+                    OrderId = order.OrderId,
+                    ProductId = product.ProductId,
+                    Quantity = 1,
+                    Price = createOrderBySeller.Price
+                };
+                _context.OrderItems.Add(orderItem);
+            }
+
+            CreateNotification notificationBuyer = new CreateNotification()
+            {
+                UserEmail = account.Email,
+                Content = $"You has been created order by seller {accountSeller.Name}",
+            };
+            await _notificationRepository.CreateNotificationAsync(notificationBuyer);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<List<Order>> ViewAllOrderAsync()
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             return await _context.Orders.ToListAsync();
         }
 
-        public async Task<List<OrderItem>> ViewOrderDetailAsync(Order order)
+        public async Task<List<GetProduct>> ViewOrderDetailAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            return await _context.OrderItems.Where(x => x.OrderId == order.OrderId).ToListAsync();
+            var list = await _context.OrderItems.Where(x => x.OrderId == order.OrderId).ToListAsync();
+            var productList = new List<GetProduct>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = list[i].ProductId });
+                productList.Add(product);
+            }
+            return productList;
         }
 
         public async Task<List<Order>> ViewOrderByBuyerIdAsync(Account account)
@@ -265,6 +325,19 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 g => g.Count()  // Value: Số lượng đơn hàng
             );
             return statistics;
+        }
+
+        public async Task<List<Order>> SearchOrderItemByProductAsync(GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var list = await _context.OrderItems.Where(x => x.ProductId == product.ProductId).ToListAsync();
+            var orderList = new List<Order>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var order = await SearchOrderByOrderIdAsync(new Order() { OrderId = list[i].OrderId });
+                orderList.Add(order);
+            }
+            return orderList;
         }
 
     }

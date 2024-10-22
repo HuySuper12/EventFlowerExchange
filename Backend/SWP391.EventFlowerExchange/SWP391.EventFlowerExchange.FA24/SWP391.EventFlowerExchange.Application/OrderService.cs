@@ -15,13 +15,17 @@ namespace SWP391.EventFlowerExchange.Application
         private ICartRepository _cartRepository;
         private IAccountRepository _accountRepository;
         private IProductRepository _productRepository;
+        private ITransactionRepository _transactionRepository;
+        private INotificationRepository _notificationRepository;
 
-        public OrderService(IOrderRepository repo, ICartRepository cartRepository, IAccountRepository accountRepository, IProductRepository productRepository)
+        public OrderService(IOrderRepository repo, ICartRepository cartRepository, IAccountRepository accountRepository, IProductRepository productRepository, ITransactionRepository transactionRepository, INotificationRepository notificationRepository)
         {
             _accountRepository = accountRepository;
             _repo = repo;
             _cartRepository = cartRepository;
             _productRepository = productRepository;
+            _transactionRepository = transactionRepository;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<bool> CreateOrderFromAPIAsync(DeliveryInformation deliveryInformation, Voucher voucher)
@@ -30,13 +34,23 @@ namespace SWP391.EventFlowerExchange.Application
             for (var i = 0; i < deliveryInformation.Product.Count(); i++)
             {
                 var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = deliveryInformation.Product[i] });
-                if (product.Status == "Disable")
-                    return false;
+                if (product.Status == "Enable")
+                    return await _repo.CreateOrderAsync(deliveryInformation, account, deliveryInformation.Product, voucher);
             }
-            return await _repo.CreateOrderAsync(deliveryInformation, account, deliveryInformation.Product, voucher);
+            return false;
         }
 
-        public async Task<List<OrderItem>> ViewOrderDetailFromAPIAsync(Order order)
+        public async Task<bool> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller)
+        {
+            //Cho tao nhieu don hang thang nao accept truoc thi cac don giong v bang null se cap nhat bang fail
+            var accountBuyer = await _accountRepository.GetUserByEmailAsync(new Account() { Email = createOrderBySeller.BuyerEmail });
+            var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = createOrderBySeller.ProductId });
+            if (product.Status == "Enable")
+                return await _repo.CreateOrderBySellerAsync(createOrderBySeller, accountBuyer, product);
+            return false;
+        }
+
+        public async Task<List<GetProduct>> ViewOrderDetailFromAPIAsync(Order order)
         {
             return await _repo.ViewOrderDetailAsync(order);
         }
@@ -89,6 +103,93 @@ namespace SWP391.EventFlowerExchange.Application
         public async Task<CheckOutAfter> CheckOutOrderFromAPIAsync(string address, List<int> productList, Voucher voucher)
         {
             return await _repo.CheckOutOrderAsync(address, productList, voucher);
+        }
+
+        public async Task<bool> UpdateOrderPendingStatusFromAPIAsync(Order order)
+        {
+            var orderItem = await _repo.ViewOrderDetailAsync(order);
+            if (order.Status == null)
+            {
+                order.Status = "Pending";
+                await _repo.UpdateOrderStatusAsync(order);
+
+                //Cap nhat trang thai fail cho cac order cung mua product do
+                var orderList = await _repo.SearchOrderItemByProductAsync(new GetProduct() { ProductId = orderItem[0].ProductId });
+                for (int i = 0; i < orderList.Count; i++)
+                {
+                    if (orderList[i].Status != "Pending")
+                    {
+                        orderList[i].Status = "Fail";
+                        await _repo.UpdateOrderStatusAsync(orderList[i]);
+
+                        var account = await _accountRepository.GetUserByIdAsync(new Account() { Id = orderList[i].BuyerId });
+
+                        CreateNotification notification = new CreateNotification()
+                        {
+                            UserEmail = account.Email,
+                            Content = "Your product had been bought by another buyer."
+                        };
+                        await _notificationRepository.CreateNotificationAsync(notification);
+                    }
+                }
+
+                //Xoa tung san pham trong gio hang (Do co 1 sp nen orderItem[0])
+                await _cartRepository.RemoveCartItemToCreateOrderAsync(new CartItem() { ProductId = orderItem[0].ProductId });
+
+                //Tao giao dich
+                var transactionCode = "EVE";
+                while (true)
+                {
+                    transactionCode = "EVE" + new Random().Next(100000, 999999).ToString();
+                    var result = await _transactionRepository.ViewTransactionByCodeAsync(new Transaction() { TransactionCode = transactionCode });
+                    if (result == null)
+                    {
+                        break;
+                    }
+                }
+                Transaction transaction = new Transaction()
+                {
+                    TransactionCode = transactionCode,
+                    Amount = order.TotalPrice,
+                    CreatedAt = DateTime.Now,
+                    OrderId = order.OrderId,
+                    UserId = order.BuyerId,
+                    TransactionType = 1,
+                    TransactionContent = $"Successful online purchase payment with order code is {order.OrderId}.",
+                    Status = true
+                };
+                await _transactionRepository.CreateTransactionAsync(transaction);
+
+                var accountBuyer = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.BuyerId });
+                var accountSeller = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.SellerId });
+
+                //Tru tien trong so du cua nguoi mua
+                accountBuyer.Balance -= order.TotalPrice;
+                await _accountRepository.UpdateAccountAsync(accountBuyer);
+
+                //Cong tien vao he thong
+                var system = await _accountRepository.GetUserByEmailAsync(new Account() { Email = "ManagerEVESystem@gmail.com" });
+                system.Balance += order.TotalPrice;
+                await _accountRepository.UpdateAccountAsync(system);
+
+                //Gui thong bao cho nguoi ban va nguoi mua
+                CreateNotification notificationBuyer = new CreateNotification()
+                {
+                    UserEmail = accountBuyer.Email,
+                    Content = "Order payment successful.",
+                };
+                await _notificationRepository.CreateNotificationAsync(notificationBuyer);
+
+                CreateNotification notificationSeller = new CreateNotification()
+                {
+                    UserEmail = accountSeller.Email,
+                    Content = "Your product has been ordered. Please prepare the order.",
+                };
+                await _notificationRepository.CreateNotificationAsync(notificationSeller);
+
+                return true;
+            }
+            return false;
         }
     }
 }
