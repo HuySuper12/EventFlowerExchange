@@ -42,6 +42,7 @@ import FailedTransaction from "./page/Buyer-Seller/Failed";
 import FailedCheckout from "./page/Buyer-Seller/Failed/index1";
 import OrderSumary from "./page/Buyer-Seller/orderSumary";
 import "./styles/main.scss";
+import WalletSeller from "./page/Buyer-Seller/wallet-seller";
 
 const { Content } = Layout;
 
@@ -104,7 +105,7 @@ function App() {
     },
 
     {
-      path: "profile-customer",
+      path: "profile",
       element: <ProfileCustomer />,
     },
 
@@ -112,8 +113,13 @@ function App() {
       path: "wallet-customer",
       element: <WalletCustomer />,
     },
+
     {
-      path: "changpassword-customer",
+      path: "wallet-seller",
+      element: <WalletSeller />,
+    },
+    {
+      path: "changpassword",
       element: <ChangePasswordCustomer />,
     },
     {
