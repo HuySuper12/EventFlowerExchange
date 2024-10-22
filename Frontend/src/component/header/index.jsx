@@ -15,11 +15,11 @@ function Header() {
   };
 
   const handleProfile = () => {
-    navigate("/profile-customer");
+    navigate("/profile");
   };
 
   const handleProduct = () => {
-    navigate("/product");
+    navigate("/add-product");
   };
 
   const handleLogout = () => {
@@ -41,7 +41,7 @@ function Header() {
           `Account/GetAccountByEmail/${encodedEmail}`
         );
         setAccountData(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
