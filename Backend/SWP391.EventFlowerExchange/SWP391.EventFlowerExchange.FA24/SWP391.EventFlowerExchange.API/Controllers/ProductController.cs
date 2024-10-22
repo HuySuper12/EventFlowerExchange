@@ -16,6 +16,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         private IAccountService _account;
         private IConfiguration _config;
         private IRequestService _requestService;
+
         public ProductController(IProductService service, IConfiguration config, IAccountService account, IRequestService requestService)
         {
             _service = service;
@@ -58,7 +59,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/Latest")]
-        public async Task<IActionResult> GetLatestProducts()
+        public async Task<IActionResult> GetLatestProductList()
         {
             var products = await _service.GetLatestProductsFromAPIAsync();
             if (products == null || !products.Any())
@@ -69,7 +70,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/Oldest")]
-        public async Task<IActionResult> GetOldestProducts()
+        public async Task<IActionResult> GetOldestProductList()
         {
             var products = await _service.GetOldestProductsFromAPIAsync();
             if (products == null || !products.Any())
@@ -126,6 +127,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.GetRejectedProductListBySellerEmailFromAPIAsync(acc));
         }
 
+        [HttpGet("GetProductList/Expired/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetExpiredProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetExpiredProductListBySellerEmailFromAPIAsync(acc));
+        }
+
         [HttpGet("SearchProduct/{id:int}")]
         public async Task<IActionResult> SearchProductByID(int id)
         {
@@ -154,19 +163,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
         {
             var account = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = product.SellerEmail });
-            var check = await _service.CreateNewProductFromAPIAsync(product, account);
-            if (check)
-            {
-                var checkProduct = await _service.SearchProductByNameFromAPIAsync(product.ProductName);
-                var request = new Request()
-                {
-                    Amount = product.Price,
+            return await _service.CreateNewProductFromAPIAsync(product, account);
 
-                };
-                return true;
-
-            }
-            return false;
         }
 
         [HttpDelete("{id}")]
@@ -182,6 +180,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             bool status = await _service.RemoveProductFromAPIAsync(checkProduct);
             return Ok(status);
+        }
+
+        [HttpGet("GetOrdersAndRatingBySellerEmail")]
+        //[Authorize]
+        public async Task<IActionResult> GetOrdersAndRatingBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetAllOrdersAndRatingBySellerFromAPIEmailAsync(acc));
         }
 
 

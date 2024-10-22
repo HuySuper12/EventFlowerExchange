@@ -75,11 +75,17 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return list;
         }
 
-        public async Task<Request?> GetLatestRequestByUserIdAsync(string id)
+        public async Task<List<Request?>> GetListRequestsByEmailAndTypeAsync(string type, Account account)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            var checkRequest = await _context.Requests.Where(p => p.UserId == id && p.Status == "Pending").OrderByDescending(p => p.CreatedAt).FirstOrDefaultAsync();
+            var list = await _context.Requests.Where(p => p.RequestType != null && p.RequestType.ToLower().Contains(type.ToLower()) && p.UserId == account.Id).ToListAsync();
+            return list;
+        }
 
+        public async Task<Request?> GetRequestByProductIdAsync(int id)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var checkRequest = await _context.Requests.FirstOrDefaultAsync(p => p.ProductId == id && p.Status == "Pending");
             return checkRequest;
         }
 
@@ -89,7 +95,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var checkRequest = await _context.Requests.FindAsync(id);
             return checkRequest;
         }
-
 
     }
 }

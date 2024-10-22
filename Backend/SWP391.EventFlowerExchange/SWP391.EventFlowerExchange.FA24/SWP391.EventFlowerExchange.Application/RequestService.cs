@@ -28,13 +28,6 @@ namespace SWP391.EventFlowerExchange.Application
             return _service.GetListRequestsAsync(value);
         }
 
-
-        public Task<Request?> GetRequestByUserIdFromAPIAsync(string id)
-        {
-            return _service.GetLatestRequestByUserIdAsync(id);
-        }
-
-
         public Task<bool> UpdateRequestFromAPIAsync(Request value)
         {
             return _service.UpdateRequestAsync(value);
@@ -45,5 +38,14 @@ namespace SWP391.EventFlowerExchange.Application
             return _service.GeRequestByIdAsync(id);
         }
 
+        public Task<Request?> GetRequestByProductIdFromAPIAsync(int id)
+        {
+            return _service.GetRequestByProductIdAsync(id);
+        }
+
+        public Task<List<Request?>> GetListRequestsByEmailAndTypeAsync(string type, Account account)
+        {
+            return _service.GetListRequestsByEmailAndTypeAsync(type, account);
+        }
     }
 }

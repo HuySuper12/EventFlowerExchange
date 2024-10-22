@@ -643,10 +643,7 @@
           "Microsoft.Extensions.Configuration.Json": "8.0.0"
         },
         "runtime": {
-          "SWP391.EventFlowerExchange.Domain.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "SWP391.EventFlowerExchange.Domain.dll": {}
         }
       }
     }
