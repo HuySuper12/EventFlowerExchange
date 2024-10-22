@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./index.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import api from "../../config/axios";
 
 function Header() {
   const [visible, setVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
+  const [accountData, setAccountData] = useState(null);
 
   const handleOrder = () => {
     navigate("/order");
@@ -29,6 +31,29 @@ function Header() {
     navigate("/");
   };
 
+  const email = sessionStorage.getItem("email");
+
+  const fetchAccountData = async () => {
+    if (email) {
+      try {
+        const encodedEmail = encodeURIComponent(email);
+        const response = await api.get(
+          `Account/GetAccountByEmail/${encodedEmail}`
+        );
+        setAccountData(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    } else {
+      console.error("Email is not set in sessionStorage.");
+    }
+  };
+
+  useEffect(() => {
+    fetchAccountData();
+  }, [email]);
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const userRole = sessionStorage.getItem("role");
@@ -42,7 +67,7 @@ function Header() {
   }, []);
 
   return (
-    <div className="header flex items-center justify-between py-5 font-medium relative">
+    <div className="header flex items-center justify-between py-5 font-medium relative shadow-md">
       <Link to={"/"}>
         <img
           src="https://i.postimg.cc/sf9KmBz1/logo.png"
@@ -84,6 +109,19 @@ function Header() {
           <>
             <div className="group relative">
               <img
+                src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/noti-transformed.png?alt=media&token=47f07cdb-cb8b-4bba-a556-7151c4531c4a"
+                className="w-8 cursor-pointer rounded-full"
+                alt="Notification Icon"
+              />
+              <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+                10
+              </p>
+              <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
+                <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded"></div>
+              </div>
+            </div>
+            <div className="group relative">
+              <img
                 src="https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
                 className="w-8 cursor-pointer rounded-full"
                 alt="Profile Icon"
@@ -121,15 +159,17 @@ function Header() {
             </div>
 
             {/* Hiển thị cart khi người dùng đã đăng nhập */}
-            <Link to={"/cart"} className="relative w-5 min-w-7">
-              <img
-                src="https://www.pngitem.com/pimgs/m/365-3659067_shopping-paper-bag-outline-shopping-cart-bag-icon.png"
-                alt="Cart Icon"
-              />
-              <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-                10
-              </p>
-            </Link>
+            {role !== "Seller" && (
+              <Link to={"/cart"} className="relative w-5 min-w-7">
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/images-p9Z7WcJCh-transformed.png?alt=media&token=8e07ccd5-7373-4a39-a7c7-7c8e834cd38c"
+                  alt="Cart Icon"
+                />
+                <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+                  10
+                </p>
+              </Link>
+            )}
           </>
         ) : (
           <div className="flex items-center gap-4">
@@ -179,8 +219,8 @@ function Header() {
           <NavLink className="py-2 pl-6 border" to={"/"}>
             HOME
           </NavLink>
-          <NavLink className="py-2 pl-6 border" to={"/collection"}>
-            COLLECTION
+          <NavLink className="py-2 pl-6 border" to={"/product"}>
+            PRODUCT
           </NavLink>
           <NavLink className="py-2 pl-6 border" to={"/contact"}>
             CONTACT

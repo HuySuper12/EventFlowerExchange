@@ -4,20 +4,38 @@ import Header from "../../../component/header";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../../component/footer";
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const handleForgotPassword = async (values) => {
-    console.log(values);
+    console.log("Request Payload:", values); // Log the request payload
+    const email = values.email;
+
+    // Kiểm tra xem email có hợp lệ không
+    if (!email) {
+      alert("Email is required.");
+      return;
+    }
+
     try {
-      // Gửi yêu cầu đến server để xử lý quên mật khẩu
-      await api.post("forgot-password", values);
-      alert("Check your email for password reset instructions.");
-      navigate("/login"); // Chuyển hướng về trang đăng nhập
+      // Gọi API với email là query parameter
+      const response = await api.post("/Account/SendOTP", null, {
+        params: { email: email }, // Sử dụng email từ form
+      });
+
+      toast.success("Check your email for password reset instructions.");
+
+      if (response.data === true) {
+        localStorage.setItem("email", email);
+        navigate("/otp");
+      } else {
+        console.error(`Error: Status code ${response.status}`);
+      }
     } catch (err) {
-      console.log(err);
-      alert(err.response.data);
+      console.error("Error response:", err.response); // Log the error response
+      alert(err.response?.data?.message || "An error occurred"); // Show a more user-friendly error message
     }
   };
 
