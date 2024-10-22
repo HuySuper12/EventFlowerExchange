@@ -1,43 +1,108 @@
-// Transaction.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SidebarCustomer from "../../../component/slidebar-customer";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import { Table } from "antd";
+import { Tab, Tabs } from "../../../component/tab";
+import api from "../../../config/axios"; // Assuming you have axios instance setup here
 
 const TransactionCustomer = () => {
-  const dataSource = [
+  const [transactions, setTransactions] = useState([]);
+  const email = sessionStorage.getItem("email"); // Get email from sessionStorage
+
+  useEffect(() => {
+    // Function to fetch data
+    const fetchTransactions = async () => {
+      try {
+        // Call API with email as parameter
+        const response = await api.get(
+          "Transaction/ViewAllTransactionByEmail",
+          {
+            params: { email: email }, // Corrected the params syntax
+          }
+        );
+        console.log(response);
+        setTransactions(response.data); // Set the response data to transactions state
+      } catch (error) {
+        console.error("Error fetching transaction data:", error);
+      }
+    };
+
+    // Invoke the function to fetch transactions
+    fetchTransactions();
+  }, [email]); // Dependency array to re-run effect when email changes
+
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+
+    });
+  };
+
+  const columns1 = [
     {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
+      title: "Transaction ID",
+      dataIndex: "transactionId",
+      key: "transactionId",
     },
     {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
+      title: "Transaction Code",
+      dataIndex: "transactionCode",
+      key: "transactionCode",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (status ? "Success" : "Failed"),
+    },
+    {
+      title: "Transaction Content",
+      dataIndex: "transactionContent",
+      key: "transactionContent",
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => formatDate(createdAt),
     },
   ];
 
-  const columns = [
+  const columns2 = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Transaction ID",
+      dataIndex: "transactionId",
+      key: "transactionId",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Transaction Code",
+      dataIndex: "transactionCode",
+      key: "transactionCode",
+    },
+    {
+      title: "Transaction Content",
+      dataIndex: "transactionContent",
+      key: "transactionContent",
     },
   ];
+
   return (
     <>
       <Header />
@@ -46,9 +111,36 @@ const TransactionCustomer = () => {
       <div className="flex flex-col md:flex-row h-screen p-6 ml-[200px] mr-[200px]">
         <SidebarCustomer />
         <div className="w-full ml-[30px] bg-white shadow-2xl rounded-xl p-4">
-          <div className="mb-6 p-4 border border-gray-300 rounded-lg w-full ">
+          <div className="mb-6 p-4 border border-gray-300 rounded-lg w-full">
             <h4 className="text-lg font-bold mb-[20px]">Transaction History</h4>
-            <Table dataSource={dataSource} columns={columns} />;
+            <Tabs>
+              <Tab label="Transaction Order">
+                <div className="py-4">
+                  <h2 className="text-lg font-medium mb-2">
+                    Transaction Order
+                  </h2>
+                  <Table
+                    dataSource={transactions}
+                    columns={columns1}
+                    pagination={{ pageSize: 4 }}
+                  />
+                  ;
+                </div>
+              </Tab>
+              <Tab label="Transaction Deposit">
+                <div className="py-4">
+                  <h2 className="text-lg font-medium mb-2">
+                    Transaction Deposit
+                  </h2>
+                  <Table
+                    dataSource={transactions}
+                    columns={columns2}
+                    pagination={{ pageSize: 4 }}
+                  />
+                  ;
+                </div>
+              </Tab>
+            </Tabs>
           </div>
         </div>
       </div>

@@ -83,6 +83,13 @@ const WalletCustomer = () => {
     setIsModalOpen(false);
   };
 
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
   return (
     <>
       <Header />
@@ -96,7 +103,9 @@ const WalletCustomer = () => {
             <p>
               Balance:{" "}
               <strong>
-                {accountData ? accountData.balance : "Loading..."} VNĐ
+                {accountData
+                  ? formatCurrency(accountData.balance)
+                  : "Loading..."}
               </strong>
             </p>
             <button
