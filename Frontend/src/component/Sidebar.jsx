@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Modal } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DashboardOutlined,
   ShoppingCartOutlined,
@@ -20,16 +20,17 @@ const Sidebar = ({ darkMode }) => {
   const [collapsed, setCollapsed] = useState(false);  
   const [logoutVisible, setLogoutVisible] = useState(false);  
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
-    { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
-    { key: '/posts', icon: <EditOutlined />, label: 'Posts' },
-    { key: '/orders', icon: <ShoppingCartOutlined />, label: 'Orders' },
-    { key: '/customers', icon: <UserOutlined />, label: 'Customers' },
-    { key: '/staffs', icon: <TeamOutlined />, label: 'Staffs' },
-    { key: '/couriers', icon: <CarOutlined />, label: 'Couriers' },
-    { key: '/transactions', icon: <TransactionOutlined />, label: 'Transactions' },
-    { key: '/vouchers', icon: <TagOutlined />, label: 'Vouchers' },
+    { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
+    { key: 'posts', icon: <EditOutlined />, label: 'Posts' },
+    { key: 'orders', icon: <ShoppingCartOutlined />, label: 'Orders' },
+    { key: 'customers', icon: <UserOutlined />, label: 'Customers' },
+    { key: 'staffs', icon: <TeamOutlined />, label: 'Staffs' },
+    { key: 'couriers', icon: <CarOutlined />, label: 'Couriers' },
+    { key: 'transactions', icon: <TransactionOutlined />, label: 'Transactions' },
+    { key: 'vouchers', icon: <TagOutlined />, label: 'Vouchers' },
   ];
 
   const showLogoutConfirm = () => {
@@ -38,6 +39,8 @@ const Sidebar = ({ darkMode }) => {
 
   const handleLogout = () => {
     setLogoutVisible(false);
+    sessionStorage.clear();
+    navigate("/login");
   };
 
   return (

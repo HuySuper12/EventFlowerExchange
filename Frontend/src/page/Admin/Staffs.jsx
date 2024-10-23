@@ -13,7 +13,7 @@ const Staffs = () => {
   const fetchStaffs = async () => {
     const role = "staff";
     try {
-      const response = await api.get(`Account/ViewAllAccount/${role}`);
+      const response = await api.get(`Account/ViewAllAccount/`, {params: {role: role}})
       setStaffs(response.data);
     } catch (error) {
       message.error('Failed to fetch staff list');

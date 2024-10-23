@@ -111,7 +111,7 @@ const AddProduct = () => {
         <SlidebarSeller />
 
         <div className="mt-[20px]">
-          <div className="text-3xl font-semibold ml-[500px]">ADD PRODUCT</div>
+          <div className="text-3xl font-semibold ml-[450px]">ADD PRODUCT</div>
 
           <Form
             className="form mt-[20px] ml-[100px]"
@@ -132,7 +132,7 @@ const AddProduct = () => {
               <Input
                 type="text"
                 placeholder="Product Name"
-                className="px-3 py-2 border border-gray-800 w-[500px] h-[50px]  text-base"
+                className="px-3 py-2 border border-gray-800 w-[900px] h-[50px]  text-base"
               />
             </Form.Item>
 
@@ -149,14 +149,14 @@ const AddProduct = () => {
             >
               <InputNumber
                 placeholder="Freshness Duration"
-                className="px-3 py-2 border border-gray-800 w-[500px] text-base"
+                className="px-3 py-2 border border-gray-800 w-[900px] text-base"
               />
             </Form.Item>
 
             <Form.Item
               label="Combo Type"
               name="combo_type"
-              className="w-[500px]"
+              className="w-[900px]"
               rules={[
                 {
                   required: true,
@@ -165,8 +165,8 @@ const AddProduct = () => {
               ]}
             >
               <Select placeholder="Select Combo Type" className="h-[50px]">
-                <Select.Option value="event">Event</Select.Option>
-                <Select.Option value="batch">Batch</Select.Option>
+                <Select.Option value="Event">Event</Select.Option>
+                <Select.Option value="Batch">Batch</Select.Option>
               </Select>
             </Form.Item>
 
@@ -179,7 +179,7 @@ const AddProduct = () => {
             >
               <InputNumber
                 placeholder="Price"
-                className="px-3 py-2 border border-gray-800 w-[500px] h-[50px] text-base"
+                className="px-3 py-2 border border-gray-800 w-[900px] h-[50px] text-base"
                 min={1}
               />
             </Form.Item>
@@ -187,22 +187,22 @@ const AddProduct = () => {
             <Form.Item
               label="Category"
               name="category"
-              className="w-[500px] "
+              className="w-[900px] "
               rules={[
                 { required: true, message: "Vui lòng nhập loại của sản phẩm!" },
               ]}
             >
               <Select placeholder="Select Category" className="h-[50px]">
-                <Select.Option value="wedding">Wedding</Select.Option>
-                <Select.Option value="birthday">Birthday</Select.Option>
-                <Select.Option value="workshop">Workshop</Select.Option>
+                <Select.Option value="Wedding">Wedding</Select.Option>
+                <Select.Option value="Birthday">Birthday</Select.Option>
+                <Select.Option value="Conference">Conference</Select.Option>
               </Select>
             </Form.Item>
 
             <Form.Item
               label="Description"
               name="description"
-              className="w-[500px]"
+              className="w-[900px]"
               rules={[
                 {
                   required: true,
@@ -213,7 +213,7 @@ const AddProduct = () => {
               <TextArea
                 rows={4}
                 placeholder="Description"
-                className="px-3 py-2 border border-gray-800 w-[500px] text-base"
+                className="px-3 py-2 border border-gray-800 w-[900px] text-base"
               />
             </Form.Item>
 

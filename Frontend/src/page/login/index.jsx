@@ -43,7 +43,7 @@ const Login = () => {
 
       if (role === "Buyer") {
         navigate("/");
-      } else if (role === "Manager") {
+      } else if (role === "Staff") {
         navigate("/admin/dashboard");
       } else if (role === "Seller") {
         navigate("/");
@@ -57,7 +57,7 @@ const Login = () => {
   const handleLoginGoogle = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential; // Lấy token từ Google
-      const response = await api.post(`Account/LoginByGoogle/${token}`); // Correct template literal syntax
+      const response = await api.post(`Account/LoginByGoogle/${token}`, {});
 
       const appToken = response.data; // Lấy token từ server
 
@@ -80,10 +80,6 @@ const Login = () => {
       sessionStorage.setItem("email", email);
 
       if (role === "Buyer") {
-        navigate("/");
-      } else if (role === "staff") {
-        navigate("/admin/dashboard");
-      } else if (role === "Seller") {
         navigate("/");
       }
     } catch (err) {
