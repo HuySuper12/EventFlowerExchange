@@ -15,9 +15,9 @@ function ProductCard({ products }) {
   }
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+};
 
   const email = sessionStorage.getItem("email");
   const role = sessionStorage.getItem("role");
@@ -103,11 +103,11 @@ function ProductCard({ products }) {
                     {product.productName}
                   </span>
                   <span className="block bg-orange-300 text-black rounded-full text-xs font-bold px-3 py-2 leading-none flex items-center">
-                    {product.price} VNĐ
+                    {formatCurrency(product.price)}
                   </span>
                 </div>
                 <div className="mt-2 text-sm text-gray-800">
-                  {formatDate(product.createdAt)}
+                  Post date: {formatDate(product.createdAt)}
                 </div>
                 <div className="flex justify-center mt-4">
                   {role !== "Seller" && (
