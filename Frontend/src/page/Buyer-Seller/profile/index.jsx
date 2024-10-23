@@ -16,7 +16,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ProfileCustomer = () => {
+const Profile = () => {
   const [accountData, setAccountData] = useState(null);
   const email = sessionStorage.getItem("email");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -269,4 +269,4 @@ const ProfileCustomer = () => {
   );
 };
 
-export default ProfileCustomer;
+export default Profile;
