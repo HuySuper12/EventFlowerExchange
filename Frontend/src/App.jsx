@@ -43,6 +43,7 @@ import FailedCheckout from "./page/Buyer-Seller/Failed/index1";
 import OrderSumary from "./page/Buyer-Seller/orderSumary";
 import "./styles/main.scss";
 import WalletSeller from "./page/Buyer-Seller/wallet-seller";
+import SellerPage from "./page/Buyer-Seller/seller-page";
 
 const { Content } = Layout;
 
@@ -158,6 +159,10 @@ function App() {
     {
       path: "order-summary",
       element: <OrderSumary />,
+    },
+    {
+      path: "seller/:id",
+      element: <SellerPage />,
     },
 
     // Admin Routes wrapped in PrivateRoute

@@ -218,6 +218,7 @@ const ProductPage = () => {
                     src="https://cdn-icons-png.flaticon.com/512/3225/3225196.png"
                     alt="Shop Icon"
                     className="w-5 h-5"
+                    onClick={() => navigate(`/seller/${seller.id}`)}
                   />
                   Visit Shop
                 </button>
