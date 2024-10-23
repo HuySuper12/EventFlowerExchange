@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom"; // Import useParams
+import { useNavigate, useParams } from "react-router-dom"; // Import useParams
 import { Image } from "antd";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import api from "../../../config/axios";
 import ProductCard from "../../../component/product-card"; // Import ProductCard
+import { toast } from "react-toastify";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -14,6 +15,8 @@ const ProductPage = () => {
   const [seller, setSeller] = useState({}); // Updated state for seller
   const [relatedProducts, setRelatedProducts] = useState([]); // State for related products
   const descriptionRef = useRef(null); // Reference for the description section
+
+  const navigate = useNavigate();
 
   // Function to fetch product details from API
   const fetchProductDetails = async () => {
@@ -64,6 +67,35 @@ const ProductPage = () => {
   const handleMoreClick = () => {
     setActiveTab("Description"); // Switch to the Description tab
     scrollToDescription(); // Scroll to the description section
+  };
+
+  const handleAddToCart = async (event, productId) => {
+    const token = sessionStorage.getItem("token");
+    const email = sessionStorage.getItem("email");
+    if (!token) {
+      toast.error("You need to log in to add items to the cart.");
+      navigate("/login");
+      return;
+    }
+
+    console.log("Adding product with ID:", id);
+    try {
+      const response = await api.post("Cart/CreateCartItem", {
+        productId: id,
+        buyerEmail: email,
+      });
+      if (response.data === true) {
+        toast.success(`Added product successfully`);
+        console.log(response.data);
+        console.log(email);
+        console.log(productId);
+      } else {
+        toast.error("Add product failed");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Add product failed");
+    }
   };
 
   return (
@@ -148,7 +180,10 @@ const ProductPage = () => {
             </div>
 
             <div className="flex items-center gap-4 mb-6">
-              <button className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition">
+              <button
+                className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition"
+                onClick={handleAddToCart}
+              >
                 Add to Cart
               </button>
             </div>
