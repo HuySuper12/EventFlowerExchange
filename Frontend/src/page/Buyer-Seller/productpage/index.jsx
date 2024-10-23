@@ -202,7 +202,7 @@ const ProductPage = () => {
             />
             <div>
               <h2 className="text-xl font-bold">
-                {seller.username || "Loading..."}
+                {seller.name || "Loading..."}
               </h2>
               <div className="flex gap-4 mt-4">
                 <button className="px-4 py-2 bg-white text-gray-800 border border-gray-800 font-bold rounded-md hover:bg-blue-200 transition flex items-center gap-2">
@@ -213,12 +213,14 @@ const ProductPage = () => {
                   />
                   Chat
                 </button>
-                <button className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-orange-300 transition flex items-center gap-2">
+                <button
+                  className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-orange-300 transition flex items-center gap-2"
+                  onClick={() => navigate(`/seller/${seller.id}`)}
+                >
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/3225/3225196.png"
                     alt="Shop Icon"
                     className="w-5 h-5"
-                    onClick={() => navigate(`/seller/${seller.id}`)}
                   />
                   Visit Shop
                 </button>

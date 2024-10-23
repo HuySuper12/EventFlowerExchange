@@ -56,6 +56,20 @@ const SellerPage = () => {
     fetchSellerSoldProduct();
   },);
 
+  useEffect(() => {
+    const fetchSellerSoldProduct = async () => {
+      try {
+        const response = await api.get(`Product/GetOrdersAnd`, {params: {email: seller.email}});
+        setSellerSoldProducts(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching seller details:", error);
+      }
+    };
+
+    fetchSellerSoldProduct();
+  },);
+
 
 
 
