@@ -13,6 +13,7 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<List<Order>> ViewAllOrderFromAPIAsync();
         public Task<List<GetProduct>> ViewOrderDetailFromAPIAsync(Order order);
         public Task<List<Order>> ViewOrderByBuyerIdFromAPIAsync(Account account);
+        public Task<List<Order>> ViewOrderByStatusFromAPIAsync(Order order);
         public Task<Order> SearchOrderByOrderIdFromAPIAsync(Order order);
         public Task<bool> CreateOrderFromAPIAsync(DeliveryInformation deliveryInformation, Voucher voucher);
         public Task<bool> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller);

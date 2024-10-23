@@ -14,6 +14,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<List<GetProduct>> ViewOrderDetailAsync(Order order);
         public Task<Order> SearchOrderByOrderIdAsync(Order order);
         public Task<List<Order>> ViewOrderByBuyerIdAsync(Account account);
+        public Task<List<Order>> ViewOrderByStatusAsync(Order order);
         public Task<bool> CreateOrderAsync(DeliveryInformation deliveryInformation, Account account, List<int> productIdList, Voucher voucher);
         public Task<bool> CreateOrderBySellerAsync(CreateOrderBySeller createOrderBySeller, Account account, GetProduct product);
         public Task<bool> UpdateOrderStatusAsync(Order order);

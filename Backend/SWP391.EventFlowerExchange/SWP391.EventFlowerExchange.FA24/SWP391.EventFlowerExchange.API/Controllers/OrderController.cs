@@ -73,11 +73,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewOrderByBuyerIdAsync(string email)
         {
-
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
             if (account != null)
             {
                 return Ok(await _service.ViewOrderByBuyerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderByStatusAndBuyerEmail")]
+        //[Authorize]
+        public async Task<IActionResult> ViewOrderByStatus(string status, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            var orderList = await _service.ViewOrderByStatusFromAPIAsync(new Order() { Status = status, BuyerId = account.Id });
+            if (orderList.Count != 0)
+            {
+                return Ok(orderList);
             }
             return BadRequest("Not found!!!");
         }
@@ -95,9 +107,12 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
             var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
-            if (result.SubTotal < voucher.MinOrderValue && DateTime.UtcNow > voucher.ExpiryDate)
+            if (voucher != null)
             {
-                return BadRequest("Voucher is invalid.");
+                if (result.SubTotal < voucher.MinOrderValue && DateTime.UtcNow > voucher.ExpiryDate)
+                {
+                    return BadRequest("Voucher is invalid.");
+                }
             }
             return Ok(result);
         }
@@ -195,21 +210,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 productList.Add(item.ProductId);
             }
             var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
-            var voucher = await _voucherService.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = (int)order.VoucherId });
 
             //Lenh chuyen tien ve cho nguoi ban hang
             decimal? originPrice;
             if (check)
-            {
                 originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
-                if (voucher != null)
-                    originPrice /= (1 - voucher.DiscountValue);
-            }
             else
-            {
                 originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
-                if (voucher != null)
-                    originPrice /= (1 - voucher.DiscountValue);
+
+            //Lay gia goc khong tinh giam gia
+            if (order.VoucherId != null)
+            {
+                var voucher = await _voucherService.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = (int)order.VoucherId });
+                originPrice /= (1 - voucher.DiscountValue);
             }
 
             //Cap nhat lai tien tra cho nguoi ban
@@ -268,7 +281,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 productList.Add(item.ProductId);
             }
             var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
-            var voucher = await _voucherService.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = (int)order.VoucherId });
 
             //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
             decimal? originPrice = 0;

@@ -158,6 +158,15 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(checkProduct);
         }
 
+
+        [HttpGet("GetOrdersAndRatingBySellerEmail")]
+        //[Authorize]
+        public async Task<IActionResult> GetOrdersAndRatingBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetAllOrdersAndRatingBySellerFromAPIEmailAsync(acc));
+        }
+
         [HttpPost("CreateProduct")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
@@ -181,17 +190,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             bool status = await _service.RemoveProductFromAPIAsync(checkProduct);
             return Ok(status);
         }
-
-        [HttpGet("GetOrdersAndRatingBySellerEmail")]
-        //[Authorize]
-        public async Task<IActionResult> GetOrdersAndRatingBySellerEmail(string email)
-        {
-            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _service.GetAllOrdersAndRatingBySellerFromAPIEmailAsync(acc));
-        }
-
-
-
 
     }
 }

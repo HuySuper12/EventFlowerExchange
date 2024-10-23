@@ -59,7 +59,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             else
                 ship = CheckFeeShipForOrderBatch(address);
 
-            decimal discount = subTotal * voucher.DiscountValue;
+            decimal discount;
+            if (voucher == null)
+                discount = 0;
+            else
+                discount = subTotal * voucher.DiscountValue;
 
             return new CheckOutAfter { SubTotal = subTotal, Ship = ship, Discount = discount, Total = subTotal + ship - discount };
         }
@@ -85,7 +89,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             {
                 totalPrice += cartItem.Price;
             }
-            totalPrice *= (1 - voucher.DiscountValue);
+            //Neu co voucher
+            if (voucher != null)
+            {
+                totalPrice *= (1 - voucher.DiscountValue);
+            }
 
             var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[0] });
 
@@ -103,10 +111,13 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 SellerId = product.SellerId,
                 TotalPrice = totalPrice,
                 Status = "Pending",
-                VoucherId = voucher.VoucherId,
                 DeliveredAt = deliveryInformation.Address,
                 PhoneNumber = deliveryInformation.PhoneNumber
             };
+            //Neu co voucher
+            if (voucher != null)
+                order.VoucherId = voucher.VoucherId;
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -123,7 +134,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 _context.OrderItems.Add(orderItem);
 
                 //Xoa tung san pham trong gio hang
-                await _cartRepository.RemoveCartItemToCreateOrderAsync(new CartItem() { BuyerId = account.Id, ProductId = productIdList[i] });
+                await _cartRepository.RemoveCartItemToCreateOrderAsync(new CartItem() { ProductId = productIdList[i] });
             }
 
             //Tao giao dich khi mua hang
@@ -136,8 +147,8 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 {
                     break;
                 }
-
             }
+
             Transaction transaction = new Transaction()
             {
                 TransactionCode = transactionCode,
@@ -263,6 +274,16 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             return await _context.Orders.FirstOrDefaultAsync(x => x.OrderId == order.OrderId);
+        }
+
+        public async Task<List<Order>> ViewOrderByStatusAsync(Order order)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            if (order.Status.ToLower() == "null")
+            {
+                return await _context.Orders.Where(x => x.Status == null && x.BuyerId == order.BuyerId).ToListAsync();
+            }
+            return await _context.Orders.Where(x => x.Status == order.Status && x.BuyerId == order.BuyerId).ToListAsync();
         }
 
         public async Task<bool> UpdateOrderStatusAsync(Order order)

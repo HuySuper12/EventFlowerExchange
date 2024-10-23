@@ -70,6 +70,11 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.SearchOrderByOrderIdAsync(order);
         }
 
+        public Task<List<Order>> ViewOrderByStatusFromAPIAsync(Order order)
+        {
+            return _repo.ViewOrderByStatusAsync(order);
+        }
+
         public async Task<bool> UpdateOrderStatusFromAPIAsync(Order order)
         {
             return await _repo.UpdateOrderStatusAsync(order);
