@@ -106,7 +106,7 @@ function App() {
 
     {
       path: "profile",
-      element: <ProfileCustomer />,
+      element: <Profile />,
     },
 
     {
