@@ -22,6 +22,11 @@ const Orders = () => {
       try {
         const response = await api.get('Order/ViewAllOrder');
         setOrders(response.data);
+        // Set assigned shippers based on orders
+        const assigned = response.data
+          .filter(order => order.status === 'Take Over')
+          .map(order => order.deliveryPersonEmail); // Assuming deliveryPersonEmail is the identifier
+        setAssignedShippers(assigned);
       } catch (error) {
         console.error("Error fetching orders: ", error);
         message.error("Failed to load orders.");
@@ -109,14 +114,16 @@ const Orders = () => {
   const handleCheck = (order) => {
     setSelectedOrder(order); 
     setIsCheckModalVisible(true); 
-    setAddress(order.deliveredAt); // Set the address from the order
-    fetchShippers(order.deliveredAt); // Fetch shippers based on the address
+    setAddress(order.deliveredAt); 
+    fetchShippers(order.deliveredAt); 
   };
 
   const fetchShippers = async (address) => {
     try {
       const response = await api.get(`Account/SearchShipper/${encodeURIComponent(address)}`);
-      setShippers(response.data);
+      // Filter out shippers that are already assigned
+      const availableShippers = response.data.filter(shipper => !assignedShippers.includes(shipper.email));
+      setShippers(availableShippers);
     } catch (error) {
       message.error('Failed to fetch shippers for the given address.');
       console.error('API error:', error);
@@ -190,7 +197,7 @@ const Orders = () => {
       </Modal>
     );
   };
-
+  
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

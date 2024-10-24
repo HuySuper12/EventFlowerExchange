@@ -49,12 +49,6 @@ const Requests = () => {
       render: (type) => <span style={{ fontWeight: 'bold' }}>{type}</span>,
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (value) => value != null ? `$${value.toFixed(2)}` : 'N/A',
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',

@@ -120,12 +120,6 @@ const Posts = () => {
               ),
             },
             {
-              title: 'Price',
-              dataIndex: 'amount',
-              key: 'amount',
-              render: (price) => price !== null && price !== undefined ? `$${price.toFixed(2)}` : 'N/A',
-            },
-            {
               title: 'Actions',
               key: 'actions',
               render: (_, record) => (

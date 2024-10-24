@@ -207,14 +207,14 @@ const Shippers = () => {
           <Form.Item
             name="salary"
             label="Salary"
-            rules={[{ required: true, message: 'Please input the salary!' }]}
+            rules={[{ message: 'Please input the salary!' }]}
           >
-            <Input type="number" />
+            <Input disabled value={editingShipper?.salary} />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[{ message: 'Please input the email!' }]}
           >
             <Input disabled value={editingShipper?.email} />
           </Form.Item>

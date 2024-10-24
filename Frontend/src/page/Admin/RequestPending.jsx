@@ -28,29 +28,47 @@ const RequestPending = () => {
   };
 
   const handleAcceptRequest = async (requestId) => {
-    const requestBody = {
-      userId: "user_id_here", // Replace with actual user ID if needed
-      requestType: "withdraw", // Adjust based on your request type
-      paymentId: 0, // Set as needed
-      amount: 0, // Set as needed
-      productId: 0, // Set as needed
-      status: 'Accepted', // Update the status
-      createdAt: new Date().toISOString(), // Current timestamp
-    };
+  const requestToAccept = withdrawRequests.find(req => req.requestId === requestId);
   
-    try {
-      const response = await api.put('/Request/UpdateRequest', requestBody);
-      if (response.data === true) {
-        message.success('Request accepted successfully');
-        fetchWithdrawRequests(); // Refresh the list
-      } else {
-        message.error('Failed to accept request. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error accepting request:', error);
-      message.error('Failed to accept request. Please check your input and API connection.');
-    }
+  if (!requestToAccept) {
+    message.error('Request not found.');
+    return;
+  }
+
+  // Extract necessary fields
+  const { userId, amount, requestType } = requestToAccept; 
+
+  const paymentLinkBody = {
+    requestId: requestId, 
+    userId: userId,       
+    amount: amount,       
+    type: requestType,   
   };
+
+  console.log('Payment Link Request Body:', paymentLinkBody); 
+
+  try {
+    const paymentLinkResponse = await api.post('VNPAY/create-payment-link', paymentLinkBody);
+
+    console.log('Payment Link Response:', paymentLinkResponse.data); // Log the response
+
+    if (paymentLinkResponse.data) {
+      message.success('Payment link created successfully');
+      
+    } else {
+      message.error('Failed to create payment link.');
+    }
+    fetchWithdrawRequests(); // Refresh the list
+  } catch (error) {
+    console.error('Error creating payment link:', error);
+    if (error.response) {
+      console.error('Response data:', error.response.data); // Log the response data
+      message.error(`Failed to create payment link: ${error.response.data.message || 'Unknown error'}`);
+    } else {
+      message.error('Failed to create payment link. Please check your input and API connection.');
+    }
+  }
+};
 
   const columns = [
     {
@@ -97,9 +115,14 @@ const RequestPending = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Button type="primary" onClick={() => handleAcceptRequest(record.requestId)}>
-          Accept
-        </Button>
+        <>
+          <Button type="primary" onClick={() => handleAcceptRequest(record.requestId)}>
+            Accept
+          </Button>
+          {/* <Button type="danger" onClick={() => handleRejectRequest(record.requestId)} style={{ marginLeft: 8 }}>
+            Reject
+          </Button> */}
+        </>
       ),
     },
   ];

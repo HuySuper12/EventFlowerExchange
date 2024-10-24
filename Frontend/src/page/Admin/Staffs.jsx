@@ -33,6 +33,11 @@ const Staffs = () => {
       key: 'name',
     },
     {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
       title: 'Phone',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
@@ -203,14 +208,14 @@ const Staffs = () => {
           <Form.Item
             name="salary"
             label="Salary"
-            rules={[{ required: true, message: 'Please input the salary!' }]}
+            rules={[{ message: 'Please input the salary!' }]}
           >
-            <Input type="number" />
+            <Input disabled value={editingStaff?.salary} />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[{ message: 'Please input the email!' }]}
           >
             <Input disabled value={editingStaff?.email} />
           </Form.Item>
