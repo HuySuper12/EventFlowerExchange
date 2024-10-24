@@ -20,6 +20,7 @@ namespace SWP391.EventFlowerExchange.Application
 
         public async Task<bool> CreateNewProductFromAPIAsync(CreateProduct product, Account account)
         {
+
             return await _repo.CreateNewProductAsync(product, account);
         }
 
@@ -99,5 +100,19 @@ namespace SWP391.EventFlowerExchange.Application
             return _repo.GetRejectedProductListBySellerEmailAsync(value);
         }
 
+        public Task<bool> UpdateProductFromAPIAsync(GetProduct product)
+        {
+            return _repo.UpdateProductAsync(product);
+        }
+
+        public Task<ProductStatistics> GetAllOrdersAndRatingBySellerFromAPIEmailAsync(Account account)
+        {
+            return _repo.GetAllOrdersAndRatingBySellerEmail(account);
+        }
+
+        public Task<List<GetProduct?>> GetExpiredProductListBySellerEmailFromAPIAsync(Account value)
+        {
+            return _repo.GetExpiredProductListBySellerEmailAsync(value);
+        }
     }
 }

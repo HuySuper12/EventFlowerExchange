@@ -36,8 +36,23 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public async Task<Payment> GetPayementByCodeAsync(CreatePayment payment)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            var check = await _context.Payments.SingleOrDefaultAsync(p => p.PaymentCode == payment.PaymentCode);
+            var check = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentCode.Equals(payment.PaymentCode));
             return check;
+        }
+
+        public async Task<List<Payment>> GetAllPaymentListByType(int type)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var list = await _context.Payments.Where(p => p.PaymentType == type).ToListAsync();
+            return list;
+        }
+
+        public async Task<List<Payment>> GetPayementByTypeAndEmailAsync(int type, Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var list = await GetAllPaymentListByType(type);
+            var filter = list.Where(p => p.UserId == account.Id).ToList();
+            return filter;
         }
     }
 }

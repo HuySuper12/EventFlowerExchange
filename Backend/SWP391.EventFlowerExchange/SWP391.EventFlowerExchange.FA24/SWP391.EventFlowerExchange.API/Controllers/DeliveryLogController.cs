@@ -75,13 +75,41 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
                 //Gan shipper vao don hang, thay doi trang thai don hang thanh giao hang
                 var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
-                order.Status = "Delivered";
+                order.Status = "Take over";
                 order.DeliveryPersonId = account.Id;
                 await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
                 var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
 
                 //Gui thong bao don hang dang giao
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = accountBuyer.Email,
+                    Content = "Shipper is coming to pick up your order"
+                };
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
+
+        [HttpPut("UpdateDeliveryLogDeliveringStatus/{orderId}")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogDeliveringStatusAsync(int orderId)
+        {
+            var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+            if (deliveryLog.Status == null)
+            {
+                deliveryLog.Status = "Delivering";
+                await _service.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+                order.Status = "Delivering";
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
+
                 CreateNotification notification = new CreateNotification()
                 {
                     UserEmail = accountBuyer.Email,
@@ -106,20 +134,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             //Cap nhat thoi gian chuyen tien cho seller
             var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
-            order.UpdateAt = DateTime.Now.AddDays(2);
-            await _orderService.UpdateOrderStatusFromAPIAsync(order);
-
-            var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
-
-            CreateNotification notification = new CreateNotification()
+            
+            if (order.UpdateAt == null)
             {
-                UserEmail = account.Email,
-                Content = "Your order has been delivered successfully."
-            };
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
-            await _notificationService.CreateNotificationFromApiAsync(notification);
+                var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
 
-            return true;
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "Your order has been delivered successfully."
+                };
+
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
         }
 
         [HttpPut("UpdateDeliveryLogFailStatus/{orderId}/{url}/{reason}")]
@@ -135,21 +168,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             //thay doi trang thai don hang
             var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
-            order.IssueReport = reason;
-            order.UpdateAt = DateTime.Now.AddDays(2);
-            order.Status = "Fail";
-            await _orderService.UpdateOrderStatusFromAPIAsync(order);
-
-            var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
-
-            CreateNotification notification = new CreateNotification()
+            if (order.UpdateAt == null)
             {
-                UserEmail = account.Email,
-                Content = "There is a problem with your order."
-            };
-            await _notificationService.CreateNotificationFromApiAsync(notification);
+                order.IssueReport = reason;
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                order.Status = "Fail";
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
-            return true;
+                var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "There is a problem with your order."
+                };
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
         }
     }
 }

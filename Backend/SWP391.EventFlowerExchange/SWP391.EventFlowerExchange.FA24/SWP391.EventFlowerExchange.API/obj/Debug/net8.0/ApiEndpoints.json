@@ -316,7 +316,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.AccountController",
     "Method": "SignUpSeller",
-    "RelativePath": "api/Account/signUp/Seller",
+    "RelativePath": "api/Account/SignUp/Seller",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -446,7 +446,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "CreateCartByUserEmail",
-    "RelativePath": "api/Cart/CreateCartByUserEmail/{email}",
+    "RelativePath": "api/Cart/CreateCartByUserEmail",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -454,7 +454,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -498,7 +498,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "RemoveCartItem",
-    "RelativePath": "api/Cart/RemoveCartItem/{email}/{productid}",
+    "RelativePath": "api/Cart/RemoveCartItem",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -506,12 +506,12 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "productid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -529,7 +529,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "ViewCartByUserEmail",
-    "RelativePath": "api/Cart/ViewCartByUserEmail/{email}",
+    "RelativePath": "api/Cart/ViewCartByUserEmail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -537,7 +537,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -553,6 +553,32 @@
       {
         "Name": "createDeliveryLog",
         "Type": "SWP391.EventFlowerExchange.Domain.Entities.CreateDeliveryLog",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
+    "Method": "UpdateDeliveryLogDeliveringStatusAsync",
+    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogDeliveringStatus/{orderId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -912,7 +938,7 @@
     "Parameters": [
       {
         "Name": "productIdList",
-        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": true
       }
     ],
@@ -940,11 +966,32 @@
         "Name": "deliveryInformation",
         "Type": "SWP391.EventFlowerExchange.Domain.Entities.DeliveryInformation",
         "IsRequired": true
-      },
+      }
+    ],
+    "ReturnTypes": [
       {
-        "Name": "code",
-        "Type": "System.String",
-        "IsRequired": false
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "CreateOrderBySellerFromAPIAsync",
+    "RelativePath": "api/Order/CreateOrderBySeller",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createOrderBySeller",
+        "Type": "SWP391.EventFlowerExchange.Domain.Entities.CreateOrderBySeller",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
@@ -982,7 +1029,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "UpdateOrderStatusAsync",
-    "RelativePath": "api/Order/UpdateOrderStatus/{orderId}",
+    "RelativePath": "api/Order/UpdateOrderStatusCreatedBySeller/{orderId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1033,8 +1080,61 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "ViewOrderBySellerIdAsync",
+    "RelativePath": "api/Order/ViewOrderBySellerEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "ViewOrderByShipperIdAsync",
+    "RelativePath": "api/Order/ViewOrderByShipperEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "ViewOrderByStatus",
+    "RelativePath": "api/Order/ViewOrderByStatusAndBuyerEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "ViewOrderDetailFromAPIAsync",
-    "RelativePath": "api/Order/ViewOrderDetail/{id}",
+    "RelativePath": "api/Order/ViewOrderDetail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1042,7 +1142,7 @@
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -1088,6 +1188,22 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
+    "Method": "GetOrdersAndRatingBySellerEmail",
+    "RelativePath": "api/Product/GetOrdersAndRatingBySellerEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
@@ -1153,6 +1269,22 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
+    "Method": "GetExpiredProductListBySellerEmail",
+    "RelativePath": "api/Product/GetProductList/Expired/Seller",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
     "Method": "GetAllInProgressProductList",
     "RelativePath": "api/Product/GetProductList/InProgress",
     "HttpMethod": "GET",
@@ -1179,7 +1311,7 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
-    "Method": "GetLatestProducts",
+    "Method": "GetLatestProductList",
     "RelativePath": "api/Product/GetProductList/Latest",
     "HttpMethod": "GET",
     "IsController": true,
@@ -1189,7 +1321,7 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
-    "Method": "GetOldestProducts",
+    "Method": "GetOldestProductList",
     "RelativePath": "api/Product/GetProductList/Oldest",
     "HttpMethod": "GET",
     "IsController": true,
@@ -1341,24 +1473,8 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RequestController",
-    "Method": "GetRequestByUserId",
-    "RelativePath": "api/Request/GetRequestByUserId",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RequestController",
     "Method": "GetAllRequestList",
-    "RelativePath": "api/Request/GetRequestList",
+    "RelativePath": "api/Request/GetRequestList/{type}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1366,7 +1482,28 @@
       {
         "Name": "type",
         "Type": "System.String",
-        "IsRequired": false
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RequestController",
+    "Method": "GetListRequestsByEmailAndType",
+    "RelativePath": "api/Request/GetRequestListBy/{type},{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1533,6 +1670,43 @@
       {
         "Name": "model",
         "Type": "SWP391.EventFlowerExchange.Domain.Entities.VnPayRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.VNPAYController",
+    "Method": "GetPaymentListByType",
+    "RelativePath": "api/VNPAY/GetPaymentListBy/{type}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.VNPAYController",
+    "Method": "GetPayementByTypeAndEmail",
+    "RelativePath": "api/VNPAY/GetPaymentListBy/{type},{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],

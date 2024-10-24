@@ -4,10 +4,13 @@ import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
 
   const handleRegister = async (values) => {
     console.log(values);
@@ -15,16 +18,15 @@ const Register = () => {
     try {
       const response = await api.post("Account/SignUp/Buyer", values);
       navigate("/login");
-      toast.success("Sign Up Success");
+      toast.success("Register was successfully. To continue, please log in");
     } catch (err) {
       console.log(err);
-      alert(err.response.data);
+      toast.error(err.response.data);
     }
   };
 
   return (
     <>
-      <ToastContainer />
       <Header />
 
       <div className="flex flex-col items-center w-[90%] sm:max-w m-auto mt-14 gap-4 text-gray-800">
@@ -150,9 +152,12 @@ const Register = () => {
           </Form.Item>
 
           <div className="w-full flex justify-end text-sm mt-[-8px]">
-            <a href="/login" className="cursor-pointer mb-[8px] text-sm ">
+            <div
+              className="cursor-pointer mb-[8px] text-sm "
+              onClick={handleLogin}
+            >
               I already have a account?
-            </a>
+            </div>
           </div>
 
           <Form.Item>

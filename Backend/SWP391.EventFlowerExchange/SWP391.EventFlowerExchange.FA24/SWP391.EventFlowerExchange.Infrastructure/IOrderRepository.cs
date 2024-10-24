@@ -11,10 +11,14 @@ namespace SWP391.EventFlowerExchange.Infrastructure
     public interface IOrderRepository
     {
         public Task<List<Order>> ViewAllOrderAsync();
-        public Task<List<OrderItem>> ViewOrderDetailAsync(Order order);
+        public Task<List<GetProduct>> ViewOrderDetailAsync(Order order);
         public Task<Order> SearchOrderByOrderIdAsync(Order order);
         public Task<List<Order>> ViewOrderByBuyerIdAsync(Account account);
+        public Task<List<Order>> ViewOrderBySellerIdAsync(Account account);
+        public Task<List<Order>> ViewOrderByShipperIdAsync(Account account);
+        public Task<List<Order>> ViewOrderByStatusAsync(Order order);
         public Task<bool> CreateOrderAsync(DeliveryInformation deliveryInformation, Account account, List<int> productIdList, Voucher voucher);
+        public Task<bool> CreateOrderBySellerAsync(CreateOrderBySeller createOrderBySeller, Account account, GetProduct product);
         public Task<bool> UpdateOrderStatusAsync(Order order);
 
         public Dictionary<string, int> GetMonthlyOrderStatistics();
@@ -22,9 +26,8 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public decimal CheckFeeShipForOrderEvent(string address);
         public decimal CheckFeeShipForOrderBatch(string address);
         public Task<bool> CheckFeeShipEventOrBatchAsync(List<int> productIdList);
-
         public Task<bool> CheckProductHasSameSellerAsync(List<int> productIdList);
         public Task<CheckOutAfter> CheckOutOrderAsync(string address, List<int> productList, Voucher voucher);
-
+        public Task<List<Order>> SearchOrderItemByProductAsync(GetProduct product);
     }
 }

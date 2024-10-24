@@ -31,7 +31,6 @@ namespace SWP391.EventFlowerExchange.Application
         public string CreatePaymentUrl(HttpContext context, VnPayRequest model)
         {
             var tick = DateTime.Now.Ticks.ToString();
-
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", _config["VnPay:Version"]);
             vnpay.AddRequestData("vnp_Command", _config["VnPay:Command"]);
@@ -62,7 +61,7 @@ namespace SWP391.EventFlowerExchange.Application
                 }
             }
 
-            var vnp_orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+            var vnp_orderId = vnpay.GetResponseData("vnp_TxnRef");
             var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
             var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
@@ -83,7 +82,7 @@ namespace SWP391.EventFlowerExchange.Application
 
             if (type == "Deposit")
                 paymentType = 1;
-            else
+            else if (type == "Withdraw")
                 paymentType = 2;
             var user = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             var request = _requestService.GetRequestByIdFromAPIAsync(requestId);
@@ -95,7 +94,7 @@ namespace SWP391.EventFlowerExchange.Application
                     Status = false,
                     ResponseCode = vnp_ResponseCode,
                     UserId = user.Id, //email
-                    PaymentCode = vnp_orderId.ToString(), //mã định danh
+                    PaymentCode = vnp_orderId, //mã định danh
                     Amount = vnp_Amount,
                     CreatedAt = DateTime.Now,
                     PaymentType = paymentType, //1: Nạp tiền, 2: Rút tiền
@@ -107,7 +106,7 @@ namespace SWP391.EventFlowerExchange.Application
             {
                 Status = true,
                 ResponseCode = vnp_ResponseCode,
-                PaymentCode = vnp_orderId.ToString(), //mã định danh
+                PaymentCode = vnp_orderId, //mã định danh
                 UserId = user.Id, //email
                 Amount = vnp_Amount,
                 CreatedAt = DateTime.Now,
@@ -124,6 +123,16 @@ namespace SWP391.EventFlowerExchange.Application
         public async Task<Payment> GetPayementByCodeFromAPIAsync(CreatePayment payment)
         {
             return await _repo.GetPayementByCodeAsync(payment);
+        }
+
+        public Task<List<Payment>> GetPayementByTypeAndEmailFromAPIAsync(int type, Account account)
+        {
+            return _repo.GetPayementByTypeAndEmailAsync(type, account);
+        }
+
+        public Task<List<Payment>> GetAllPaymentListFromAPIAsync(int type)
+        {
+            return _repo.GetAllPaymentListByType(type);
         }
     }
 }

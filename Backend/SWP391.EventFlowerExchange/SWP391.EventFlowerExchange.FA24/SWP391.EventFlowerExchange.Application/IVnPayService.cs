@@ -17,5 +17,11 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<bool> CreatePaymentFromAPIAsync(CreatePayment newValue);
 
         public Task<Payment> GetPayementByCodeFromAPIAsync(CreatePayment payment);
+
+        public Task<List<Payment>> GetAllPaymentListFromAPIAsync(int type);
+
+        public Task<List<Payment>> GetPayementByTypeAndEmailFromAPIAsync(int type, Account account);
+
+
     }
 }

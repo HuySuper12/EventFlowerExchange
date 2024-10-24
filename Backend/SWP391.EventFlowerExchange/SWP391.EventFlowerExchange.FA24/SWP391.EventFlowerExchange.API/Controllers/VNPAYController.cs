@@ -15,12 +15,15 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         private IVnPayService _vnPayservice;
         private IAccountService _accountService;
         private IRequestService _requestService;
+        private INotificationService _notification;
 
-        public VNPAYController(IVnPayService vnPayservice, IAccountService account, IRequestService requestService)
+
+        public VNPAYController(IVnPayService vnPayservice, IAccountService account, IRequestService requestService, INotificationService notificationService)
         {
             _vnPayservice = vnPayservice;
             _accountService = account;
             _requestService = requestService;
+            _notification = notificationService;
         }
 
         [EnableCors("MyCors")]
@@ -33,6 +36,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             string paymentURL = _vnPayservice.CreatePaymentUrl(HttpContext, model);
             return Ok(paymentURL);
+        }
+
+        [HttpGet("GetPaymentListBy/{type}")]
+        public async Task<IActionResult> GetPaymentListByType(int type)
+        {
+            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
+        }
+
+        [HttpGet("GetPaymentListBy/{type},{email}")]
+        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
         }
 
         [HttpGet("payment-callback")]
@@ -50,9 +66,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             if (response.PaymentType == 1) //NAP TIEN
             {
-
                 account.Balance = response.Amount + account.Balance;
-                response.PaymentContent = $"Nạp tiền vào ví của {account.Name}";
+                response.PaymentContent = $"Deposit money into {account.Name}'s wallet";
                 response.PaymentType = 1; //1: Nạp tiền, 2: Rút tiền
 
                 // Here you can save the order to the database if needed
@@ -61,18 +76,27 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             else //RUT TIEN
             {
-                await _vnPayservice.CreatePaymentFromAPIAsync(response);
-                var payment = await _vnPayservice.GetPayementByCodeFromAPIAsync(response);
-                var request = await _requestService.GetRequestByIdFromAPIAsync((int)response.RequestId);
-                request.Status = "Success";
-                request.PaymentId = payment.PaymentId;
-                request.UpdatedAt = response.CreatedAt;
-                response.PaymentContent = $"Rút tiền khỏi ví của {account.Name}";
-                await _requestService.UpdateRequestFromAPIAsync(request);
+                response.PaymentContent = $"Withdraw money from {account.Name}'s wallet";
+                var check = await _vnPayservice.CreatePaymentFromAPIAsync(response);
+                if (check)
+                {
+                    var payment = await _vnPayservice.GetPayementByCodeFromAPIAsync(response);
+                    var request = await _requestService.GetRequestByIdFromAPIAsync((int)response.RequestId);
+                    request.Status = "Accepted";
+                    request.PaymentId = payment.PaymentId;
+                    request.UpdatedAt = response.CreatedAt;
+                    await _requestService.UpdateRequestFromAPIAsync(request);
 
-                account.Balance = account.Balance - response.Amount;
-                await _accountService.UpdateAccountFromAPIAsync(account);
+                    account.Balance = account.Balance - response.Amount;
+                    await _accountService.UpdateAccountFromAPIAsync(account);
 
+                    var withdrawalNotification = new CreateNotification()
+                    {
+                        UserEmail = account.Email,
+                        Content = $"Your withdrawal request has been accepted."
+                    };
+                    await _notification.CreateNotificationFromApiAsync(withdrawalNotification);
+                }
             }
             return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
         }

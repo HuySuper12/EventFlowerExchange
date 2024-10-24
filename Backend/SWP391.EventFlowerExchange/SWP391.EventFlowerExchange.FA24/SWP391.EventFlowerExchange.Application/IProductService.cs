@@ -41,5 +41,12 @@ namespace SWP391.EventFlowerExchange.Application
 
         public Task<List<GetProduct?>> GetRejectedProductListBySellerEmailFromAPIAsync(Account value);
 
+        public Task<List<GetProduct?>> GetExpiredProductListBySellerEmailFromAPIAsync(Account value);
+
+        public Task<bool> UpdateProductFromAPIAsync(GetProduct product);
+
+        public Task<ProductStatistics> GetAllOrdersAndRatingBySellerFromAPIEmailAsync(Account account);
+
+
     }
 }

@@ -59,7 +59,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             else
                 ship = CheckFeeShipForOrderBatch(address);
 
-            decimal discount = subTotal * voucher.DiscountValue;
+            decimal discount;
+            if (voucher == null)
+                discount = 0;
+            else
+                discount = subTotal * voucher.DiscountValue;
 
             return new CheckOutAfter { SubTotal = subTotal, Ship = ship, Discount = discount, Total = subTotal + ship - discount };
         }
@@ -85,7 +89,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             {
                 totalPrice += cartItem.Price;
             }
-            totalPrice *= (1 - voucher.DiscountValue);
+            //Neu co voucher
+            if (voucher != null)
+            {
+                totalPrice *= (1 - voucher.DiscountValue);
+            }
 
             var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[0] });
 
@@ -103,10 +111,13 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 SellerId = product.SellerId,
                 TotalPrice = totalPrice,
                 Status = "Pending",
-                VoucherId = voucher.VoucherId,
                 DeliveredAt = deliveryInformation.Address,
                 PhoneNumber = deliveryInformation.PhoneNumber
             };
+            //Neu co voucher
+            if (voucher != null)
+                order.VoucherId = voucher.VoucherId;
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -123,7 +134,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 _context.OrderItems.Add(orderItem);
 
                 //Xoa tung san pham trong gio hang
-                await _cartRepository.RemoveCartItemToCreateOrderAsync(new CartItem() { BuyerId = account.Id, ProductId = productIdList[i] });
+                await _cartRepository.RemoveCartItemToCreateOrderAsync(new CartItem() { ProductId = productIdList[i] });
             }
 
             //Tao giao dich khi mua hang
@@ -136,8 +147,8 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 {
                     break;
                 }
-
             }
+
             Transaction transaction = new Transaction()
             {
                 TransactionCode = transactionCode,
@@ -181,16 +192,76 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return true;
         }
 
+        public async Task<bool> CreateOrderBySellerAsync(CreateOrderBySeller createOrderBySeller, Account account, GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var accountSeller = await _accountRepository.GetUserByEmailAsync(new Account() { Email = createOrderBySeller.SellerEmail });
+
+            var productList = new List<int>();
+            productList.Add(product.ProductId);
+            decimal? totalPrice = createOrderBySeller.Price;
+
+            var check = await CheckFeeShipEventOrBatchAsync(productList);
+            if (check)
+                totalPrice += CheckFeeShipForOrderEvent(createOrderBySeller.Address);
+            else
+                totalPrice += CheckFeeShipForOrderBatch(createOrderBySeller.Address);
+
+            //Tao don hang
+            Order order = new Order()
+            {
+                BuyerId = account.Id,
+                CreatedAt = DateTime.Now,
+                SellerId = product.SellerId,
+                TotalPrice = totalPrice,        //Gia ban + ship
+                DeliveredAt = createOrderBySeller.Address,
+                PhoneNumber = createOrderBySeller.PhoneNumber
+            };
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            //Tao don hang chi tiet
+            for (var i = 0; i < productList.Count; i++)
+            {
+                OrderItem orderItem = new OrderItem()
+                {
+                    OrderId = order.OrderId,
+                    ProductId = product.ProductId,
+                    Quantity = 1,
+                    Price = createOrderBySeller.Price
+                };
+                _context.OrderItems.Add(orderItem);
+            }
+
+            CreateNotification notificationBuyer = new CreateNotification()
+            {
+                UserEmail = account.Email,
+                Content = $"You has been created order by seller {accountSeller.Name}",
+            };
+            await _notificationRepository.CreateNotificationAsync(notificationBuyer);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<List<Order>> ViewAllOrderAsync()
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             return await _context.Orders.ToListAsync();
         }
 
-        public async Task<List<OrderItem>> ViewOrderDetailAsync(Order order)
+        public async Task<List<GetProduct>> ViewOrderDetailAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            return await _context.OrderItems.Where(x => x.OrderId == order.OrderId).ToListAsync();
+            var list = await _context.OrderItems.Where(x => x.OrderId == order.OrderId).ToListAsync();
+            var productList = new List<GetProduct>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = list[i].ProductId });
+                productList.Add(product);
+            }
+            return productList;
         }
 
         public async Task<List<Order>> ViewOrderByBuyerIdAsync(Account account)
@@ -199,10 +270,32 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return await _context.Orders.Where(x => x.BuyerId == account.Id).ToListAsync();
         }
 
+        public async Task<List<Order>> ViewOrderBySellerIdAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.Orders.Where(x => x.SellerId == account.Id).ToListAsync();
+        }
+
+        public async Task<List<Order>> ViewOrderByShipperIdAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.Orders.Where(x => x.DeliveryPersonId == account.Id).ToListAsync();
+        }
+
         public async Task<Order> SearchOrderByOrderIdAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             return await _context.Orders.FirstOrDefaultAsync(x => x.OrderId == order.OrderId);
+        }
+
+        public async Task<List<Order>> ViewOrderByStatusAsync(Order order)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            if (order.Status.ToLower() == "null")
+            {
+                return await _context.Orders.Where(x => x.Status == null && x.BuyerId == order.BuyerId).ToListAsync();
+            }
+            return await _context.Orders.Where(x => x.Status == order.Status && x.BuyerId == order.BuyerId).ToListAsync();
         }
 
         public async Task<bool> UpdateOrderStatusAsync(Order order)
@@ -228,13 +321,13 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public decimal CheckFeeShipForOrderBatch(string address)
         {
-            if (address.ToLower().Contains("binh chanh") || address.ToLower().Contains("can gio") || address.ToLower().Contains("cu chi") || address.ToLower().Contains("hoc mon") || address.ToLower().Contains("nha be"))
+            if (address.ToLower().Contains("binh chanh") || address.ToLower().Contains("can gio") || address.ToLower().Contains("cu chi") || address.ToLower().Contains("hoc mon") || address.ToLower().Contains("nha be") || address.ToLower().Contains("District 12"))
             {
-                return 80000;
+                return 100000;
             }
             else
             {
-                return 10000;
+                return 80000;
             }
         }
 
@@ -265,6 +358,19 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 g => g.Count()  // Value: Số lượng đơn hàng
             );
             return statistics;
+        }
+
+        public async Task<List<Order>> SearchOrderItemByProductAsync(GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var list = await _context.OrderItems.Where(x => x.ProductId == product.ProductId).ToListAsync();
+            var orderList = new List<Order>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var order = await SearchOrderByOrderIdAsync(new Order() { OrderId = list[i].OrderId });
+                orderList.Add(order);
+            }
+            return orderList;
         }
 
     }

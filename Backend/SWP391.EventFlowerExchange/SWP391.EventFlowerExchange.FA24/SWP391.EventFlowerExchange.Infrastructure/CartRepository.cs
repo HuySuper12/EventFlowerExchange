@@ -133,11 +133,16 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _context = new Swp391eventFlowerExchangePlatformContext();
 
             var productDetail = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = cartItemDetail.ProductId });
-            var cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.ProductId == cartItemDetail.ProductId && x.BuyerId == cartItemDetail.BuyerId);
+            var cartItem = await _context.CartItems.Where(x => x.ProductId == cartItemDetail.ProductId).ToListAsync();
 
             //Cap nhat status product = disable
             await _productRepository.RemoveProductAsync(productDetail);
-            _context.CartItems.Remove(cartItem);
+
+            //Xoa san pham trong tat ca cart nguoi dung
+            for (int i = 0; i < cartItem.Count; i++)
+            {
+                await RemoveItemFromCartAsync(cartItem[i]);
+            }
             await _context.SaveChangesAsync();
             return true;
         }

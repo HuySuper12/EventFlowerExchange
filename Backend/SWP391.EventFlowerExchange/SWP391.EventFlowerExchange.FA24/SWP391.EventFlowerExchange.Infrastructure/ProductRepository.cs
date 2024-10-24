@@ -14,6 +14,18 @@ namespace SWP391.EventFlowerExchange.Infrastructure
     {
         private Swp391eventFlowerExchangePlatformContext _context;
         private IRequestRepository _request;
+        private IFollowRepository _follow;
+        private INotificationRepository _notification;
+
+
+
+        public ProductRepository(IRequestRepository request, IFollowRepository follow, INotificationRepository notification)
+        {
+            _request = request;
+            _follow = follow;
+            _notification = notification;
+
+        }
 
         private GetProduct ConvertProductToGetProduct(Product value)
         {
@@ -30,12 +42,33 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 SellerId = value.SellerId,
                 ProductId = value.ProductId,
                 Status = value.Status,
+                ExpireddAt = value.ExpiredAt,
             };
             //Lấy list đối tượng có chứ hình ảnh của Id product và sau đó lấy list  
             var productImageList = _context.ImageProducts.Where(x => x.ProductId == newValue.ProductId).ToList().Select(x => x.LinkImage).ToList();
 
             newValue.ProductImage = productImageList;
 
+            return newValue;
+        }
+
+        private Product ConvertGetProductToProduct(GetProduct value)
+        {
+            var newValue = new Product()
+            {
+                ProductName = value.ProductName,
+                Category = value.Category,
+                ComboType = value.ComboType,
+                CreatedAt = value.CreatedAt,
+                Description = value.Description,
+                FreshnessDuration = value.FreshnessDuration,
+                Price = value.Price,
+                Quantity = value.Quantity,
+                SellerId = value.SellerId,
+                ProductId = value.ProductId,
+                Status = value.Status,
+                ExpiredAt = value.ExpireddAt,
+            };
             return newValue;
         }
 
@@ -47,7 +80,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             {
                 if (DateTime.Now > list[i].ExpiredAt)
                 {
-                    list[i].Status = "Disable";
+                    list[i].Status = "Expired";
                     _context.Products.Update(list[i]);
                     _context.SaveChanges();
                 }
@@ -87,11 +120,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
+
+
         public async Task<List<GetProduct?>> GetInProgressProductListAsync()
         {
-            //_context = new Swp391eventFlowerExchangePlatformContext();
-            //return await _context.Products.Where(p => p.Status == null).ToListAsync();
-
             _context = new Swp391eventFlowerExchangePlatformContext();
             var productList = await _context.Products.Where(p => p.Status == null).ToListAsync();
             var getProductList = new List<GetProduct?>();
@@ -117,6 +149,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return getProductList;
         }
 
+
         public async Task<bool> CreateNewProductAsync(CreateProduct product, Account account)
         {
             int? check;
@@ -137,8 +170,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 SellerId = account.Id,
                 Description = product.Description,
                 Category = product.Category,
-                ExpiredAt = DateTime.Now.AddDays((int)check)
+                ExpiredAt = DateTime.Now.AddDays((int)check),
+
             };
+
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Products.Add(newProduct);
             await _context.SaveChangesAsync();
@@ -168,27 +203,15 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<bool> RemoveProductAsync(GetProduct product)
         {
-
-
-            Product newProduct = new Product()
-            {
-                ProductId = product.ProductId,
-                ProductName = product.ProductName,
-                FreshnessDuration = product.FreshnessDuration,
-                Price = product.Price,
-                ComboType = product.ComboType,
-                CreatedAt = product.CreatedAt,
-                Quantity = product.Quantity,
-                SellerId = product.SellerId,
-                Description = product.Description,
-                Category = product.Category
-            };
+            Product newProduct = ConvertGetProductToProduct(product);
             newProduct.Status = "Disable";
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Products.Update(newProduct);
             await _context.SaveChangesAsync();
             return true;
         }
+
+
 
         public async Task<GetProduct?> SearchProductByIdAsync(GetProduct product)
         {
@@ -288,11 +311,38 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return filter;
         }
 
+        public async Task<List<GetProduct?>> GetExpiredProductListBySellerEmailAsync(Account value)
+        {
+            string status = "Expired";
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
+            var getProductList = new List<GetProduct?>();
+            foreach (var product in productList)
+            {
+                var newValue = ConvertProductToGetProduct(product);
+                if (newValue.SellerId == value.Id)
+                {
+                    getProductList.Add(newValue);
+                }
+            }
+            return getProductList;
+        }
+
         public async Task<List<GetProduct?>> GetRejectedProductListBySellerEmailAsync(Account value)
         {
             var list = await GetRejectedProductListAsync();
             var filter = list.Where(p => p.SellerId == value.Id).ToList();
             return filter;
+        }
+
+        public async Task<bool> UpdateProductAsync(GetProduct product)
+        {
+            Product newProduct = ConvertGetProductToProduct(product);
+            newProduct.Status = product.Status;
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            _context.Products.Update(newProduct);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product)
@@ -303,5 +353,69 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         }
 
 
+        public async Task<ProductStatistics> GetAllOrdersAndRatingBySellerEmail(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            // Lấy danh sách tất cả các orders theo sellerId
+            var orderList = await _context.Orders
+                                          .Where(x => x.SellerId == account.Id && x.Status == "Success")
+                                          .ToListAsync();
+
+            // Kiểm tra nếu không có đơn hàng nào
+            if (!orderList.Any())
+            {
+                return new ProductStatistics
+                {
+                    Order = 0,
+                    Rating = 0 // Không có đánh giá nếu không có đơn hàng
+                };
+            }
+
+            // Lấy tất cả các reviews liên quan đến orders (dùng Join để lấy tất cả một lần)
+            var orderIds = orderList.Select(o => o.OrderId).ToList();
+            var reviews = await _context.Reviews
+                                        .Join(orderIds,
+                                              review => review.OrderId,
+                                              orderId => orderId,
+                                              (review, orderId) => review)
+                                        .ToListAsync();
+            // Tính tổng số rating từ tất cả các reviews (kiểm tra nếu null)
+            int sumRating = reviews.Where(r => r.Rating.HasValue)
+                                   .Sum(r => r.Rating.Value);
+            var enableList = await GetEnableProductListBySellerEmailAsync(account);
+            var soldOutProduct = await GetDisableProductListBySellerEmailAsync(account);
+            // Tạo đối tượng Statistics
+            ProductStatistics st = new ProductStatistics()
+            {
+                Order = orderList.Count,
+                Rating = (reviews.Count > 0) ? (double)sumRating / reviews.Count : 0, // Kiểm tra số lượng review trước khi chia
+                EnableProducts = enableList.Count > 0 ? enableList.Count : 0,
+                SoldOut = soldOutProduct.Count > 0 ? soldOutProduct.Count : 0
+            };
+            return st;
+        }
+
+        //public async Task<Statistics> GetAllOrdersAndRatingBySellerEmail(Account account)
+        //{
+
+        //    _context = new Swp391eventFlowerExchangePlatformContext();
+        //    var orderList = await _context.Orders.Where(x => x.SellerId == account.Id).ToListAsync();
+        //    int ? sumRating = 0;
+
+
+        //    foreach (var order in orderList) 
+        //    {
+        //        var rating = _context.Reviews.SingleOrDefault(x => x.OrderId == order.OrderId);
+        //        sumRating += rating.Rating;
+        //    }
+
+        //    Statistics st = new Statistics()
+        //    {
+        //        Order = orderList.Count,
+        //        Rating = (double) sumRating/(orderList.Count)
+        //    };
+        //    return st;
+        //}
     }
 }

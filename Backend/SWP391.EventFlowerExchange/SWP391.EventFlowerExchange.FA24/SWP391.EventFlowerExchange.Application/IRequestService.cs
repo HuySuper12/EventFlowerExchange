@@ -16,8 +16,10 @@ namespace SWP391.EventFlowerExchange.Application
 
         public Task<List<Request?>> GetListRequestsFromAPIAsync(string value);
 
-        public Task<Request?> GetRequestByUserIdFromAPIAsync(string id);
-
         public Task<Request?> GetRequestByIdFromAPIAsync(int id);
+
+        public Task<Request?> GetRequestByProductIdFromAPIAsync(int id);
+
+        public Task<List<Request?>> GetListRequestsByEmailAndTypeAsync(string type, Account account);
     }
 }

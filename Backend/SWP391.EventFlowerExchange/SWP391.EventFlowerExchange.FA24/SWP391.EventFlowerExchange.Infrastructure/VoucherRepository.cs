@@ -20,7 +20,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var discount = createVoucher.DiscountValue / 100;
             Voucher voucher = new Voucher()
             {
-                Code = createVoucher.Code,
+                Code = createVoucher.Code.ToUpper(),
                 Description = createVoucher.Description,
                 MinOrderValue = createVoucher.MinOrderValue,
                 StartDate = DateTime.UtcNow,

@@ -13,5 +13,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<bool> CreatePayementAsync(CreatePayment newValue);
 
         public Task<Payment> GetPayementByCodeAsync(CreatePayment payment);
+
+        public Task<List<Payment>> GetAllPaymentListByType(int type);
+
+        public Task<List<Payment>> GetPayementByTypeAndEmailAsync(int type, Account account);
+
     }
 }
