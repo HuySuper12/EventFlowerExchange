@@ -462,7 +462,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 }
             }
 
-            return null;
+            return result;
 
         }
     }
