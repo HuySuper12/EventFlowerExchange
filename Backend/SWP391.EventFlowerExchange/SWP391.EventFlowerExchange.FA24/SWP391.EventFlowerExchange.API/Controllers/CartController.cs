@@ -102,5 +102,22 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return false;
         }
+
+        [HttpGet("GetCountCartItemByUserEmail/{email}")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<int>> GetCountCartItemByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+            var account = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            if (account != null)
+            {
+                var result = await _service.GetCountCartItemByUserIdFromApiAsync(account);
+                return Ok(result);
+            }
+
+            return Ok("Not found!");
+        }
     }
 }

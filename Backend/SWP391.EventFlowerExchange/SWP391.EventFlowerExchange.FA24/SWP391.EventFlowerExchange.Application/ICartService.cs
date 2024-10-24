@@ -15,5 +15,6 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<IdentityResult> RemoveItemFromCartFromApiAsync(CartItem cartItem);
         public Task<IdentityResult> CreateCartItemFromApiAsync(CreateCartItem cartItem);
         public Task<IdentityResult> CreateCartFromApiAsync(Account account);
+        public Task<int> GetCountCartItemByUserIdFromApiAsync(Account account);
     }
 }

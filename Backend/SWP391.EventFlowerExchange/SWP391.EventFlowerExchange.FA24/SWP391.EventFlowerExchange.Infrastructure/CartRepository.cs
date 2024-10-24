@@ -147,5 +147,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return true;
         }
 
+        public async Task<int> GetCountCartItemByUserIdAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var cart = await _context.CartItems.Where(x => x.BuyerId == account.Id).ToListAsync();
+            return cart.Count;
+        }
     }
 }

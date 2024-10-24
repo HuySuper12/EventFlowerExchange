@@ -144,5 +144,10 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return await _repo.ViewAllCartItemByUserIdAsync(account);
         }
+
+        public async Task<int> GetCountCartItemByUserIdFromApiAsync(Account account)
+        {
+            return await _repo.GetCountCartItemByUserIdAsync(account);
+        }
     }
 }
