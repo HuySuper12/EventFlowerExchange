@@ -41,7 +41,7 @@ namespace SWP391.EventFlowerExchange.Application
             vnpay.AddRequestData("vnp_CurrCode", _config["VnPay:CurrCode"]);
             vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
             vnpay.AddRequestData("vnp_Locale", _config["VnPay:Locale"]);
-            vnpay.AddRequestData("vnp_OrderInfo", $"{model.Email} - {model.Type} - {model.RequestId}");
+            vnpay.AddRequestData("vnp_OrderInfo", $"{model.Email} - {model.Type} - {model.RequestId} - {model.UserId}");
             vnpay.AddRequestData("vnp_OrderType", "Quà tặng");
             vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:PaymentBackReturnUrl"]);
             vnpay.AddRequestData("vnp_TxnRef", tick);
@@ -73,7 +73,12 @@ namespace SWP391.EventFlowerExchange.Application
             string email = parts[0];
             // Lấy type
             string type = parts[1];
+            //Lấy requestId
             string numberString = parts[2]; // "1"
+
+            //Lấy UserId
+            string userId = parts[3];
+
 
             // Convert the number string to an integer
             int requestId = int.Parse(numberString);
@@ -83,7 +88,11 @@ namespace SWP391.EventFlowerExchange.Application
             if (type == "Deposit")
                 paymentType = 1;
             else if (type == "Withdraw")
+            {
                 paymentType = 2;
+                var acc = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = userId });
+                email = acc.Email;
+            }
             var user = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             var request = _requestService.GetRequestByIdFromAPIAsync(requestId);
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _config["VnPay:HashSecret"]);
@@ -95,7 +104,7 @@ namespace SWP391.EventFlowerExchange.Application
                     ResponseCode = vnp_ResponseCode,
                     UserId = user.Id, //email
                     PaymentCode = vnp_orderId, //mã định danh
-                    Amount = vnp_Amount,
+                    Amount = vnp_Amount / 100,
                     CreatedAt = DateTime.Now,
                     PaymentType = paymentType, //1: Nạp tiền, 2: Rút tiền
                     RequestId = requestId,
@@ -108,7 +117,7 @@ namespace SWP391.EventFlowerExchange.Application
                 ResponseCode = vnp_ResponseCode,
                 PaymentCode = vnp_orderId, //mã định danh
                 UserId = user.Id, //email
-                Amount = vnp_Amount,
+                Amount = vnp_Amount / 100,
                 CreatedAt = DateTime.Now,
                 PaymentType = paymentType, //1: Nạp tiền, 2: Rút tiền
                 RequestId = requestId,

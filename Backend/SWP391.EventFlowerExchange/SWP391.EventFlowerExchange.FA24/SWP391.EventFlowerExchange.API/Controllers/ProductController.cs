@@ -176,6 +176,16 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         }
 
+        [HttpPut("UpdateProduct/{id}, {status}")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> UpdateProduct(int id, string status)
+        {
+            var product = await _service.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = id });
+            product.Status = status;
+            return await _service.UpdateProductFromAPIAsync(product);
+
+        }
+
         [HttpDelete("{id}")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
 
