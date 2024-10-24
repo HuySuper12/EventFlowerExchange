@@ -2,27 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, message, Popconfirm } from 'antd';
 import api from "../../config/axios";
 
-const Couriers = () => {
-  const [couriers, setCouriers] = useState([]);
+const Shippers = () => {
+  const [shippers, setShippers] = useState([]);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingCourier, setEditingCourier] = useState(null);
+  const [editingShipper, setEditingShipper] = useState(null);
 
-  // Fetch couriers list from API
-  const fetchCouriers = async () => {
+  // Fetch shippers list from API
+  const fetchShippers = async () => {
     const role = "shipper"; 
     try {
       const response = await api.get(`Account/ViewAllAccount/${role}`);
-      setCouriers(response.data);
+      setShippers(response.data);
     } catch (error) {
-      message.error('Failed to fetch couriers list');
+      message.error('Failed to fetch shippers list');
       console.error('API error:', error);
     }
   };
 
   useEffect(() => {
-    fetchCouriers(); 
+    fetchShippers(); 
   }, []);
 
   // Table columns
@@ -33,9 +33,14 @@ const Couriers = () => {
       key: 'name',
     },
     {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
       title: 'Phone',
       dataIndex: 'phoneNumber',
-      key: 'phone',
+      key: 'phoneNumber',
     },
     {
       title: 'Address',
@@ -49,8 +54,8 @@ const Couriers = () => {
         <span>
           <Button onClick={() => showEditModal(record)} className="mr-2">Edit</Button>
           <Popconfirm
-            title="Are you sure you want to delete this courier?"
-            onConfirm={() => handleDeleteCourier(record.id)}
+            title="Are you sure you want to delete this shipper?"
+            onConfirm={() => handleDeleteShipper(record.id)}
             okText="Yes"
             cancelText="No"
           >
@@ -61,28 +66,28 @@ const Couriers = () => {
     },
   ];
 
-  // Show modal for creating a new courier
+  // Show modal for creating a new shipper
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
     form.resetFields(); 
   };
 
-  // Show modal for editing an existing courier
-  const showEditModal = (courier) => {
+  // Show modal for editing an existing shipper
+  const showEditModal = (shipper) => {
     setIsEditModalVisible(true);
-    setEditingCourier(courier);
-    form.setFieldsValue(courier); 
+    setEditingShipper(shipper);
+    form.setFieldsValue(shipper); 
   };
 
-  // Handle creating a new courier
-  const handleCreateCourier = async () => {
+  // Handle creating a new shipper
+  const handleCreateShipper = async () => {
     form.validateFields().then(async (values) => {
       try {
         await api.post(`Account/CreateAccount/Shipper`, values);
         
         message.success('New shipper added successfully');
         setIsCreateModalVisible(false);
-        fetchCouriers();
+        fetchShippers();
       } catch (error) {
         message.error('Failed to add new shipper');
         console.error('API error:', error);
@@ -92,15 +97,15 @@ const Couriers = () => {
     });
   };
 
-  const handleEditCourier = async () => {
+  const handleEditShipper = async () => {
     form.validateFields().then(async (values) => {
       try {
-        await api.put(`Account/UpdateAccount`, { ...values, id: editingCourier.id });
-        message.success('Courier updated successfully');
+        await api.put(`Account/UpdateAccount`, { ...values, id: editingShipper.id });
+        message.success('Shipper updated successfully');
         setIsEditModalVisible(false);
-        fetchCouriers(); 
+        fetchShippers(); 
       } catch (error) {
-        message.error('Failed to update courier');
+        message.error('Failed to update shipper');
         console.error('API error:', error);
       }
     }).catch((info) => {
@@ -108,34 +113,34 @@ const Couriers = () => {
     });
   };
 
-  const handleDeleteCourier = async (id) => {
+  const handleDeleteShipper = async (id) => {
     try {
       const response = await api.delete(`Account/RemoveAccount/${id}`);
       if (response.data === true) {
-        message.success('Courier deleted successfully');
-        setCouriers(couriers.filter(courier => courier.id !== id));
+        message.success('Shipper deleted successfully');
+        setShippers(shippers.filter(shipper => shipper.id !== id));
       } else {
-        message.error('Failed to delete courier');
+        message.error('Failed to delete shipper');
       }
     } catch (error) {
-      message.error('Failed to delete courier');
+      message.error('Failed to delete shipper');
       console.error('API error:', error);
     }
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Couriers</h1>
+      <h1 className="text-3xl font-bold mb-4">Shippers</h1>
       <Button onClick={showCreateModal} type="primary" className="mb-4">
-        Create New Courier
+        Create New Shipper
       </Button>
-      <Table columns={columns} dataSource={couriers} rowKey="id" />
+      <Table columns={columns} dataSource={shippers} rowKey="id" />
 
-      {/* Modal for creating new courier */}
+      {/* Modal for creating new shipper */}
       <Modal
-        title="Add New Courier"
+        title="Add New Shipper"
         visible={isCreateModalVisible}
-        onOk={handleCreateCourier}
+        onOk={handleCreateShipper}
         onCancel={() => setIsCreateModalVisible(false)}
       >
         <Form form={form} layout="vertical">
@@ -184,11 +189,11 @@ const Couriers = () => {
         </Form>
       </Modal>
 
-      {/* Modal for editing courier */}
+      {/* Modal for editing shipper */}
       <Modal
-        title="Edit Courier"
+        title="Edit Shipper"
         visible={isEditModalVisible}
-        onOk={handleEditCourier}
+        onOk={handleEditShipper}
         onCancel={() => setIsEditModalVisible(false)}
       >
         <Form form={form} layout="vertical">
@@ -211,10 +216,10 @@ const Couriers = () => {
             label="Email"
             rules={[{ required: true, message: 'Please input the email!' }]}
           >
-            <Input />
+            <Input disabled value={editingShipper?.email} />
           </Form.Item>
           <Form.Item
-            name="phoneNumber"
+            name="phone"
             label="Phone"
             rules={[{ required: true, message: 'Please input the phone number!' }]}
           >
@@ -233,4 +238,4 @@ const Couriers = () => {
   );
 };
 
-export default Couriers;
+export default Shippers;

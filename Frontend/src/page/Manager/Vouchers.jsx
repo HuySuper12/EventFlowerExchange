@@ -1,30 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from 'antd';
-
+import api from "../../config/axios";
 
 const Vouchers = () => {
-  const [vouchers, setVouchers] = useState([
-    {
-      id: '1',
-      name: 'Summer Sale',
-      description: '20% off on all summer flowers',
-      code: 'SUMMER20',
-      discount: 20,
-      expiryDate: '2024-08-31',
-      minOrderValue: 50,
-    },
-    
-  ]);
-
+  const [vouchers, setVouchers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingVoucher, setEditingVoucher] = useState(null);
 
+  // Fetch all vouchers from the API
+  const fetchVouchers = async () => {
+    try {
+      const response = await api.get('Voucher/GetAllVoucher');
+      setVouchers(response.data);
+    } catch (error) {
+      console.error('Error fetching vouchers:', error);
+      message.error('Failed to fetch vouchers');
+    }
+  };
+
+  useEffect(() => {
+    fetchVouchers();
+  }, []);
+
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Voucher ID',
+      dataIndex: 'voucherId',
+      key: 'voucherId',
     },
     {
       title: 'Code',
@@ -32,21 +35,26 @@ const Vouchers = () => {
       key: 'code',
     },
     {
-      title: 'Discount (%)',
-      dataIndex: 'discount',
-      key: 'discount',
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
-      title: 'Expiry Date',
-      dataIndex: 'expiryDate',
-      key: 'expiryDate',
-      render: (text) => new Date(text).toLocaleDateString(),
+      title: 'Discount (%)',
+      dataIndex: 'discountValue',
+      key: 'discountValue',
     },
     {
       title: 'Min Order Value',
       dataIndex: 'minOrderValue',
       key: 'minOrderValue',
       render: (value) => `$${value}`,
+    },
+    {
+      title: 'Expiry Date',
+      dataIndex: 'expiryDate',
+      key: 'expiryDate',
+      render: (text) => new Date(text).toLocaleDateString(),
     },
     {
       title: 'Actions',
@@ -56,7 +64,7 @@ const Vouchers = () => {
           <Button onClick={() => showEditModal(record)} className="mr-2">Edit</Button>
           <Popconfirm
             title="Are you sure you want to delete this voucher?"
-            onConfirm={() => handleDeleteVoucher(record.id)}
+            onConfirm={() => handleDeleteVoucher(record.voucherId)}
             okText="Yes"
             cancelText="No"
           >
@@ -78,56 +86,87 @@ const Vouchers = () => {
     setEditingVoucher(voucher);
     form.setFieldsValue({
       ...voucher,
-      expiryDate: Math.ceil((new Date(voucher.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)), // Calculate days until expiry
+      discountValue: voucher.discountValue * 100, 
+      expiryDate: Math.ceil((new Date(voucher.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)),
     });
   };
 
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      const daysUntilExpiry = values.expiryDate; // Get the number of days from input
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + daysUntilExpiry); // Calculate the actual expiry date
-
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
       const formattedValues = {
-        ...values,
         code: values.code.toUpperCase(),
-        expiryDate: expiryDate.toISOString().split('T')[0], // Format to 'YYYY-MM-DD'
+        description: values.description,
+        minOrderValue: values.minOrderValue,
+        expiryDate: values.expiryDate,
+        discountValue: values.discountValue / 100,
       };
-
+  
+      console.log('Formatted values before sending:', formattedValues);
+  
       if (editingVoucher) {
-        setVouchers(vouchers.map(voucher => voucher.id === editingVoucher.id ? { ...voucher, ...formattedValues } : voucher));
-        message.success('Voucher updated successfully');
-      } else {
-        const newVoucher = {
-          id: (vouchers.length + 1).toString(),
+        const updateData = {
+          ...editingVoucher,
           ...formattedValues,
         };
-        setVouchers([...vouchers, newVoucher]);
-        message.success('New voucher added successfully');
+        console.log('Updating voucher with data:', updateData);
+        try {
+          const response = await api.put('Voucher/UpdateVoucher', updateData);
+          if (response.data === true) {
+            message.success('Voucher updated successfully');
+            fetchVouchers();
+          } else {
+            message.error('Failed to update voucher. Unexpected response from server.');
+          }
+        } catch (updateError) {
+          console.error('Error updating voucher:', updateError);
+          if (updateError.response) {
+            console.error('Error response:', updateError.response.data);
+            message.error(`Failed to update voucher: ${updateError.response.data.message || 'Unknown error'}`);
+          }
+        }
+      } else {
+        const response = await api.post('Voucher/CreateVoucher', formattedValues);
+        if (response.data === true) {
+          message.success('New voucher added successfully');
+          fetchVouchers();
+        } else {
+          message.error('Failed to create voucher. Please try again.');
+        }
       }
       setIsModalVisible(false);
-    }).catch((info) => {
-      console.log('Validate Failed:', info);
-    });
+    } catch (error) {
+      console.error('Error saving voucher:', error);
+      message.error('Failed to save voucher. Please check your input and API connection.');
+    }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  const handleDeleteVoucher = (id) => {
-    setVouchers(vouchers.filter(voucher => voucher.id !== id));
-    message.success('Voucher deleted successfully');
+  const handleDeleteVoucher = async (id) => {
+    try {
+      const response = await api.delete(`Voucher/RemoveVoucher/${id}`);
+      if (response.data === true) {
+        message.success('Voucher deleted successfully');
+        fetchVouchers();
+      } else {
+        message.error('Failed to delete voucher. API response was not successful.');
+      }
+    } catch (error) {
+      message.error('Failed to delete voucher');
+      console.error('API error:', error);
+    }
   };
-
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Vouchers</h1>
+      <h1 className="text-3xl font-bold mb-4">Vouchers</h1>
       <Button onClick={showModal} type="primary" className="mb-4">
         Create New Voucher
       </Button>
-      <Table columns={columns} dataSource={vouchers} rowKey="id" />
+      <Table columns={columns} dataSource={vouchers} rowKey="voucherId" />
 
       <Modal
         title={editingVoucher ? "Edit Voucher" : "Create New Voucher"}
@@ -136,25 +175,21 @@ const Vouchers = () => {
         onCancel={handleCancel}
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="name" label="Voucher Name" rules={[{ required: true, message: 'Please input the voucher name!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Voucher Description" rules={[{ required: true, message: 'Please input the voucher description!' }]}>
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item name="code" label="Voucher Code" rules={[{ required: true, message: 'Please input the voucher code!', transform: (value) => value.toUpperCase() }]}>
+          <Form.Item name="code" label="Voucher Code" rules={[{ required: true, message: 'Please input the voucher code!' }]}>
             <Input style={{ textTransform: 'uppercase' }} />
           </Form.Item>
-          <Form.Item name="discount" label="Percentage Discount" rules={[{ required: true, message: 'Please input the discount percentage!' }]}>
+          <Form.Item name="description" label="Voucher Description" rules={[{ required: true, message: 'Please input the voucher description!' }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="discountValue" label="Percentage Discount" rules={[{ required: true, message: 'Please input the discount percentage!' }]}>
             <InputNumber min={0} max={100} />
           </Form.Item>
-          <Form.Item name="expiryDate" label="Expiry Date" rules={[{ required: true, message: 'Please input the number of days until expiry!' }]}>
-            <InputNumber min={1}/>
+          <Form.Item name="expiryDate" label="Expiry Date (in days)" rules={[{ required: true, message: 'Please input the number of days until expiry!' }]}>
+            <InputNumber min={1} />
           </Form.Item>
           <Form.Item name="minOrderValue" label="Minimum Order Value" rules={[{ required: true, message: 'Please input the minimum order value!' }]}>
             <InputNumber min={0} prefix="$" />
           </Form.Item>
-    
         </Form>
       </Modal>
     </div>
