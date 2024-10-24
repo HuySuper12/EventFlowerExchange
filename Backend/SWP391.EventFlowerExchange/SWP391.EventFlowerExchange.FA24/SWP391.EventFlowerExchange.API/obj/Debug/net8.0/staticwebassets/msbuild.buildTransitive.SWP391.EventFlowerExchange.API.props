@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\SWP391.EventFlowerExchange.API.props" />
-</Project>
