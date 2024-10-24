@@ -1080,6 +1080,38 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "ViewOrderBySellerIdAsync",
+    "RelativePath": "api/Order/ViewOrderBySellerEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "ViewOrderByShipperIdAsync",
+    "RelativePath": "api/Order/ViewOrderByShipperEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "ViewOrderByStatus",
     "RelativePath": "api/Order/ViewOrderByStatusAndBuyerEmail",
     "HttpMethod": "GET",
@@ -1102,7 +1134,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "ViewOrderDetailFromAPIAsync",
-    "RelativePath": "api/Order/ViewOrderDetail/{id}",
+    "RelativePath": "api/Order/ViewOrderDetail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1110,7 +1142,7 @@
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

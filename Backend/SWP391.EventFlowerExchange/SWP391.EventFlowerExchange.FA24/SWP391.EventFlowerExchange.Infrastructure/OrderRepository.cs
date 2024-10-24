@@ -270,6 +270,18 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return await _context.Orders.Where(x => x.BuyerId == account.Id).ToListAsync();
         }
 
+        public async Task<List<Order>> ViewOrderBySellerIdAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.Orders.Where(x => x.SellerId == account.Id).ToListAsync();
+        }
+
+        public async Task<List<Order>> ViewOrderByShipperIdAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.Orders.Where(x => x.DeliveryPersonId == account.Id).ToListAsync();
+        }
+
         public async Task<Order> SearchOrderByOrderIdAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();

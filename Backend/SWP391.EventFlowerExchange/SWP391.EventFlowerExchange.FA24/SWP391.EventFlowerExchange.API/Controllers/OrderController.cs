@@ -61,7 +61,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(list);
         }
 
-        [HttpGet("ViewOrderDetail/{id}")]
+        [HttpGet("ViewOrderDetail")]
         //[Authorize]
         public async Task<IActionResult> ViewOrderDetailFromAPIAsync(int id)
         {
@@ -77,6 +77,30 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             if (account != null)
             {
                 return Ok(await _service.ViewOrderByBuyerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderBySellerEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> ViewOrderBySellerIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                return Ok(await _service.ViewOrderBySellerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderByShipperEmail")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<IActionResult> ViewOrderByShipperIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                return Ok(await _service.ViewOrderByShipperIdFromAPIAsync(account));
             }
             return BadRequest("Not found!!!");
         }
