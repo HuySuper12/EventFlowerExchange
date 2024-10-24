@@ -51,5 +51,10 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return await _repo.RemoveFollowerAsync(follower);
         }
+
+        public Task<int> GetCountFollowByUserEmailFromApiAsync(Account account)
+        {
+            return _repo.GetCountFollowByUserEmailAsync(account);
+        }
     }
 }

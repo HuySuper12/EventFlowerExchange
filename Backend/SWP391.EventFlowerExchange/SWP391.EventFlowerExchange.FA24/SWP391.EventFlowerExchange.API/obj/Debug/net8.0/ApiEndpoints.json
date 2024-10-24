@@ -497,6 +497,32 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
+    "Method": "GetCountCartItemByUserEmail",
+    "RelativePath": "api/Cart/GetCountCartItemByUserEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "RemoveCartItem",
     "RelativePath": "api/Cart/RemoveCartItem",
     "HttpMethod": "DELETE",
@@ -728,6 +754,22 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.FollowController",
+    "Method": "GetCountFollowByUserEmail",
+    "RelativePath": "api/Follow/GetCountFollowByUserEmail/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.FollowController",

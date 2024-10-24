@@ -100,6 +100,15 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             return IdentityResult.Failed(new IdentityError { Description = "Failed to remove follower." });
         }
+
+        public async Task<int> GetCountFollowByUserEmailAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var count = await _context.Follows
+                .Where(x => x.SellerId == account.Id).CountAsync();
+            return count;
+        }
     }
 }
 
