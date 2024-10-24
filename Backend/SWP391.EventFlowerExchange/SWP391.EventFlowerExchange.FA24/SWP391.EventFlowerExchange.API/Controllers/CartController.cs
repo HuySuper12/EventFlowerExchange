@@ -103,7 +103,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpGet("GetCountCartItemByUserEmail")]
+        [HttpGet("GetCountCartItemByUserEmail/{email}")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<int>> GetCountCartItemByUserEmail(string email)
         {

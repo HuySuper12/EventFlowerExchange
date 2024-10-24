@@ -498,7 +498,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "GetCountCartItemByUserEmail",
-    "RelativePath": "api/Cart/GetCountCartItemByUserEmail",
+    "RelativePath": "api/Cart/GetCountCartItemByUserEmail/{email}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -506,7 +506,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
