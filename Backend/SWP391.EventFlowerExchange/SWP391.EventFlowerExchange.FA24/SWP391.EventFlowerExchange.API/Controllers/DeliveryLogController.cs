@@ -45,13 +45,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Not found!!!");
         }
         [HttpGet("ViewDeliveryLogByOrderId/{orderId}")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewDeliveryLogByOrderIdAsync(int orderId)
         {
             var result = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
             if (result != null)
             {
                 return Ok(result);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewDeliveryTime")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<DeliveryTime>> ViewDeliveryTimeAsync(int id)
+        {
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = id });
+            if (order != null)
+            {
+                return await _service.ViewDeliveryTimeFromAPIAsync(order);
             }
             return BadRequest("Not found!!!");
         }
@@ -69,7 +81,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 {
                     OrderId = createDeliveryLog.OrderId,
                     DeliveryPersonId = account.Id,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 };
                 await _service.CreateDeliveryLogFromAsync(deliveryLog);
 

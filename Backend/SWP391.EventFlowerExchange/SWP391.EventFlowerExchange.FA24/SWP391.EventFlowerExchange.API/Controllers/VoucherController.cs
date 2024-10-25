@@ -72,9 +72,10 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize]
         public async Task<ActionResult<bool>> UpdateVoucherAsync(Voucher voucher)
         {
-            var result = await _service.UpdateVoucherFromAPIAsync(voucher);
-            if (result == true)
+            var searchVoucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = voucher.VoucherId });
+            if (searchVoucher != null)
             {
+                await _service.UpdateVoucherFromAPIAsync(voucher);
                 return true;
             }
             return false;

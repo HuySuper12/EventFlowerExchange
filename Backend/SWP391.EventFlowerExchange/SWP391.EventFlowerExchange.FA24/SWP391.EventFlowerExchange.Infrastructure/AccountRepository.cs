@@ -29,18 +29,14 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly SmtpSetting smtpSetting;
         private Swp391eventFlowerExchangePlatformContext _context;
-        private readonly IDeliveryLogRepository _deliveryLogRepository;
-        
 
-        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IOptionsMonitor<SmtpSetting> smtpSetting,
-            IDeliveryLogRepository deliveryLogRepository )
+        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IOptionsMonitor<SmtpSetting> smtpSetting)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.roleManager = roleManager;
             this.smtpSetting = smtpSetting.CurrentValue;
-            _deliveryLogRepository = deliveryLogRepository;
         }
 
         // Login available account 
@@ -460,17 +456,13 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                     {
                         if (userRole.ToLower().Contains("shipper"))
                         {
-                            var check = await _deliveryLogRepository.CheckShipperIsFreeAsync(account);
-                            if (check)
-                            {
-                                result.Add(account);
-                            }
+                            result.Add(account);
                         }
                     }
                 }
             }
 
-            return result;
+            return null;
 
         }
     }

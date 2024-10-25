@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SWP391.EventFlowerExchange.Domain.Entities;
 
 namespace SWP391.EventFlowerExchange.Infrastructure
 {
@@ -48,15 +49,17 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return await _context.DeliveryLogs.Where(x => x.DeliveryPersonId == account.Id).ToListAsync();
         }
 
-        public async Task<bool> CheckShipperIsFreeAsync(Account account)
+        public async Task<DeliveryTime> ViewDeliveryTimeAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            var deliveryLog = await _context.DeliveryLogs.FirstOrDefaultAsync(x => x.DeliveryPersonId == account.Id && x.DeliveryAt != null);
-            if (deliveryLog == null)
+            var deliveryLog = await _context.DeliveryLogs.FirstOrDefaultAsync(x => (int)x.OrderId == order.OrderId);
+            DeliveryTime deliveryTime = new DeliveryTime()
             {
-                return true;
-            }
-            return false;
+                TakeOverTime = deliveryLog.CreatedAt,
+                DeliveringTime = deliveryLog.TakeOverAt,
+                SuccessOrFailTime = deliveryLog.DeliveryAt
+            };
+            return deliveryTime;
         }
     }
 }

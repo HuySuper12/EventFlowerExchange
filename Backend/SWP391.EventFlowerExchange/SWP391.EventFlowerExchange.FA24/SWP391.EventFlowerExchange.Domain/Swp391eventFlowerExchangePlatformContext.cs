@@ -174,6 +174,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.TakeOverAt)
+                .HasColumnType("datetime")
+                .HasColumnName("takeover_at");
             entity.Property(e => e.DeliveryAt)
                 .HasColumnType("datetime")
                 .HasColumnName("delivery_at");

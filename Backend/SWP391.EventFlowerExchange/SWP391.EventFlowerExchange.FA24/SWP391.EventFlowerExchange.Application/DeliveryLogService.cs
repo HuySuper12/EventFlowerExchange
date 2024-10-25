@@ -1,4 +1,5 @@
-﻿using SWP391.EventFlowerExchange.Domain.ObjectValues;
+﻿using SWP391.EventFlowerExchange.Domain.Entities;
+using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,11 @@ namespace SWP391.EventFlowerExchange.Application
         public async Task<List<DeliveryLog>> ViewDeliveryLogByShipperIdFromAsync(Account account)
         {
             return await _repo.ViewDeliveryLogByShipperIdAsync(account);
+        }
+
+        public async Task<DeliveryTime> ViewDeliveryTimeFromAPIAsync(Order order)
+        {
+            return await _repo.ViewDeliveryTimeAsync(order);
         }
     }
 }
