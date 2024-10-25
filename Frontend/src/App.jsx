@@ -44,6 +44,8 @@ import OrderSumary from "./page/Buyer-Seller/orderSumary";
 import "./styles/main.scss";
 import WalletSeller from "./page/Buyer-Seller/wallet-seller";
 import SellerPage from "./page/Buyer-Seller/seller-page";
+import DeliveryDetail from "./page/Delivery/DeliveryDetail";
+import DeliveryList from "./page/Delivery/AllDeliveryPage";
 
 const { Content } = Layout;
 
@@ -163,6 +165,14 @@ function App() {
     {
       path: "seller/:id",
       element: <SellerPage />,
+    },
+    {
+      path: "delivery-detail",
+      element: <DeliveryDetail />,
+    },
+    {
+      path: "all-delivery",
+      element: <DeliveryList />,
     },
 
     // Admin Routes wrapped in PrivateRoute
