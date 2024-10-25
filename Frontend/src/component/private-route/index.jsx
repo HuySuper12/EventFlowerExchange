@@ -11,16 +11,6 @@ const PrivateRoute = () => {
       navigate("/login");
       return;
     }
-
-    const handleBeforeUnload = () => {
-      sessionStorage.clear(); // Đảm bảo xóa rõ ràng khi đóng trình duyệt
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
   }, [navigate]);
 
   return <Outlet />;

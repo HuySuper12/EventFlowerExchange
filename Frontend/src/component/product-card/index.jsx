@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
@@ -8,6 +8,7 @@ const colors = ["bg-white-900"];
 
 function ProductCard({ products }) {
   const navigate = useNavigate();
+  const [cartData, setCartData] = useState([]);
 
   const rows = [];
   for (let i = 0; i < products.length; i += 4) {
@@ -16,8 +17,8 @@ function ProductCard({ products }) {
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-};
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
 
   const email = sessionStorage.getItem("email");
   const role = sessionStorage.getItem("role");
@@ -32,6 +33,13 @@ function ProductCard({ products }) {
     }
 
     console.log("Adding product with ID:", productId);
+
+    // Optimistically update the cartData
+    setCartData((prevCartData) => [
+      ...prevCartData,
+      { productId }, // Assuming productId is enough to identify the product
+    ]);
+
     try {
       const response = await api.post("Cart/CreateCartItem", {
         productId,
@@ -44,12 +52,39 @@ function ProductCard({ products }) {
         console.log(productId);
       } else {
         toast.error("Add product failed");
+        // Revert optimistic update if failed
+        setCartData((prevCartData) =>
+          prevCartData.filter((item) => item.productId !== productId)
+        );
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Add product failed");
+      // Revert optimistic update if error occurs
+      setCartData((prevCartData) =>
+        prevCartData.filter((item) => item.productId !== productId)
+      );
     }
   };
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      if (email) {
+        try {
+          const response = await api.get(`Cart/ViewCartByUserEmail`, {
+            params: { email: email },
+          });
+          setCartData(response.data);
+        } catch (error) {
+          console.error("Error fetching cart data:", error);
+        }
+      } else {
+        console.error("Email is not set in sessionStorage.");
+      }
+    };
+
+    fetchCartData();
+  }, [email]);
 
   const formatCurrency = (amount) => {
     const validAmount = amount !== undefined ? amount : 0;
@@ -110,16 +145,19 @@ function ProductCard({ products }) {
                   Post date: {formatDate(product.createdAt)}
                 </div>
                 <div className="flex justify-center mt-4">
-                  {role !== "Seller" && (
-                    <button
-                      className="bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-orange-400 hover:text-white rounded-[70px] product-card-button"
-                      onClick={(event) =>
-                        handleAddToCart(event, product.productId)
-                      }
-                    >
-                      Add to Cart
-                    </button>
-                  )}
+                  {role !== "Seller" &&
+                    !cartData.some(
+                      (item) => item.productId === product.productId
+                    ) && (
+                      <button
+                        className="bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-orange-400 hover:text-white rounded-[70px] product-card-button"
+                        onClick={(event) =>
+                          handleAddToCart(event, product.productId)
+                        }
+                      >
+                        Add to Cart
+                      </button>
+                    )}
                 </div>
               </div>
             </div>
