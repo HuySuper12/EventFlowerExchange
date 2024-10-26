@@ -37,17 +37,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
 
         //BỔ SUNG
-        public Task<List<GetProduct?>> GetEnableAndDisableProductListAsync();
-
         public Task<List<GetProduct?>> GetEnableProductListBySellerEmailAsync(Account value);
 
         public Task<List<GetProduct?>> GetDisableProductListBySellerEmailAsync(Account value);
 
         public Task<List<GetProduct?>> GetExpiredProductListBySellerEmailAsync(Account value);
-
-        public Task<List<GetProduct?>> GetInProgressProductListBySellerEmailAsync(Account value);
-
-        public Task<List<GetProduct?>> GetRejectedProductListBySellerEmailAsync(Account value);
 
         public Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product);
 

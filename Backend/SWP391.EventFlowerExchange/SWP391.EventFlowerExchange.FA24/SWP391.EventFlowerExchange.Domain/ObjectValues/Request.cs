@@ -23,6 +23,8 @@ public partial class Request
 
     public DateTime? UpdatedAt { get; set; }
 
+    public string? Reason { get; set; }
+
     public virtual Product? Product { get; set; }
 
     public virtual Payment? Payment { get; set; }

@@ -86,36 +86,46 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize]
         public async Task<IActionResult> GetEnableAndDisableProductList()
         {
-
-            return Ok(await _service.GetEnableAndDisableProductListFromAPIAsync());
+            var disable = await _service.GetDisableProductListFromAPIAsync();
+            var enable = await _service.GetEnableProductListFromAPIAsync();
+            var combinedList = enable.Concat(disable).ToList();
+            return Ok(combinedList);
 
         }
 
         [HttpGet("GetProductList/Enable/Seller")]
-        //[Authorize]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> GetEnableProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _service.GetEnableProductListBySellerEmailFromAPIAsync(acc));
-
+            //var list = await _service.GetEnableProductListFromAPIAsync();
+            //var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            var filter = await _service.GetEnableProductListBySellerEmailFromAPIAsync(acc);
+            return Ok(filter);
         }
 
 
         [HttpGet("GetProductList/Disable/Seller")]
-        //[Authorize]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> GetDisableProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _service.GetDisableProductListBySellerEmailFromAPIAsync(acc));
+            //var list = await _service.GetDisableProductListFromAPIAsync();
+            //var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+
+            var filter = await _service.GetDisableProductListBySellerEmailFromAPIAsync(acc);
+            return Ok(filter);
         }
 
 
         [HttpGet("GetProductList/InProgress/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Admin)]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> GetInProgressProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _service.GetInProgressProductListBySellerEmailFromAPIAsync(acc));
+            var list = await _service.GetInProgressProductListFromAPIAsync();
+            var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            return Ok(filter);
         }
 
 
@@ -124,7 +134,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         public async Task<IActionResult> GetRejectedProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _service.GetRejectedProductListBySellerEmailFromAPIAsync(acc));
+            var list = await _service.GetRejectedProductListFromAPIAsync();
+            var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            return Ok(filter);
         }
 
         [HttpGet("GetProductList/Expired/Seller")]
@@ -160,7 +172,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetOrdersAndRatingBySellerEmail")]
-        //[Authorize]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+
         public async Task<IActionResult> GetOrdersAndRatingBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });

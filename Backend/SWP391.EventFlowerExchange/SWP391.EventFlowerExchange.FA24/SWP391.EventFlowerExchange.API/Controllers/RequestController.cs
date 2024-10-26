@@ -69,12 +69,13 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize]
         public async Task<ActionResult<bool>> UpdateRequest(CreateRequest value)
         {
-            var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = (int)value.ProductId });
-            var seller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = product.SellerId });
-
+            var seller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = value.UserId });
+            Request request = null;
 
             if (value.RequestType == "Post")
             {
+                var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = (int)value.ProductId });
+                ;
                 value.PaymentId = null;
                 value.Amount = null;
 
@@ -115,13 +116,27 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                         }
                     }
                 }
+                request = await _service.GetRequestByProductIdFromAPIAsync((int)value.ProductId);
+
             }
             else if (value.RequestType == "Withdraw")
             {
                 value.ProductId = null;
+
+                if (value.Status.ToLower().Contains("Rejected".ToLower()))
+                {
+                    var sellerNotification = new CreateNotification()
+                    {
+                        UserEmail = seller.Email,
+                        Content = $"Your withdrawal request has been rejected."
+                    };
+                    await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
+                }
+                request = await _service.GetRequestByIdFromAPIAsync((int)value.RequestId);
+                value.PaymentId = null;
             }
 
-            var request = await _service.GetRequestByProductIdFromAPIAsync((int)value.ProductId);
+
             request.Status = value.Status;
             request.Amount = value.Amount;
             request.RequestType = value.RequestType;
@@ -130,8 +145,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             request.UpdatedAt = DateTime.Now;
 
             await _service.UpdateRequestFromAPIAsync(request);
-
-
 
             return true;
 

@@ -66,7 +66,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             if (response.PaymentType == 1) //NAP TIEN
             {
-                account.Balance = (response.Amount / 100) + account.Balance;
+                account.Balance = (response.Amount) + account.Balance;
                 response.PaymentContent = $"Deposit money into {account.Name}'s wallet";
                 response.PaymentType = 1; //1: Nạp tiền, 2: Rút tiền
 
@@ -87,7 +87,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                     request.UpdatedAt = response.CreatedAt;
                     await _requestService.UpdateRequestFromAPIAsync(request);
 
-                    account.Balance = account.Balance - (response.Amount / 100);
+                    account.Balance = account.Balance - (response.Amount);
                     await _accountService.UpdateAccountFromAPIAsync(account);
 
                     var withdrawalNotification = new CreateNotification()

@@ -75,11 +75,6 @@ namespace SWP391.EventFlowerExchange.Application
         }
 
         //BỔ SUNG 
-        public Task<List<GetProduct?>> GetEnableAndDisableProductListFromAPIAsync()
-        {
-            return _repo.GetEnableAndDisableProductListAsync();
-        }
-
         public Task<List<GetProduct?>> GetEnableProductListBySellerEmailFromAPIAsync(Account value)
         {
             return _repo.GetEnableProductListBySellerEmailAsync(value);
@@ -93,11 +88,6 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<List<GetProduct?>> GetInProgressProductListBySellerEmailFromAPIAsync(Account value)
         {
             return GetInProgressProductListBySellerEmailFromAPIAsync(value);
-        }
-
-        public Task<List<GetProduct?>> GetRejectedProductListBySellerEmailFromAPIAsync(Account value)
-        {
-            return _repo.GetRejectedProductListBySellerEmailAsync(value);
         }
 
         public Task<bool> UpdateProductFromAPIAsync(GetProduct product)
