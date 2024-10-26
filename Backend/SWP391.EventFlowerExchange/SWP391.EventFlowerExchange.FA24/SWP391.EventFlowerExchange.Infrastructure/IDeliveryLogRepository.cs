@@ -22,5 +22,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public Task<DeliveryTime> ViewDeliveryTimeAsync(Order order);
 
+        public Task<DeliveryLog> ViewDeliveryLogDeliveringByShipperIdAsync(DeliveryLog deliveryLog);
+
     }
 }

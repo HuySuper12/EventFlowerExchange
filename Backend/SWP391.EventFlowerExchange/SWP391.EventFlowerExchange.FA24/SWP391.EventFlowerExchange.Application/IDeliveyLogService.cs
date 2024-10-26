@@ -21,5 +21,7 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<bool> UpdateDeliveryLogStatusFromAsync(DeliveryLog deliveryLog);
 
         public Task<DeliveryTime> ViewDeliveryTimeFromAPIAsync(Order order);
+
+        public Task<DeliveryLog> ViewDeliveryLogDeliveringByShipperIdFromAPIAsync(DeliveryLog deliveryLog);
     }
 }

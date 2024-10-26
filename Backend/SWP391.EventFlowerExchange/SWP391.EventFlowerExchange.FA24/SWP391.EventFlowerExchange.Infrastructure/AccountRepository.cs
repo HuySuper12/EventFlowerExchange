@@ -127,7 +127,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Balance = 0,
                 Address = model.Address,
                 PhoneNumber = model.Phone,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = true
             };
 
@@ -152,7 +152,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 UserName = model.Email,
                 Address = model.Address,
                 PhoneNumber = model.Phone,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = true
             };
 
@@ -181,7 +181,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = true
             };
 
@@ -209,7 +209,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = true
             };
 
@@ -257,7 +257,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var otp = new Random().Next(100000, 999999).ToString();
 
             user.OtpCode = otp;
-            user.OtpExpiration = DateTime.UtcNow.AddMinutes(2);
+            user.OtpExpiration = DateTime.Now.AddMinutes(2);
             await userManager.UpdateAsync(user);
 
             string subject = "This is your OTP";
@@ -276,7 +276,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 return false;
             }
 
-            if (user.OtpCode == otp && user.OtpExpiration > DateTime.UtcNow)
+            if (user.OtpCode == otp && user.OtpExpiration > DateTime.Now)
             {
                 return true;
             }

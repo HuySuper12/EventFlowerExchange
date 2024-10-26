@@ -16,12 +16,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _service;
+        private IOrderService _orderService;
         private SmtpSetting _smtpSettings;
 
-        public AccountController(IAccountService service, IOptionsMonitor<SmtpSetting> option)
+        public AccountController(IAccountService service, IOptionsMonitor<SmtpSetting> option, IOrderService orderService)
         {
             _service = service;
             _smtpSettings = option.CurrentValue;
+            _orderService = orderService;
         }
 
         [HttpPost("SignUp/Buyer")]
@@ -187,6 +189,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 return BadRequest("Not found");
             }
+        }
+
+        [HttpGet("ViewAccountBuyerByOrderId")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<Account>> ViewAccountBuyerByOrderId(int orderId)
+        {
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                var buyer = await _service.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                return buyer;
+            }
+            return BadRequest("Not found");
         }
 
 

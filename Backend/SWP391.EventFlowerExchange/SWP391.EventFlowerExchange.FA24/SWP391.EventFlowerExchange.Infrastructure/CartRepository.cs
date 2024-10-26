@@ -56,7 +56,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Quantity = cartItem.Quantity,
                 Price = cartItem.Price,
                 ProductImage = cartItem.ProductImage,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _context.CartItems.AddAsync(newItem);

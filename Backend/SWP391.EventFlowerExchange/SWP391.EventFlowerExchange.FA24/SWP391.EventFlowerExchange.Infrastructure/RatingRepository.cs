@@ -33,7 +33,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 BuyerId = user.Id,
                 Rating = rating.Rating,
                 Comment = rating.Comment,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _context.Reviews.AddAsync(newRating);

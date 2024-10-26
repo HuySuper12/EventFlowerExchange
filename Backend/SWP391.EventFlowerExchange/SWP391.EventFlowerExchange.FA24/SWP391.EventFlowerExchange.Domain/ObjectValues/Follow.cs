@@ -13,5 +13,7 @@ public partial class Follow
 
     public virtual Account Seller { get; set; } = null!;
 
+    public virtual Account Buyer { get; set; } = null!;
+
     public virtual ICollection<ShopNotification> ShopNotifications { get; set; } = new List<ShopNotification>();
 }

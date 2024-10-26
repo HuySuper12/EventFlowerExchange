@@ -49,5 +49,10 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return await _repo.ViewDeliveryTimeAsync(order);
         }
+
+        public async Task<DeliveryLog> ViewDeliveryLogDeliveringByShipperIdFromAPIAsync(DeliveryLog deliveryLog)
+        {
+            return await _repo.ViewDeliveryLogDeliveringByShipperIdAsync(deliveryLog);
+        }
     }
 }
