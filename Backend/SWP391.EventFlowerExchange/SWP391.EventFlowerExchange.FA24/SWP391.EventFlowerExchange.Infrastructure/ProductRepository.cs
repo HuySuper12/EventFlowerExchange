@@ -124,8 +124,9 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<List<GetProduct?>> GetInProgressProductListAsync()
         {
+            string status = "Pending";
             _context = new Swp391eventFlowerExchangePlatformContext();
-            var productList = await _context.Products.Where(p => p.Status == null).ToListAsync();
+            var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
             var getProductList = new List<GetProduct?>();
             foreach (var product in productList)
             {
@@ -171,7 +172,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Description = product.Description,
                 Category = product.Category,
                 ExpiredAt = DateTime.Now.AddDays((int)check),
-
+                Status = "Pending"
             };
 
             _context = new Swp391eventFlowerExchangePlatformContext();
@@ -282,14 +283,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         //BỔ SUNG THÊM HÀM
 
-        public async Task<List<GetProduct?>> GetEnableAndDisableProductListAsync()
-        {
-            var disable = await GetDisableProductListAsync();
-            var enable = await GetEnableProductListAsync();
-            var combinedList = enable.Concat(disable).ToList();
-            return combinedList;
-        }
-
         public async Task<List<GetProduct?>> GetEnableProductListBySellerEmailAsync(Account value)
         {
             var list = await GetEnableProductListAsync();
@@ -300,13 +293,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public async Task<List<GetProduct?>> GetDisableProductListBySellerEmailAsync(Account value)
         {
             var list = await GetDisableProductListAsync();
-            var filter = list.Where(p => p.SellerId == value.Id).ToList();
-            return filter;
-        }
-
-        public async Task<List<GetProduct?>> GetInProgressProductListBySellerEmailAsync(Account value)
-        {
-            var list = await GetInProgressProductListAsync();
             var filter = list.Where(p => p.SellerId == value.Id).ToList();
             return filter;
         }
@@ -326,13 +312,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 }
             }
             return getProductList;
-        }
-
-        public async Task<List<GetProduct?>> GetRejectedProductListBySellerEmailAsync(Account value)
-        {
-            var list = await GetRejectedProductListAsync();
-            var filter = list.Where(p => p.SellerId == value.Id).ToList();
-            return filter;
         }
 
         public async Task<bool> UpdateProductAsync(GetProduct product)

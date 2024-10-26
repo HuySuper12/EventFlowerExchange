@@ -32,7 +32,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.ViewAllDeliveryLogFromAsync());
         }
 
-        [HttpGet("ViewDeliveryLogShipperByEmail/{email}")]
+        [HttpGet("ViewDeliveryLogShipperByEmail")]
         //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<IActionResult> ViewDeliveryLogByShipperIdAsync(string email)
         {
@@ -44,14 +44,39 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return BadRequest("Not found!!!");
         }
-        [HttpGet("ViewDeliveryLogByOrderId/{orderId}")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        [HttpGet("ViewDeliveryLogByOrderId")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewDeliveryLogByOrderIdAsync(int orderId)
         {
             var result = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
             if (result != null)
             {
                 return Ok(result);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewDeliveryTime")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<DeliveryTime>> ViewDeliveryTimeAsync(int id)
+        {
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = id });
+            if (order != null)
+            {
+                return await _service.ViewDeliveryTimeFromAPIAsync(order);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewDeliveryLogDeliveringByShipperEmail")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<DeliveryLog>> ViewDeliveryLogDeliveringByShipperId(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            if (account != null)
+            {
+                var deliveryLog = await _service.ViewDeliveryLogDeliveringByShipperIdFromAPIAsync(new DeliveryLog() { DeliveryPersonId = account.Id });
+                return deliveryLog;
             }
             return BadRequest("Not found!!!");
         }
@@ -69,13 +94,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 {
                     OrderId = createDeliveryLog.OrderId,
                     DeliveryPersonId = account.Id,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 };
                 await _service.CreateDeliveryLogFromAsync(deliveryLog);
 
                 //Gan shipper vao don hang, thay doi trang thai don hang thanh giao hang
                 var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
                 order.Status = "Take over";
+                deliveryLog.TakeOverAt = DateTime.Now;
                 order.DeliveryPersonId = account.Id;
                 await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
@@ -94,7 +120,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPut("UpdateDeliveryLogDeliveringStatus/{orderId}")]
+        [HttpPut("UpdateDeliveryLogDeliveringStatus")]
         //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogDeliveringStatusAsync(int orderId)
         {
@@ -105,6 +131,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             if (deliveryLog.Status == null)
             {
                 deliveryLog.Status = "Delivering";
+                deliveryLog.TakeOverAt = DateTime.Now;
                 await _service.UpdateDeliveryLogStatusFromAsync(deliveryLog);
 
                 order.Status = "Delivering";
@@ -122,7 +149,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPut("UpdateDeliveryLogSuccessStatus/{orderId}/{url}")]
+        [HttpPut("UpdateDeliveryLogSuccessStatus")]
         //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogSuccessStatusAsync(int orderId, string url)
         {
@@ -137,6 +164,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             
             if (order.UpdateAt == null)
             {
+                order.Status = "Success";
                 order.UpdateAt = DateTime.Now.AddDays(2);
                 await _orderService.UpdateOrderStatusFromAPIAsync(order);
 
@@ -155,7 +183,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPut("UpdateDeliveryLogFailStatus/{orderId}/{url}/{reason}")]
+        [HttpPut("UpdateDeliveryLogFailStatus")]
         //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogFailStatusAsync(int orderId, string url, string reason)
         {

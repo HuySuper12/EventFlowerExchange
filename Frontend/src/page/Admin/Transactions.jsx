@@ -1,50 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, message, Pagination } from 'antd';
+import api from "../../config/axios";
 import 'antd/dist/reset.css';
 
 const Transactions = () => {
-  const [transactions, setTransactions] = useState([
-    {
-      id: '1',
-      userId: 'U001',
-      orderId: 'O001',
-      dateTime: '2024-10-14 10:00',
-      transactionType: 'Deposit',
-      amount: 100,
-      status: 'Completed',
-      note: '',
-    },
-    {
-      id: '2',
-      userId: 'U002',
-      orderId: 'O002',
-      dateTime: '2024-10-14 11:00',
-      transactionType: 'Withdrawal',
-      amount: 50,
-      status: 'Failed',
-      note: 'Insufficient funds',
-    },
-    {
-      id: '3',
-      userId: 'U003',
-      orderId: 'O003',
-      dateTime: '2024-10-14 12:00',
-      transactionType: 'Order Payment',
-      amount: 75,
-      status: 'Processing',
-      note: '',
-    },
-    // Add more sample data if necessary
-  ]);
-
+  const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const pageSize = 10;
+
+  // Fetch transactions from API
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get('Transaction/ViewAllTransaction');
+        setTransactions(response.data); // Assuming the response data is an array of transactions
+      } catch (error) {
+        message.error('Failed to fetch transactions');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   const columns = [
     {
       title: 'Transaction ID',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'transactionId',
+      key: 'transactionId',
       sorter: (a, b) => a.id.localeCompare(b.id),
     },
     {
@@ -54,25 +40,19 @@ const Transactions = () => {
       sorter: (a, b) => a.userId.localeCompare(b.userId),
     },
     {
-      title: 'Order ID',
-      dataIndex: 'orderId',
-      key: 'orderId',
-      sorter: (a, b) => a.orderId.localeCompare(b.orderId),
+      title: 'Product ID',
+      dataIndex: 'productId',
+      key: 'productId',
+      sorter: (a, b) => a.productId.localeCompare(b.productId),
     },
     {
       title: 'Date/Time',
-      dataIndex: 'dateTime',
-      key: 'dateTime',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       sorter: (a, b) => new Date(a.dateTime) - new Date(b.dateTime),
     },
-    {
-      title: 'Transaction Type',
-      dataIndex: 'transactionType',
-      key: 'transactionType',
-      render: (type) => (
-        <span style={{ fontWeight: 'bold' }}>{type}</span>
-      ),
-    },
+    
+    
     {
       title: 'Amount',
       dataIndex: 'amount',
@@ -83,14 +63,20 @@ const Transactions = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status, record) => (
-        <span style={{
-          color: status === 'Completed' ? 'green' : status === 'Failed' ? 'red' : 'orange',
-        }}>
-          {status} {status === 'Failed' && record.note && <span>(Note: {record.note})</span>}
-        </span>
-      ),
+      render: (status, record) => {
+        const isCompleted = status === true; 
+    
+        return (
+          <span style={{
+            color: isCompleted ? 'green' : 'red', 
+          }}>
+            {isCompleted ? 'Completed' : 'Failed'} 
+            {!isCompleted && record.note && <span>(Note: {record.note})</span>}
+          </span>
+        );
+      },
     },
+    
     {
       title: 'Actions',
       key: 'actions',
@@ -102,31 +88,33 @@ const Transactions = () => {
 
   const handleViewDetail = (transaction) => {
     Modal.info({
-      title: `Transaction ID: ${transaction.id}`,
+      title: `Transaction ID: ${transaction.transactionId}`, 
       content: (
         <div>
           <p>User ID: {transaction.userId}</p>
           <p>Order ID: {transaction.orderId}</p>
-          <p>Date/Time: {transaction.dateTime}</p>
-          <p>Transaction Type: {transaction.transactionType}</p>
+          <p>Date/Time: {transaction.createdAt}</p> 
+          <p>Transaction Type: {transaction.transactionType === 1 ? 'Deposit' : transaction.transactionType === 2 ? 'Withdraw' : transaction.transactionType === 3 ? 'Order Payment' : 'Unknown'}</p>
           <p>Amount: ${transaction.amount.toFixed(2)}</p>
-          <p>Status: {transaction.status}</p>
+          <p>Status: {transaction.status === true ? 'Completed' : 'Failed'}</p>
           {transaction.note && <p>Note: {transaction.note}</p>}
         </div>
       ),
       onOk() {},
     });
   };
+  
 
   const totalTransactions = transactions.length;
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+      <h1 className="text-3xl font-bold mb-4">Transactions</h1>
       <Table
         columns={columns}
         dataSource={transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize)} // Apply pagination
         rowKey="id"
+        loading={loading}
         pagination={false} // Disable default pagination
       />
       <div style={{ marginTop: '16px', marginLeft: '10px', opacity: 0.5, display: 'flex', justifyContent: 'space-between' }}>

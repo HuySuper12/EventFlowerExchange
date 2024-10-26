@@ -33,9 +33,7 @@ const Home = () => {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+
 
   return (
     <div className="home">

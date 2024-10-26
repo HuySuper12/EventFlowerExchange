@@ -11,9 +11,9 @@ const Staffs = () => {
 
   // Fetch staff list from API
   const fetchStaffs = async () => {
-    const role = "staff";
+    const role = "staff"; 
     try {
-      const response = await api.get(`Account/ViewAllAccount/`, {params: {role: role}})
+      const response = await api.get(`Account/ViewAllAccount/${role}`);
       setStaffs(response.data);
     } catch (error) {
       message.error('Failed to fetch staff list');
@@ -32,11 +32,15 @@ const Staffs = () => {
       dataIndex: 'name',
       key: 'name',
     },
-    
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
     {
       title: 'Phone',
       dataIndex: 'phoneNumber',
-      key: 'phone',
+      key: 'phoneNumber',
     },
     {
       title: 'Address',
@@ -65,14 +69,14 @@ const Staffs = () => {
   // Show modal for creating a new staff
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
-    form.resetFields(); // Clear form for new staff creation
+    form.resetFields(); 
   };
 
   // Show modal for editing an existing staff
   const showEditModal = (staff) => {
     setIsEditModalVisible(true);
     setEditingStaff(staff);
-    form.setFieldsValue(staff); // Set form fields with staff data
+    form.setFieldsValue(staff); 
   };
 
   // Handle creating a new staff
@@ -80,7 +84,6 @@ const Staffs = () => {
     form.validateFields().then(async (values) => {
       try {
         await api.post(`Account/CreateAccount/Staff`, values);
-        
         message.success('New staff added successfully');
         setIsCreateModalVisible(false);
         fetchStaffs();
@@ -93,10 +96,10 @@ const Staffs = () => {
     });
   };
 
+  // Handle editing an existing staff
   const handleEditStaff = async () => {
     form.validateFields().then(async (values) => {
       try {
-        // Update existing staff using PUT API
         await api.put(`Account/UpdateAccount`, { ...values, id: editingStaff.id });
         message.success('Staff updated successfully');
         setIsEditModalVisible(false);
@@ -110,6 +113,7 @@ const Staffs = () => {
     });
   };
 
+  // Handle deleting a staff
   const handleDeleteStaff = async (id) => {
     try {
       const response = await api.delete(`Account/RemoveAccount/${id}`);
@@ -127,13 +131,13 @@ const Staffs = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Staffs</h1>
+      <h1 className="text-3xl font-bold mb-4">Staffs</h1>
       <Button onClick={showCreateModal} type="primary" className="mb-4">
         Create New Staff
       </Button>
       <Table columns={columns} dataSource={staffs} rowKey="id" />
 
-      {/* bảng Modal để creating new staff */}
+      {/* Modal for creating new staff */}
       <Modal
         title="Add New Staff"
         visible={isCreateModalVisible}
@@ -186,7 +190,7 @@ const Staffs = () => {
         </Form>
       </Modal>
 
-      {/* bảng Modal để editing staff */}
+      {/* Modal for editing staff */}
       <Modal
         title="Edit Staff"
         visible={isEditModalVisible}
@@ -204,19 +208,19 @@ const Staffs = () => {
           <Form.Item
             name="salary"
             label="Salary"
-            rules={[{ required: true, message: 'Please input the salary!' }]}
+            rules={[{ message: 'Please input the salary!' }]}
           >
-            <Input type="number" />
+            <Input disabled value={editingStaff?.salary} />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[{ message: 'Please input the email!' }]}
           >
-            <Input />
+            <Input disabled value={editingStaff?.email} />
           </Form.Item>
           <Form.Item
-            name="phoneNumber"
+            name="phone"
             label="Phone"
             rules={[{ required: true, message: 'Please input the phone number!' }]}
           >

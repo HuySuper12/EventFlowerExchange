@@ -76,6 +76,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
             if (account != null)
             {
+                await UpdateOrderStatusAutomaticAsync();
                 return Ok(await _service.ViewOrderByBuyerIdFromAPIAsync(account));
             }
             return BadRequest("Not found!!!");
@@ -88,6 +89,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
             if (account != null)
             {
+                await UpdateOrderStatusAutomaticAsync();
                 return Ok(await _service.ViewOrderBySellerIdFromAPIAsync(account));
             }
             return BadRequest("Not found!!!");
@@ -100,6 +102,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
             if (account != null)
             {
+                await UpdateOrderStatusAutomaticAsync();
                 return Ok(await _service.ViewOrderByShipperIdFromAPIAsync(account));
             }
             return BadRequest("Not found!!!");
@@ -113,6 +116,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var orderList = await _service.ViewOrderByStatusFromAPIAsync(new Order() { Status = status, BuyerId = account.Id });
             if (orderList.Count != 0)
             {
+                await UpdateOrderStatusAutomaticAsync();
                 return Ok(orderList);
             }
             return BadRequest("Not found!!!");
@@ -133,7 +137,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
             if (voucher != null)
             {
-                if (result.SubTotal < voucher.MinOrderValue && DateTime.UtcNow > voucher.ExpiryDate)
+                if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
                 {
                     return BadRequest("Voucher is invalid.");
                 }
@@ -211,9 +215,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                     {
                         await SendOrderPriceToSeller(order);
 
-                        if (order.Status != "Fail")
-                            order.Status = "Success";
-                        else
+                        if (order.Status == "Fail")
                             await SendOrderPriceToBuyer(order);
                             
                         await _service.UpdateOrderStatusFromAPIAsync(order);

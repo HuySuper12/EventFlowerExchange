@@ -1,4 +1,5 @@
 ﻿using SWP391.EventFlowerExchange.Domain.ObjectValues;
+using SWP391.EventFlowerExchange.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<bool> CreateDeliveryLogAsync(DeliveryLog deliveryLog);
 
         public Task<bool> UpdateDeliveryLogStatusAsync(DeliveryLog deliveryLog);
+
+        public Task<DeliveryTime> ViewDeliveryTimeAsync(Order order);
+
+        public Task<DeliveryLog> ViewDeliveryLogDeliveringByShipperIdAsync(DeliveryLog deliveryLog);
 
     }
 }

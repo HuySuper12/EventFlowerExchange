@@ -24,6 +24,22 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.ViewAllVoucherFromAPIAsync());
         }
 
+        [HttpGet("GetAllVoucherValid")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllVoucherValid(decimal price)
+        {
+            var list = await _service.ViewAllVoucherFromAPIAsync();
+            List<Voucher> listVoucher = new List<Voucher>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (DateTime.Now < list[i].ExpiryDate && price > list[i].MinOrderValue)
+                {
+                    listVoucher.Add(list[i]);
+                }
+            }
+            return Ok(listVoucher);
+        }
+
         [HttpGet("SearchVoucherById/{id}")]
         //[Authorize]
         public async Task<IActionResult> SearchVoucherByIdAsync(string id)
@@ -72,9 +88,10 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         //[Authorize]
         public async Task<ActionResult<bool>> UpdateVoucherAsync(Voucher voucher)
         {
-            var result = await _service.UpdateVoucherFromAPIAsync(voucher);
-            if (result == true)
+            var searchVoucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = voucher.VoucherId });
+            if (searchVoucher != null)
             {
+                await _service.UpdateVoucherFromAPIAsync(voucher);
                 return true;
             }
             return false;

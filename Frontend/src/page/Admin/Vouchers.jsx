@@ -8,12 +8,11 @@ const Vouchers = () => {
   const [form] = Form.useForm();
   const [editingVoucher, setEditingVoucher] = useState(null);
 
-  // Fetch all vouchers
+  // Fetch all vouchers from the API
   const fetchVouchers = async () => {
     try {
-      const response = await api.get('Voucher/GetAllVoucher'); 
-      const data = response.data;
-      setVouchers(data);
+      const response = await api.get('Voucher/GetAllVoucher');
+      setVouchers(response.data);
     } catch (error) {
       console.error('Error fetching vouchers:', error);
       message.error('Failed to fetch vouchers');
@@ -21,7 +20,7 @@ const Vouchers = () => {
   };
 
   useEffect(() => {
-    fetchVouchers(); // Fetch vouchers when component mounts
+    fetchVouchers();
   }, []);
 
   const columns = [
@@ -87,65 +86,71 @@ const Vouchers = () => {
     setEditingVoucher(voucher);
     form.setFieldsValue({
       ...voucher,
+      discountValue: voucher.discountValue * 100, 
       expiryDate: Math.ceil((new Date(voucher.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)),
     });
   };
 
   const handleOk = async () => {
-    form.validateFields().then(async (values) => {
-      const daysUntilExpiry = values.expiryDate; 
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + daysUntilExpiry);
-
+    try {
+      const values = await form.validateFields();
       const formattedValues = {
         code: values.code.toUpperCase(),
         description: values.description,
-        discountValue: values.discountValue,
         minOrderValue: values.minOrderValue,
-        expiryDate: expiryDate.toISOString(),
+        expiryDate: values.expiryDate,
+        discountValue: values.discountValue / 100,
       };
-
-      try {
-        if (editingVoucher) {
-          // API to update voucher
-          await api.put(`Voucher/UpdateVoucher`, {
-            ...formattedValues,
-            voucherId: editingVoucher.voucherId,
-          });
-          message.success('Voucher updated successfully');
-          setVouchers(vouchers.map(voucher => voucher.voucherId === editingVoucher.voucherId ? { ...voucher, ...formattedValues } : voucher));
-        } else {
-          // API to add new voucher
-          const response = await api.post('Voucher/CreateVoucher', formattedValues);
+  
+      console.log('Formatted values before sending:', formattedValues);
+  
+      if (editingVoucher) {
+        const updateData = {
+          ...editingVoucher,
+          ...formattedValues,
+        };
+        console.log('Updating voucher with data:', updateData);
+        try {
+          const response = await api.put('Voucher/UpdateVoucher', updateData);
           if (response.data === true) {
-            message.success('New voucher added successfully');
-            setVouchers([...vouchers, response.data]);
+            message.success('Voucher updated successfully');
+            fetchVouchers();
           } else {
-            message.error('Failed to create voucher. Please try again.');
+            message.error('Failed to update voucher. Unexpected response from server.');
+          }
+        } catch (updateError) {
+          console.error('Error updating voucher:', updateError);
+          if (updateError.response) {
+            console.error('Error response:', updateError.response.data);
+            message.error(`Failed to update voucher: ${updateError.response.data.message || 'Unknown error'}`);
           }
         }
-        setIsModalVisible(false);
-      } catch (error) {
-        console.error('Error saving voucher:', error);
-        message.error('Failed to save voucher. Please check your input and API connection.');
+      } else {
+        const response = await api.post('Voucher/CreateVoucher', formattedValues);
+        if (response.data === true) {
+          message.success('New voucher added successfully');
+          fetchVouchers();
+        } else {
+          message.error('Failed to create voucher. Please try again.');
+        }
       }
-    }).catch((info) => {
-      console.log('Validate Failed:', info);
-    });
+      setIsModalVisible(false);
+    } catch (error) {
+      console.error('Error saving voucher:', error);
+      message.error('Failed to save voucher. Please check your input and API connection.');
+    }
   };
 
-  // Cancel modal
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  // Delete voucher
   const handleDeleteVoucher = async (id) => {
     try {
       const response = await api.delete(`Voucher/RemoveVoucher/${id}`);
       if (response.data === true) {
         message.success('Voucher deleted successfully');
-        setVouchers(vouchers.filter(voucher => voucher.voucherId !== id));
+        fetchVouchers();
       } else {
         message.error('Failed to delete voucher. API response was not successful.');
       }
@@ -157,7 +162,7 @@ const Vouchers = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Vouchers</h1>
+      <h1 className="text-3xl font-bold mb-4">Vouchers</h1>
       <Button onClick={showModal} type="primary" className="mb-4">
         Create New Voucher
       </Button>

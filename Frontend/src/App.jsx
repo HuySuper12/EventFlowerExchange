@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Layout, ConfigProvider, theme } from "antd";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Sidebar from "./component/Sidebar";
 import Header from "./component/Header_admin";
 import Dashboard from "./page/Admin/Dashboard";
 import Posts from "./page/Admin/Posts";
+import RequestPending from "./page/Admin/RequestPending";
 import Orders from "./page/Admin/Orders";
 import Customers from "./page/Admin/Customers";
 import Staffs from "./page/Admin/Staffs";
-import Couriers from "./page/Admin/Couriers";
+import Shippers from "./page/Admin/Shippers";
 import Transactions from "./page/Admin/Transactions";
-import Vouchers from "./page/Admin/Vouchers";
+import Payments from "./page/Admin/Payments";
+import Requests from "./page/Admin/Request";
+import Vouchers from "./page/Admin/Vouchers"; 
 import AdminProfileEdit from "./component/AdminProfileEdit";
 import "./styles/main.scss";
 
@@ -44,6 +47,8 @@ import OrderSumary from "./page/Buyer-Seller/orderSumary";
 import "./styles/main.scss";
 import WalletSeller from "./page/Buyer-Seller/wallet-seller";
 import SellerPage from "./page/Buyer-Seller/seller-page";
+import DeliveryDetail from "./page/Delivery/DeliveryDetail";
+import DeliveryList from "./page/Delivery/AllDeliveryPage";
 
 const { Content } = Layout;
 
@@ -164,6 +169,14 @@ function App() {
       path: "seller/:id",
       element: <SellerPage />,
     },
+    {
+      path: "delivery-detail",
+      element: <DeliveryDetail />,
+    },
+    {
+      path: "all-delivery",
+      element: <DeliveryList />,
+    },
 
     // Admin Routes wrapped in PrivateRoute
     {
@@ -198,10 +211,13 @@ function App() {
         { path: "orders", element: <Orders darkMode={darkMode} /> },
         { path: "customers", element: <Customers darkMode={darkMode} /> },
         { path: "staffs", element: <Staffs darkMode={darkMode} /> },
-        { path: "couriers", element: <Couriers darkMode={darkMode} /> },
         { path: "transactions", element: <Transactions darkMode={darkMode} /> },
         { path: "vouchers", element: <Vouchers darkMode={darkMode} /> },
         { path: "profile", element: <AdminProfileEdit darkMode={darkMode} /> },
+        { path: "request-pending", element: <RequestPending darkMode={darkMode} /> },
+        { path: "shippers", element: <Shippers darkMode={darkMode} /> },
+        { path: "payments", element: <Payments darkMode={darkMode} /> },
+        { path: "requests", element: <Requests darkMode={darkMode} /> },
       ],
     },
   ]);

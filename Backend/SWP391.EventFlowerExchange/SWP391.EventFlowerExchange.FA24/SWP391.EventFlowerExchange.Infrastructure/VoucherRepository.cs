@@ -23,10 +23,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Code = createVoucher.Code.ToUpper(),
                 Description = createVoucher.Description,
                 MinOrderValue = createVoucher.MinOrderValue,
-                StartDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddDays(createVoucher.ExpiryDate),
+                StartDate = DateTime.Now,
+                ExpiryDate = DateTime.Now.AddDays(createVoucher.ExpiryDate),
                 DiscountValue = discount,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
             };
             _context.Vouchers.Add(voucher);
             await _context.SaveChangesAsync();

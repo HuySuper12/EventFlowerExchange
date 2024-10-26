@@ -58,4 +58,10 @@ public class Account : IdentityUser
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     public virtual ICollection<Payment> Payment { get; set; } = new List<Payment>();
 
+    // Thuộc tính điều hướng cho người mua
+    public virtual ICollection<Follow> FollowsAsBuyer { get; set; }
+
+    // Thuộc tính điều hướng cho người bán
+    public virtual ICollection<Follow> FollowsAsSeller { get; set; }
+
 }

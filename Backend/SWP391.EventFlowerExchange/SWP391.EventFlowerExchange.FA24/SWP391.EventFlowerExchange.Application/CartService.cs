@@ -80,7 +80,7 @@ namespace SWP391.EventFlowerExchange.Application
                         Quantity = 1,
                         Price = result.Price,
                         ProductImage = productImage.LinkImage,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.Now
                     };
 
                     await _repo.CreateCartItemAsync(newItem);

@@ -1,108 +1,82 @@
-import React, { useState } from 'react';
-import { Table, Tag, Avatar, Switch, message, Tabs, Pagination, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Tag, Avatar, Button, message, Tabs, Pagination, Spin } from 'antd';
 import { UserOutlined, ExportOutlined } from '@ant-design/icons';
+import api from "../../config/axios";
+import { Modal } from 'antd';
 
-const { TabPane } = Tabs;
-
+const { confirm } = Modal;
 const Customers = () => {
-  const [customers, setCustomers] = useState([
-    {
-      id: '1',
-      avatar: 'https://media.gq.com.mx/photos/5eb5954e51cd5e1b340e8b67/16:9/w_2560%2Cc_limit/dia-de-goku.png',
-      name: 'Toi',
-      phone: '123-456-7890',
-      createdAt: '2024-03-15',
-      status: 'Active',
-    },
-    {
-      id: '2',
-      avatar: 'https://media.gq.com.mx/photos/5eb5954e51cd5e1b340e8b67/16:9/w_2560%2Cc_limit/dia-de-goku.png',
-      name: 'Alice',
-      phone: '987-654-3210',
-      createdAt: '2024-03-16',
-      status: 'Locked',
-    },
-  ]);
-
+  const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5; //  page
+  const [loading, setLoading] = useState(true); // Loading state
+  const pageSize = 8;
 
-  const availableCustomers = customers.filter(customer => customer.status === 'Active');
-  const unavailableCustomers = customers.filter(customer => customer.status === 'Locked');
+  const fetchCustomer = async () => {
+    const role = "Buyer";
 
-  const toggleStatus = (id, checked) => {
-    setCustomers(customers.map(customer => 
-      customer.id === id
-        ? { ...customer, status: checked ? 'Active' : 'Locked' }
-        : customer
-    ));
-    message.success(`Customer ${id} has been ${checked ? 'unlocked' : 'locked'}.`);
+    try {
+      const response = await api.get(`Account/ViewAllAccount/${role}`);
+      setTimeout(() => {
+        setCustomers(response.data);
+        setLoading(false); 
+      }, 1000); 
+    } catch (error) {
+      console.error('Error fetching customer data:', error);
+      message.error('Failed to fetch customer data');
+      setLoading(false); 
+    }
   };
 
-  const totalCustomers = availableCustomers.length + unavailableCustomers.length;
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
 
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      sorter: (a, b) => a.id - b.id,
-    },
-    {
-      title: 'Avatar',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      render: (avatar) => <Avatar src={avatar} icon={<UserOutlined />} />,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      filters: [
-        ...new Set(customers.map(customer => ({ text: customer.name, value: customer.name }))),
-      ],
-      onFilter: (value, record) => record.name.includes(value),
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-      filters: [
-        ...new Set(customers.map(customer => ({ text: customer.phone, value: customer.phone }))),
-      ],
-      onFilter: (value, record) => record.phone.includes(value),
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <Tag color={status === 'Active' ? 'green' : 'red'}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
-      filters: [
-        { text: 'Active', value: 'Active' },
-        { text: 'Locked', value: 'Locked' },
-      ],
-      onFilter: (value, record) => record.status.includes(value),
-    },
-    
-  ];
+  const toggleStatus = async (id, checked) => {
+    confirm({
+      title: `Are you sure you want to ${checked ? 'activate' : 'disable'} this customer?`,
+      content: checked
+        ? `This will activate the customer with ID ${id}.`
+        : `This will disable the customer with ID ${id}.`,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk: async () => {
+        try {
+          if (!checked) {
+            const response = await api.delete(`/Account/DisableAccount/${id}`);
+
+            if (response.data === true) {
+              setCustomers(customers.map(customer =>
+                customer.id === id
+                  ? { ...customer, status: checked }
+                  : customer
+              ));
+              message.success(`Customer ${id} has been locked.`);
+              console.log(response.data);
+            } else {
+              message.error('Failed to update status.');
+              console.log(response.data);
+            }
+          }
+        } catch (error) {
+          console.error('Error updating customer status:', error);
+          message.error('Error occurred while updating status.');
+        }
+      },
+      onCancel() {
+        console.log('Action cancelled');
+      },
+    });
+  };
+
 
   const handleExport = () => {
     const csvData = customers.map(customer => ({
       ID: customer.id,
       Name: customer.name,
-      Phone: customer.phone,
+      Email: customer.email,
       CreatedAt: customer.createdAt,
-      Status: customer.status,
+      Status: customer.status ? 'Active' : 'Locked',
     }));
 
     const csvHeaders = Object.keys(csvData[0]).join(',') + '\n';
@@ -121,34 +95,115 @@ const Customers = () => {
     message.success('Customers exported successfully!');
   };
 
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 className="text-2xl font-bold mb-4">Customers</h1>
-          <Button type="primary" icon={<ExportOutlined />} onClick={handleExport}>
-            Export
+  const availableCustomers = customers.filter(customer => customer.status === true);
+  const unavailableCustomers = customers.filter(customer => customer.status === false);
+  const totalCustomers = customers.length;
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      sorter: (a, b) => a.id.localeCompare(b.id),
+    },
+    {
+      title: 'Avatar',
+      dataIndex: 'picture',
+      key: 'picture',
+      render: (avatar) => <Avatar src={avatar} icon={<UserOutlined />} />,
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      filters: [...new Set(customers.map(customer => ({ text: customer.name, value: customer.name })))],
+      onFilter: (value, record) => record.name.includes(value),
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      filters: [...new Set(customers.map(customer => ({ text: customer.email, value: customer.email })))],
+      onFilter: (value, record) => record.email.includes(value),
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      sorter: (a, b) => a.phone.localeCompare(b.phone),
+    },
+    {
+      title: 'Balance',
+      dataIndex: 'balance',
+      key: 'balance',
+      sorter: (a, b) => a.balance - b.balance,
+      render: (balance) => `$${balance.toFixed(2)}`, // Formats balance as currency
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    },
+    
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        record.status ? (
+          <Button 
+            type="danger" 
+            onClick={() => toggleStatus(record.id, false)}
+            className="bg-red-600 text-white"
+          >
+            Disable
           </Button>
+        ) : null 
+      ),
+    }
+  ];
+
+  return (
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Customers</h1>
+        <Button type="primary" icon={<ExportOutlined />} onClick={handleExport}>
+          Export
+        </Button>
       </div>
+
       <Tabs defaultActiveKey="1">
-        <TabPane tab={`Available (${availableCustomers.length})`} key="1">
-          <Table 
-            columns={columns}
-            dataSource={availableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
-            rowKey="id" 
-            pagination={false} 
-          />
-        </TabPane>
-        <TabPane tab={`Unavailable (${unavailableCustomers.length})`} key="2">
-          <Table 
-            columns={columns}
-            dataSource={unavailableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
-            rowKey="id" 
-            pagination={false} 
-          />
-        </TabPane>
+        <Tabs.TabPane tab={`Available (${availableCustomers.length})`} key="1">
+          <div className="shadow-lg bg-white rounded-lg overflow-hidden">
+            <Spin spinning={loading}>
+              <Table 
+                columns={columns}
+                dataSource={availableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
+                rowKey="id" 
+                pagination={false} 
+                className="rounded-lg"
+                rowClassName="hover:bg-gray-100"
+              />
+            </Spin>
+          </div>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab={`Unavailable (${unavailableCustomers.length})`} key="2">
+          <div className="shadow-lg bg-white rounded-lg overflow-hidden">
+            <Spin spinning={loading}>
+              <Table 
+                columns={columns}
+                dataSource={unavailableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
+                rowKey="id" 
+                pagination={false} 
+                className="rounded-lg"
+                rowClassName="hover:bg-gray-100"
+              />
+            </Spin>
+          </div>
+        </Tabs.TabPane>
       </Tabs>
       
-      <div style={{ marginTop: '16px', marginLeft: '10px', opacity: 0.5, display: 'flex', justifyContent: 'space-between' }}>
+      <div className="flex justify-between mt-4 opacity-50">
         <span>{totalCustomers} customers in total</span>
         <Pagination 
           current={currentPage} 

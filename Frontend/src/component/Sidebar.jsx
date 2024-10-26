@@ -6,11 +6,12 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
   TeamOutlined,
-  GiftOutlined,
-  CarOutlined,
   TransactionOutlined,
   TagOutlined,
+  TruckOutlined,
   LogoutOutlined,
+  DollarOutlined,
+  ExceptionOutlined,
   EditOutlined,
 } from '@ant-design/icons';
 
@@ -25,11 +26,14 @@ const Sidebar = ({ darkMode }) => {
   const menuItems = [
     { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
     { key: 'posts', icon: <EditOutlined />, label: 'Posts' },
+    { key: 'requestPending', icon: <EditOutlined />, label: 'Request Pending' },
     { key: 'orders', icon: <ShoppingCartOutlined />, label: 'Orders' },
     { key: 'customers', icon: <UserOutlined />, label: 'Customers' },
     { key: 'staffs', icon: <TeamOutlined />, label: 'Staffs' },
-    { key: 'couriers', icon: <CarOutlined />, label: 'Couriers' },
+    { key: 'shippers', icon: <TruckOutlined />, label: 'Shippers' },
     { key: 'transactions', icon: <TransactionOutlined />, label: 'Transactions' },
+    { key: 'payments', icon: <DollarOutlined />, label: 'Payments' },
+    { key: 'request', icon: <ExceptionOutlined />, label: 'Request' },
     { key: 'vouchers', icon: <TagOutlined />, label: 'Vouchers' },
   ];
 
@@ -38,9 +42,16 @@ const Sidebar = ({ darkMode }) => {
   };
 
   const handleLogout = () => {
+    // Clear session storage
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("email");
+    
+    // Navigate to home page
+    navigate("/");
+
+    // Close the logout modal
     setLogoutVisible(false);
-    sessionStorage.clear();
-    navigate("/login");
   };
 
   return (
@@ -53,7 +64,7 @@ const Sidebar = ({ darkMode }) => {
     >
       <div>
         <div className="logo p-4 text-center ">
-          <Link to="/">
+          <Link to="dashboard">
             <img
               src=""
               alt="Logo"

@@ -31,7 +31,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             {
                 UserId = acc.Id,
                 Content = notification.Content,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = "Enable"
             };
 
@@ -59,7 +59,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 ProductId = notification.ProductId,
                 FollowerId = acc.Id,
                 Content = notification.Content,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Status = "Enable"
             };
 

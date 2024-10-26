@@ -61,7 +61,6 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer(GetConnectionString());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -106,20 +105,29 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
         modelBuilder.Entity<Follow>(entity =>
         {
-            entity.HasKey(e => e.FollowId).HasName("PK__Follow__15A691443703BF66");
+            entity.HasKey(e => e.FollowId).HasName("PK_Follow");
 
             entity.ToTable("Follow");
 
-            entity.HasIndex(e => new { e.FollowerId, e.SellerId }, "IX_Follow_Unique").IsUnique();
+            entity.HasIndex(e => new { e.FollowerId, e.SellerId }).IsUnique();
 
             entity.Property(e => e.FollowId).HasColumnName("follow_id");
             entity.Property(e => e.FollowerId).HasColumnName("follower_id");
             entity.Property(e => e.SellerId).HasColumnName("seller_id");
 
-            entity.HasOne(d => d.Seller).WithMany(p => p.Follows)
+            // Thiết lập quan hệ với Account cho Buyer
+            entity.HasOne(d => d.Buyer)
+                .WithMany(p => p.FollowsAsBuyer) // Đặt thuộc tính điều hướng trong Account cho Buyer
+                .HasForeignKey(d => d.FollowerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Follow_buyer_id");
+
+            // Thiết lập quan hệ với Account cho Seller
+            entity.HasOne(d => d.Seller)
+                .WithMany(p => p.FollowsAsSeller) // Đặt thuộc tính điều hướng trong Account cho Seller
                 .HasForeignKey(d => d.SellerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Follow__seller_i__395884C4");
+                .HasConstraintName("FK_Follow_seller_id");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -174,6 +182,9 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.TakeOverAt)
+                .HasColumnType("datetime")
+                .HasColumnName("takeover_at");
             entity.Property(e => e.DeliveryAt)
                 .HasColumnType("datetime")
                 .HasColumnName("delivery_at");

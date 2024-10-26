@@ -8,19 +8,23 @@ namespace SWP391.EventFlowerExchange.Domain.Entities
 {
     public class CreateRequest
     {
-        public string? UserId { get; set; }
+        public int? RequestId { get; set; } //withdraw
 
-        public string? RequestType { get; set; }
+        public string? UserId { get; set; }// chung
 
-        public int? PaymentId { get; set; } 
+        public string? RequestType { get; set; } //chung
 
-        public decimal? Amount { get; set; }
+        public int? PaymentId { get; set; } //post
 
-        public int? ProductId { get; set; } 
+        public decimal? Amount { get; set; } //withdraw
 
-        public string? Status { get; set; }
+        public int? ProductId { get; set; } //post
 
-        public DateTime? CreatedAt { get; set; }
+        public string? Status { get; set; } //chung
+
+        public DateTime? CreatedAt { get; set; } //chung
+
+        public string? Reason { get; set; }//withdraw
 
     }
-}
+    }

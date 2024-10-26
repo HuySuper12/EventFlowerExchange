@@ -419,6 +419,32 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.AccountController",
+    "Method": "ViewAccountBuyerByOrderId",
+    "RelativePath": "api/Account/ViewAccountBuyerByOrderId",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SWP391.EventFlowerExchange.Domain.ObjectValues.Account",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.AccountController",
     "Method": "ViewAllAccount",
     "RelativePath": "api/Account/ViewAllAccount",
     "HttpMethod": "GET",
@@ -597,7 +623,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
     "Method": "UpdateDeliveryLogDeliveringStatusAsync",
-    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogDeliveringStatus/{orderId}",
+    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogDeliveringStatus",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -605,7 +631,7 @@
       {
         "Name": "orderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -623,7 +649,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
     "Method": "UpdateDeliveryLogFailStatusAsync",
-    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogFailStatus/{orderId}/{url}/{reason}",
+    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogFailStatus",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -631,17 +657,17 @@
       {
         "Name": "orderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "url",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "reason",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -659,7 +685,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
     "Method": "UpdateDeliveryLogSuccessStatusAsync",
-    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogSuccessStatus/{orderId}/{url}",
+    "RelativePath": "api/DeliveryLog/UpdateDeliveryLogSuccessStatus",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -667,12 +693,12 @@
       {
         "Name": "orderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "url",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -700,7 +726,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
     "Method": "ViewDeliveryLogByOrderIdAsync",
-    "RelativePath": "api/DeliveryLog/ViewDeliveryLogByOrderId/{orderId}",
+    "RelativePath": "api/DeliveryLog/ViewDeliveryLogByOrderId",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -708,15 +734,15 @@
       {
         "Name": "orderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
-    "Method": "ViewDeliveryLogByShipperIdAsync",
-    "RelativePath": "api/DeliveryLog/ViewDeliveryLogShipperByEmail/{email}",
+    "Method": "ViewDeliveryLogDeliveringByShipperId",
+    "RelativePath": "api/DeliveryLog/ViewDeliveryLogDeliveringByShipperEmail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -724,10 +750,62 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SWP391.EventFlowerExchange.Domain.ObjectValues.DeliveryLog",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
+    "Method": "ViewDeliveryLogByShipperIdAsync",
+    "RelativePath": "api/DeliveryLog/ViewDeliveryLogShipperByEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.DeliveryLogController",
+    "Method": "ViewDeliveryTimeAsync",
+    "RelativePath": "api/DeliveryLog/ViewDeliveryTime",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SWP391.EventFlowerExchange.Domain.Entities.DeliveryTime",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.FollowController",
@@ -1430,6 +1508,37 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
+    "Method": "UpdateProduct",
+    "RelativePath": "api/Product/UpdateProduct/{id}, {status}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RatingController",
     "Method": "PostRating",
     "RelativePath": "api/Rating/PostRating",
@@ -1794,6 +1903,16 @@
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.VoucherController",
     "Method": "GetAllVoucher",
     "RelativePath": "api/Voucher/GetAllVoucher",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.VoucherController",
+    "Method": "GetAllVoucherValid",
+    "RelativePath": "api/Voucher/GetAllVoucherValid",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

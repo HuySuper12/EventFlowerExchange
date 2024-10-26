@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, Upload, message, Popconfirm } from 'antd';
-import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-
-const { confirm } = Modal;
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Input, message, Popconfirm } from 'antd';
+import api from "../../config/axios";
 
 const Staffs = () => {
-  const [staffs, setStaffs] = useState([
-    {
-      id: '1',
-      name: 'Tai san',
-      image: 'https://source.unsplash.com/100x100/?portrait',
-      phone: '123456789',
-      address: 'Q1, TPHCM',
-      orders: 50,
-    },
-    
-  ]);
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [staffs, setStaffs] = useState([]);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingStaff, setEditingStaff] = useState(null);
 
+  // Fetch staff list from API
+  const fetchStaffs = async () => {
+    const role = "staff"; 
+    try {
+      const response = await api.get(`Account/ViewAllAccount/${role}`);
+      setStaffs(response.data);
+    } catch (error) {
+      message.error('Failed to fetch staff list');
+      console.error('API error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStaffs(); 
+  }, []);
+
+  // Table columns
   const columns = [
     {
       title: 'Name',
@@ -28,25 +33,19 @@ const Staffs = () => {
       key: 'name',
     },
     {
-      title: 'Image',
-      dataIndex: 'image',
-      key: 'image',
-      render: (image) => <img src={image} alt="Staff" className="w-10 h-10 rounded-full" />,
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
     },
     {
       title: 'Address',
       dataIndex: 'address',
       key: 'address',
-    },
-    {
-      title: 'Orders',
-      dataIndex: 'orders',
-      key: 'orders',
     },
     {
       title: 'Actions',
@@ -67,89 +66,171 @@ const Staffs = () => {
     },
   ];
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    setEditingStaff(null);
-    form.resetFields();
+  // Show modal for creating a new staff
+  const showCreateModal = () => {
+    setIsCreateModalVisible(true);
+    form.resetFields(); 
   };
 
+  // Show modal for editing an existing staff
   const showEditModal = (staff) => {
-    setIsModalVisible(true);
+    setIsEditModalVisible(true);
     setEditingStaff(staff);
-    form.setFieldsValue(staff);
+    form.setFieldsValue(staff); 
   };
 
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      if (editingStaff) {
-        setStaffs(staffs.map(staff => staff.id === editingStaff.id ? { ...staff, ...values } : staff));
-        message.success('Staff updated successfully');
-      } else {
-        const newStaff = {
-          id: (staffs.length + 1).toString(),
-          ...values,
-          orders: 0,
-        };
-        setStaffs([...staffs, newStaff]);
+  // Handle creating a new staff
+  const handleCreateStaff = async () => {
+    form.validateFields().then(async (values) => {
+      try {
+        await api.post(`Account/CreateAccount/Staff`, values);
         message.success('New staff added successfully');
+        setIsCreateModalVisible(false);
+        fetchStaffs();
+      } catch (error) {
+        message.error('Failed to add new staff');
+        console.error('API error:', error);
       }
-      setIsModalVisible(false);
     }).catch((info) => {
       console.log('Validate Failed:', info);
     });
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  // Handle editing an existing staff
+  const handleEditStaff = async () => {
+    form.validateFields().then(async (values) => {
+      try {
+        await api.put(`Account/UpdateAccount`, { ...values, id: editingStaff.id });
+        message.success('Staff updated successfully');
+        setIsEditModalVisible(false);
+        fetchStaffs(); 
+      } catch (error) {
+        message.error('Failed to update staff');
+        console.error('API error:', error);
+      }
+    }).catch((info) => {
+      console.log('Validate Failed:', info);
+    });
   };
 
-  const handleDeleteStaff = (id) => {
-    setStaffs(staffs.filter(staff => staff.id !== id));
-    message.success('Staff deleted successfully');
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
+  // Handle deleting a staff
+  const handleDeleteStaff = async (id) => {
+    try {
+      const response = await api.delete(`Account/RemoveAccount/${id}`);
+      if (response.data === true) {
+        message.success('Staff deleted successfully');
+        setStaffs(staffs.filter(staff => staff.id !== id));
+      } else {
+        message.error('Failed to delete staff');
+      }
+    } catch (error) {
+      message.error('Failed to delete staff');
+      console.error('API error:', error);
     }
-    return e?.fileList;
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Staffs</h1>
-      <Button onClick={showModal} type="primary" className="mb-4">
+      <h1 className="text-3xl font-bold mb-4">Staffs</h1>
+      <Button onClick={showCreateModal} type="primary" className="mb-4">
         Create New Staff
       </Button>
       <Table columns={columns} dataSource={staffs} rowKey="id" />
 
+      {/* Modal for creating new staff */}
       <Modal
-        title={editingStaff ? "Edit Staff" : "Add New Staff"}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        title="Add New Staff"
+        visible={isCreateModalVisible}
+        onOk={handleCreateStaff}
+        onCancel={() => setIsCreateModalVisible(false)}
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="image"
-            label="Image"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input the name!' }]}
           >
-            <Upload name="image" listType="picture-card" maxCount={1}>
-              <div>
-                <UploadOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </div>
-            </Upload>
-          </Form.Item>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input the name!' }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="phone" label="Phone" rules={[{ required: true, message: 'Please input the phone number!' }]}>
+          <Form.Item
+            name="salary"
+            label="Salary"
+            rules={[{ required: true, message: 'Please input the salary!' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: 'Please input the email!' }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Please input the address!' }]}>
+          <Form.Item
+            name="phoneNumber"
+            label="Phone"
+            rules={[{ required: true, message: 'Please input the phone number!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: 'Please input the address!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please input the password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal for editing staff */}
+      <Modal
+        title="Edit Staff"
+        visible={isEditModalVisible}
+        onOk={handleEditStaff}
+        onCancel={() => setIsEditModalVisible(false)}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input the name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="salary"
+            label="Salary"
+            rules={[{ message: 'Please input the salary!' }]}
+          >
+            <Input disabled value={editingStaff?.salary} />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ message: 'Please input the email!' }]}
+          >
+            <Input disabled value={editingStaff?.email} />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            label="Phone"
+            rules={[{ required: true, message: 'Please input the phone number!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: 'Please input the address!' }]}
+          >
             <Input />
           </Form.Item>
         </Form>
