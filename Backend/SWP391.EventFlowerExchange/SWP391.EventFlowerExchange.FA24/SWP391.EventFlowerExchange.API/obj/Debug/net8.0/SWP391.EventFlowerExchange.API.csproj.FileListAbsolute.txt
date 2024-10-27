@@ -779,3 +779,7 @@ D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SW
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\SWP391.EventFlowerExchange.API.pdb
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\SWP391.EventFlowerExchange.API.genruntimeconfig.cache
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\obj\Debug\net8.0\ref\SWP391.EventFlowerExchange.API.dll
+C:\Users\ASUS\Documents\SWP\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\ASUS\Documents\SWP\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\ASUS\Documents\SWP\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\ASUS\Documents\SWP\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.API\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll

@@ -29,14 +29,16 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly SmtpSetting smtpSetting;
         private Swp391eventFlowerExchangePlatformContext _context;
+        private readonly IDeliveryLogRepository _deliveryLogRepository;
 
-        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IOptionsMonitor<SmtpSetting> smtpSetting)
+        public AccountRepository(UserManager<Account> userManager, SignInManager<Account> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IOptionsMonitor<SmtpSetting> smtpSetting, IDeliveryLogRepository deliveryLogRepository)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.roleManager = roleManager;
             this.smtpSetting = smtpSetting.CurrentValue;
+            _deliveryLogRepository = deliveryLogRepository;
         }
 
         // Login available account 
@@ -439,7 +441,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<List<Account>> SearchShipperByAddressAsync(string address)
         {
-
             _context = new Swp391eventFlowerExchangePlatformContext();
 
             var result = new List<Account>();
@@ -456,14 +457,16 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                     {
                         if (userRole.ToLower().Contains("shipper"))
                         {
-                            result.Add(account);
+                            if (await _deliveryLogRepository.CheckShipperIsFree(account))
+                            {
+                                result.Add(account);
+                            }
                         }
                     }
                 }
             }
 
-            return null;
-
+            return result;
         }
     }
 }

@@ -75,5 +75,26 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             }
             return null;
         }
+
+        public async Task<Boolean> CheckShipperIsFree(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var deliveryLogList = await _context.DeliveryLogs.Where(x => x.DeliveryPersonId == account.Id).ToListAsync();
+
+            if (deliveryLogList.Count == 0)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < deliveryLogList.Count; i++)
+            {
+                if (deliveryLogList[i].DeliveryAt == null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
