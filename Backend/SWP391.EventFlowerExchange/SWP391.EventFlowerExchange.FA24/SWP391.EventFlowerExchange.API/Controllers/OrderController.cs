@@ -5,6 +5,7 @@ using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
+using System.Collections.Generic;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -118,6 +119,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 await UpdateOrderStatusAutomaticAsync();
                 return Ok(orderList);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("SearchOrderByOrderId")]
+        //[Authorize]
+        public async Task<IActionResult> SearchOrderByOrderId(int orderId)
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if(order != null)
+            {
+                return Ok(order);
             }
             return BadRequest("Not found!!!");
         }

@@ -40,7 +40,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Status = "enable"
             };*/
 
-            var fo = new Follow
+            var fo = new Follow()
             {
                 FollowerId = follower.FollowerEmail,        // FollowerEmail chứa giá trị id
                 SellerId = follower.SellerEmail             // SellerEmail chứa giá trị id

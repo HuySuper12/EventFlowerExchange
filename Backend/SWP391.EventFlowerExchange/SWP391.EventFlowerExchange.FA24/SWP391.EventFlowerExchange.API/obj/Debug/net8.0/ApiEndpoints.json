@@ -1148,6 +1148,22 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "SearchOrderByOrderId",
+    "RelativePath": "api/Order/SearchOrderByOrderId",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "UpdateOrderStatusAsync",
     "RelativePath": "api/Order/UpdateOrderStatusCreatedBySeller/{orderId}",
     "HttpMethod": "PUT",
@@ -1916,7 +1932,13 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "price",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
