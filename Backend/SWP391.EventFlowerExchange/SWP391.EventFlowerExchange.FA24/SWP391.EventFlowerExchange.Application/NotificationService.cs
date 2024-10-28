@@ -21,6 +21,16 @@ namespace SWP391.EventFlowerExchange.Application
             _accountRepository = accountRepository;
         }
 
+        public async Task<int> CountNotificationsByEmailFromApiAsync(Account account)
+        {
+            return await _repo.CountNotificationsByEmailAsync(account);
+        }
+
+        public async Task<int> CountShopNotificationByEmailFromApiAsync(Account account)
+        {
+            return await _repo.CountShopNotificationByEmailAsync(account);
+        }
+
         public async Task<IdentityResult> CreateNotificationFromApiAsync(CreateNotification notification)
         {
             Account check = new Account() { Email = notification.UserEmail };

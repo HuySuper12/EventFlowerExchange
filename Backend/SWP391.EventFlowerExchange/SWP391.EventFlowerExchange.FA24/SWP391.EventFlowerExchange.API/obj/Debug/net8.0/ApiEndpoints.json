@@ -524,7 +524,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.CartController",
     "Method": "GetCountCartItemByUserEmail",
-    "RelativePath": "api/Cart/GetCountCartItemByUserEmail/{email}",
+    "RelativePath": "api/Cart/GetCountCartItemByUserEmail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -532,7 +532,7 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -892,6 +892,38 @@
         "Name": "email",
         "Type": "System.String",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.NotificationController",
+    "Method": "CountNotificationsByEmail",
+    "RelativePath": "api/Notification/CountNotificationsByEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.NotificationController",
+    "Method": "CountShopNotificationsByEmail",
+    "RelativePath": "api/Notification/CountShopNotificationsByEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
