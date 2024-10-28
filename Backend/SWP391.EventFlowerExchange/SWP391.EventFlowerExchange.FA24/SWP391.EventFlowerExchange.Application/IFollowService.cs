@@ -15,5 +15,6 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<IdentityResult> AddNewFollowerFromApiAsync(CreateFollower follower);
         public Task<IdentityResult> RemoveFollowerFromApiAsync(ShopNotification follower);
         public Task<int> GetCountFollowByUserEmailFromApiAsync(Account account);
+        public Task<IdentityResult> CheckFollowByUserEmailFromApiAsync(Account follower, Account seller);
     }
 }

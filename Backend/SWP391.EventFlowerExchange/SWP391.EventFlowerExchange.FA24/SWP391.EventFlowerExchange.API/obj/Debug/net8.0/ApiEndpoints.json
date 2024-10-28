@@ -809,6 +809,37 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.FollowController",
+    "Method": "CheckFollowByUserEmail",
+    "RelativePath": "api/Follow/CheckFollowByUserEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "followerEmail",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sellerEmail",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.FollowController",
     "Method": "CreateFollow",
     "RelativePath": "api/Follow/CreateFollow",
     "HttpMethod": "POST",

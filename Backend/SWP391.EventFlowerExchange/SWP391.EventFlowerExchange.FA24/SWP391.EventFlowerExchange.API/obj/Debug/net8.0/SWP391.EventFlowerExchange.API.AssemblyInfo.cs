@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SWP391.EventFlowerExchange.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< Updated upstream
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+617e2f8f1bd862f6450e483f39e7fec5624c5da3")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd141e9610e8d06b9e84a3a70e832eeb058ca8e7")]
->>>>>>> Stashed changes
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93ecafcfa81d5a530ede9f3111f1e7edad722c2c")]
 [assembly: System.Reflection.AssemblyProductAttribute("SWP391.EventFlowerExchange.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SWP391.EventFlowerExchange.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

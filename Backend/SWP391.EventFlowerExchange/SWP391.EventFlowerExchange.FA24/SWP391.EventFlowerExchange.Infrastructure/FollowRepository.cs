@@ -109,6 +109,19 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 .Where(x => x.SellerId == account.Id).CountAsync();
             return count;
         }
+
+        public async Task<IdentityResult> CheckFollowByUserEmailAsync(Account follower, Account seller)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var follow = await _context.Follows
+                .FirstOrDefaultAsync(x => x.FollowerId == follower.Id && x.SellerId == seller.Id);
+
+            if (follow != null)
+                return IdentityResult.Success;
+            else
+                return IdentityResult.Failed();
+        }
     }
 }
 
