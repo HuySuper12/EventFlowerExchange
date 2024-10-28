@@ -136,11 +136,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Not found!!!");
         }
 
-        [HttpPost("CheckProductHasSameSeller")]
+        [HttpPost("DivideProductHasSameSeller")]
         //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> CheckProductHasSameSellerAsync(List<int> productIdList)
+        public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
         {
-            return await _service.CheckProductHasSameSellerFromAPIAsync(productIdList);
+            return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
         }
 
         [HttpPost("CheckOutOrder")]
@@ -203,18 +203,20 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPut("UpdateOrderStatusCreatedBySeller/{orderId}")]
+        [HttpPut("UpdateOrderStatusCreatedBySeller")]
         //[Authorize(Roles =ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId)
+        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId, string status)
         {
             //Cap nhat trang thai status
             var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
             if (order != null)
             {
-                return await _service.UpdateOrderPendingStatusFromAPIAsync(order);
+                return await _service.UpdateOrderStatusByUserFromAPIAsync(order, status);
             }
             return false;
         }
+
+
 
         private async Task UpdateOrderStatusAutomaticAsync()
         {

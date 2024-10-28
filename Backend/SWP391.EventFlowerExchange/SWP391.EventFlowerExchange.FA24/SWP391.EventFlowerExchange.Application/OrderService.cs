@@ -1,4 +1,5 @@
-﻿using SWP391.EventFlowerExchange.Domain.Entities;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
 using System;
@@ -109,9 +110,9 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.CheckFeeShipEventOrBatchAsync(productIdList);
         }
 
-        public async Task<bool> CheckProductHasSameSellerFromAPIAsync(List<int> productIdList)
+        public async Task<string> DivideProductHasSameSellerFromAPIAsync(List<int> productIdList)
         {
-            return await _repo.CheckProductHasSameSellerAsync(productIdList);
+            return await _repo.DivideProductHasSameSellerAsync(productIdList);
         }
 
         public async Task<CheckOutAfter> CheckOutOrderFromAPIAsync(string address, List<int> productList, Voucher voucher)
@@ -119,10 +120,10 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.CheckOutOrderAsync(address, productList, voucher);
         }
 
-        public async Task<bool> UpdateOrderPendingStatusFromAPIAsync(Order order)
+        public async Task<bool> UpdateOrderStatusByUserFromAPIAsync(Order order, string status)
         {
             var orderItem = await _repo.ViewOrderDetailAsync(order);
-            if (order.Status == null)
+            if (order.Status == null && status == "Accepted")
             {
                 order.Status = "Pending";
                 await _repo.UpdateOrderStatusAsync(order);
@@ -201,6 +202,22 @@ namespace SWP391.EventFlowerExchange.Application
                 };
                 await _notificationRepository.CreateNotificationAsync(notificationSeller);
 
+                return true;
+            } 
+            else if (order.Status == null && status == "Rejected")
+            {
+                order.Status = "Rejected";
+                await _repo.UpdateOrderStatusAsync(order);
+
+                var accountBuyer = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.BuyerId });
+                var accountSeller = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.SellerId });
+
+                CreateNotification notificationSeller = new CreateNotification()
+                {
+                    UserEmail = accountSeller.Email,
+                    Content = $"Your order has been rejected by buyer {accountBuyer.Name}",
+                };
+                await _notificationRepository.CreateNotificationAsync(notificationSeller);
                 return true;
             }
             return false;

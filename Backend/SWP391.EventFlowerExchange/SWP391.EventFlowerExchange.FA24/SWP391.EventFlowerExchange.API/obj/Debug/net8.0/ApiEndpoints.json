@@ -1113,32 +1113,6 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
-    "Method": "CheckProductHasSameSellerAsync",
-    "RelativePath": "api/Order/CheckProductHasSameSeller",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "productIdList",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Boolean",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "CreateOrderAsync",
     "RelativePath": "api/Order/CreateOrder",
     "HttpMethod": "POST",
@@ -1191,6 +1165,32 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "DivideProductHasSameSeller",
+    "RelativePath": "api/Order/DivideProductHasSameSeller",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productIdList",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "GetMonthlyOrderStatistics",
     "RelativePath": "api/Order/GetMonthlyOrderStatistics",
     "HttpMethod": "GET",
@@ -1228,7 +1228,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "UpdateOrderStatusAsync",
-    "RelativePath": "api/Order/UpdateOrderStatusCreatedBySeller/{orderId}",
+    "RelativePath": "api/Order/UpdateOrderStatusCreatedBySeller",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1236,7 +1236,12 @@
       {
         "Name": "orderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [

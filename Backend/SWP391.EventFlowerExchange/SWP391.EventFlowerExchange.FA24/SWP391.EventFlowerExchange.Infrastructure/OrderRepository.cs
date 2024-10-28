@@ -28,19 +28,50 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _accountRepository = accountRepository;
         }
 
-        public async Task<bool> CheckProductHasSameSellerAsync(List<int> productIdList)
+        public async Task<string> DivideProductHasSameSellerAsync(List<int> productIdList)
         {
             //Tim product de gan sellerId && Kiem tra coi cac san pham co cung nguoi ban hay khong
-            var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[0] });
+            string result = "";
+
+            //Tao list seller
+            List<string> listFake = new List<string>();
             for (int i = 0; i < productIdList.Count(); i++)
             {
-                var checkProduct = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[i] });
-                if (checkProduct.SellerId != product.SellerId)
+                int count = 0;
+                var product = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[i] });
+
+                //kiem tra co cung seller hay ko
+                bool check = false;
+                for(int x = 0; x < listFake.Count(); x++)
                 {
-                    return false;
+                    if (listFake[x] == product.SellerId)
+                        check = true;
+                }
+                
+                if (check == false)
+                {
+                    listFake.Add(product.SellerId);
+                    result += productIdList[i];
+
+                    for (int j = i + 1; j < productIdList.Count(); j++)
+                    {
+                        var checkProduct = await _productRepository.SearchProductByIdAsync(new GetProduct() { ProductId = productIdList[j] });
+                        if (checkProduct.SellerId == product.SellerId)
+                        {
+                            result += "-" + checkProduct.ProductId;
+                            count++;
+                        }
+                    }
+                    result += ",";
                 }
             }
-            return true;
+
+            //Bo dau ',' cuoi chuoi
+            char[] s = result.ToCharArray();
+            result = "";
+            for (int i = 0; i < s.Length - 1; i++)
+                result += s[i];
+            return result;
         }
 
         public async Task<CheckOutAfter> CheckOutOrderAsync(string address, List<int> productList, Voucher voucher)

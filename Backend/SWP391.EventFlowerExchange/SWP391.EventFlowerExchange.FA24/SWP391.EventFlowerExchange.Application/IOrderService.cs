@@ -20,14 +20,14 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<bool> CreateOrderFromAPIAsync(DeliveryInformation deliveryInformation, Voucher voucher);
         public Task<bool> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller);
         public Task<bool> UpdateOrderStatusFromAPIAsync(Order order);
-        public Task<bool> UpdateOrderPendingStatusFromAPIAsync(Order order);
+        public Task<bool> UpdateOrderStatusByUserFromAPIAsync(Order order, string status);
         public decimal CheckFeeShipForOrderEvent(string address);
         public decimal CheckFeeShipForOrderBatch(string address);
         public Task<bool> CheckFeeShipEventOrBatchFromAPIAsync(List<int> productIdList);
 
         public Dictionary<string, int> GetMonthlyOrderStatisticsFromAPI();
 
-        public Task<bool> CheckProductHasSameSellerFromAPIAsync(List<int> productIdList);
+        public Task<string> DivideProductHasSameSellerFromAPIAsync(List<int> productIdList);
         public Task<CheckOutAfter> CheckOutOrderFromAPIAsync(string address, List<int> productList, Voucher voucher);
 
     }

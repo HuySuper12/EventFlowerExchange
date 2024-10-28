@@ -26,7 +26,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public decimal CheckFeeShipForOrderEvent(string address);
         public decimal CheckFeeShipForOrderBatch(string address);
         public Task<bool> CheckFeeShipEventOrBatchAsync(List<int> productIdList);
-        public Task<bool> CheckProductHasSameSellerAsync(List<int> productIdList);
+        public Task<string> DivideProductHasSameSellerAsync(List<int> productIdList);
         public Task<CheckOutAfter> CheckOutOrderAsync(string address, List<int> productList, Voucher voucher);
         public Task<List<Order>> SearchOrderItemByProductAsync(GetProduct product);
     }
