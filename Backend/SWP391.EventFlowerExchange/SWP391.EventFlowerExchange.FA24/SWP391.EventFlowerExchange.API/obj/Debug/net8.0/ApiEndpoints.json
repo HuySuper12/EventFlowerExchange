@@ -1107,9 +1107,45 @@
         "Name": "checkOutBefore",
         "Type": "SWP391.EventFlowerExchange.Domain.Entities.CheckOutBefore",
         "IsRequired": true
+      },
+      {
+        "Name": "value",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "CreateListOrderAsync",
+    "RelativePath": "api/Order/CreateListOrder",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "value",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "deliveryInformation",
+        "Type": "SWP391.EventFlowerExchange.Domain.Entities.DeliveryInformation",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
@@ -1397,6 +1433,22 @@
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
     "Method": "GetOrdersAndRatingBySellerEmail",
     "RelativePath": "api/Product/GetOrdersAndRatingBySellerEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.ProductController",
+    "Method": "GetDealProductListBySellerEmail",
+    "RelativePath": "api/Product/GetProductList/Deal/Seller",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

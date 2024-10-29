@@ -145,18 +145,77 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         [HttpPost("CheckOutOrder")]
         //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
-        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore)
+        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
         {
-            var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
-            var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
-            if (voucher != null)
+            var list = new List<CheckOutBefore>();
+            string[] s = value.Split(',');
+
+            CheckOutAfter checkOutAfter = new CheckOutAfter()
             {
-                if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                SubTotal = 0,
+                Discount = 0,
+                Ship = 0,
+                Total = 0
+            };
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                var listProduct = new List<int>();
+                string[] productIdList = s[i].Split('-');
+                for (int j = 0; j < productIdList.Length; j++)
                 {
-                    return BadRequest("Voucher is invalid.");
+                    listProduct.Add(int.Parse(productIdList[j]));
                 }
+
+                var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
+                var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, listProduct, voucher);
+                if (voucher != null)
+                {
+                    if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                    {
+                        return BadRequest("Voucher is invalid.");
+                    }
+                }
+
+                checkOutAfter.SubTotal += result.SubTotal;
+                checkOutAfter.Ship += result.Ship;
+                checkOutAfter.Discount += result.Discount;
+                checkOutAfter.Total += result.Total;
+
             }
-            return Ok(result);
+            return Ok(checkOutAfter);
+        }
+
+        [HttpPost("CreateListOrder")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateListOrderAsync(string value, DeliveryInformation deliveryInformation)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
+            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
+
+            if (account != null)
+            {
+                var list = new List<int>();
+                string[] s = value.Split(',');  //Phan don hang can tao
+
+                for (int i = 0; i < s.Length; i++)
+                {
+                    var listProduct = new List<int>();
+                    string[] productIdList = s[i].Split('-');
+                    for (int j = 0; j < productIdList.Length; j++)
+                    {
+                        listProduct.Add(int.Parse(productIdList[j]));
+                    }
+
+                    deliveryInformation.Product = listProduct;
+
+                    await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
+
+                }
+                return true;
+
+            }
+            return false;
         }
 
         [HttpPost("CreateOrder")]
