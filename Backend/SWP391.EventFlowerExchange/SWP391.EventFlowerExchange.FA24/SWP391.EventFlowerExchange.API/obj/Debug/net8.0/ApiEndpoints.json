@@ -1702,6 +1702,22 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RatingController",
+    "Method": "ViewRatingByProductId",
+    "RelativePath": "api/Rating/ViewRatingByProductId",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RatingController",
     "Method": "ViewRatingByUserEmail",
     "RelativePath": "api/Rating/ViewRatingByUserId/{email}",
     "HttpMethod": "GET",

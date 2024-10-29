@@ -14,14 +14,16 @@ namespace SWP391.EventFlowerExchange.API.Controllers
     {
         private IRatingService _service;
         private IAccountService _accountService;
+        private IOrderService _orderService;
 
-        public RatingController(IRatingService service, IAccountService accountService)
+        public RatingController(IRatingService service, IAccountService accountService, IOrderService orderService)
         {
             _service = service;
             _accountService = accountService;
+            _orderService = orderService;
         }
 
-        [HttpGet("ViewRatingByUserId/{email}")]
+        [HttpGet("ViewRatingByUserEmail")]
         //[Authorize]
         public async Task<IActionResult> ViewRatingByUserEmail(string email)
         {
@@ -41,13 +43,27 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
+        [HttpGet("ViewRatingByProductId")]
+        public async Task<IActionResult> ViewRatingByProductId(int productId)
+        {
+            var order = await _orderService.SearchOrderItemByProductIdFromAPIAsync(new GetProduct() { ProductId = productId });
+
+            var check = await _service.ViewRatingByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });     // ĐÃ SỬA 
+            if (check != null)
+            {
+                return Ok(check);
+
+            }
+            return Ok("Not found!");
+        }
+
         [HttpPost("PostRating")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> PostRating(CreateRating rate)  //KÊU QUÝ MINH TRUYỀN EMAIL VÀO BUYER ID. ĐỂ KHỎI PHẢI SỬA TÊN CreateRating Ở TRONG REPOSITORY
         {
             Account acc = new Account();
             acc.Email = rate.BuyerEmail;
-            var deleteAccount = await _accountService.GetUserByEmailFromAPIAsync(acc); 
+            var deleteAccount = await _accountService.GetUserByEmailFromAPIAsync(acc);
 
             if (deleteAccount != null)
             {

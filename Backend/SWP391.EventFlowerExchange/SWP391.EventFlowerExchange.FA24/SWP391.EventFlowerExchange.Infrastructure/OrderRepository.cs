@@ -404,5 +404,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return orderList;
         }
 
+        public async Task<OrderItem> SearchOrderItemByProductIdAsync(GetProduct product)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.OrderItems.FirstOrDefaultAsync(x => x.ProductId == product.ProductId);
+        }
     }
 }

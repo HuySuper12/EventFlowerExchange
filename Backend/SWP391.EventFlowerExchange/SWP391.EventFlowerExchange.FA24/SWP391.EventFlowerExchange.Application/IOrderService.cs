@@ -30,5 +30,7 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<string> DivideProductHasSameSellerFromAPIAsync(List<int> productIdList);
         public Task<CheckOutAfter> CheckOutOrderFromAPIAsync(string address, List<int> productList, Voucher voucher);
 
+        public Task<OrderItem> SearchOrderItemByProductIdFromAPIAsync(GetProduct product);
+
     }
 }

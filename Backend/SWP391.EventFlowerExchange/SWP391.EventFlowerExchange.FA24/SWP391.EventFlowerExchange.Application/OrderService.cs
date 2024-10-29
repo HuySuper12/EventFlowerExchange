@@ -66,6 +66,11 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.ViewOrderByBuyerIdAsync(account);
         }
 
+        public async Task<OrderItem> SearchOrderItemByProductIdFromAPIAsync(GetProduct product)
+        {
+            return await _repo.SearchOrderItemByProductIdAsync(product);
+        }
+
         public async Task<List<Order>> ViewOrderBySellerIdFromAPIAsync(Account account)
         {
             return await _repo.ViewOrderBySellerIdAsync(account);

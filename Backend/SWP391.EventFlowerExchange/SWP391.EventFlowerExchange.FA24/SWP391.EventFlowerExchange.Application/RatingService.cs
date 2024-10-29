@@ -28,5 +28,10 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return await _repo.ViewAllRatingByUserIdAsync(account);
         }
+
+        public async Task<Review> ViewRatingByOrderIdFromAPIAsync(Order order)
+        {
+            return await _repo.ViewRatingByOrderIdAsync(order);
+        }
     }
 }

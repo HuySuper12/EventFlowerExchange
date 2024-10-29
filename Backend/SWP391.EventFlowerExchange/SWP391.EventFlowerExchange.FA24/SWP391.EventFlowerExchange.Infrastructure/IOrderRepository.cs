@@ -29,5 +29,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<string> DivideProductHasSameSellerAsync(List<int> productIdList);
         public Task<CheckOutAfter> CheckOutOrderAsync(string address, List<int> productList, Voucher voucher);
         public Task<List<Order>> SearchOrderItemByProductAsync(GetProduct product);
+
+        public Task<OrderItem> SearchOrderItemByProductIdAsync(GetProduct product);
     }
 }
