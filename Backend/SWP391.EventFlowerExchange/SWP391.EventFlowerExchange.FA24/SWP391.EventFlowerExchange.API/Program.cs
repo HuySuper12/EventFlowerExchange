@@ -115,6 +115,9 @@ namespace SWP391.EventFlowerExchange.API
             builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
             builder.Services.AddScoped<IVoucherService, VoucherService>();
 
+            builder.Services.AddScoped<IRefundRepository, RefundRepository>();
+            builder.Services.AddScoped<IRefundService, RefundService>();
+
             // Add DbContext
             builder.Services.AddDbContext<Swp391eventFlowerExchangePlatformContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

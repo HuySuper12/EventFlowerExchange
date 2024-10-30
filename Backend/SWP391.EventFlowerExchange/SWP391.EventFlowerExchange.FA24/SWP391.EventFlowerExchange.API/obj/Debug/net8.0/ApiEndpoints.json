@@ -1719,7 +1719,7 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RatingController",
     "Method": "ViewRatingByUserEmail",
-    "RelativePath": "api/Rating/ViewRatingByUserId/{email}",
+    "RelativePath": "api/Rating/ViewRatingByUserEmail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1727,10 +1727,176 @@
       {
         "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "BuyerReturnAction",
+    "RelativePath": "api/Refund/BuyerReturnAction",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "CreateDeliveryLogForRefund",
+    "RelativePath": "api/Refund/CreateDeliveryLogForRefund",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createDeliveryLog",
+        "Type": "SWP391.EventFlowerExchange.Domain.Entities.CreateDeliveryLog",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "StaffApproveRefundRequest",
+    "RelativePath": "api/Refund/StaffApproveRefundRequest",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "staffEmail",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "UpdateDeliveryLogRefundDeliveringStatus",
+    "RelativePath": "api/Refund/UpdateDeliveryLogRefundDeliveringStatus",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "UpdateDeliveryLogRefundSuccessStatus",
+    "RelativePath": "api/Refund/UpdateDeliveryLogRefundSuccessStatus",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "url",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RefundController",
+    "Method": "UpdateSellerRefundConfirmationStatus",
+    "RelativePath": "api/Refund/UpdateSellerRefundConfirmationStatus",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.RequestController",

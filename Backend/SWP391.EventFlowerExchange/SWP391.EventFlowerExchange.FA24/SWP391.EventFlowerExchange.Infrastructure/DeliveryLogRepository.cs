@@ -96,5 +96,12 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             return true;
         }
+
+        public async Task<DeliveryLog> ViewDeliveryLogDeliveringByOrderIdAsync(Order order)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            var x = await _context.DeliveryLogs.FirstOrDefaultAsync(x => x.OrderId == order.OrderId && x.DeliveryAt == null);
+            return x;
+        }
     }
 }

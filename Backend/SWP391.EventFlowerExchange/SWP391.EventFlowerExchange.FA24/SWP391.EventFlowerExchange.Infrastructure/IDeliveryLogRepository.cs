@@ -25,5 +25,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<DeliveryLog> ViewDeliveryLogDeliveringByShipperIdAsync(DeliveryLog deliveryLog);
 
         public Task<Boolean> CheckShipperIsFree(Account account);
+
+        public Task<DeliveryLog> ViewDeliveryLogDeliveringByOrderIdAsync(Order order);
     }
 }
