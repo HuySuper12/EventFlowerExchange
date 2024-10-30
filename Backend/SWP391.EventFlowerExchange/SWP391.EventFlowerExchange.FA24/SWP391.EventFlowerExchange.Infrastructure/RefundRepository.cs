@@ -20,9 +20,8 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private IDeliveryLogRepository _deliveryLogRepository;
         private IOrderRepository _orderRepository;
 
-        public RefundRepository(Swp391eventFlowerExchangePlatformContext context, INotificationRepository notificationRepository, ITransactionRepository transactionRepository, IAccountRepository accountRepository, IRequestRepository requestRepository, IDeliveryLogRepository deliveryLogRepository, IOrderRepository orderRepository)
+        public RefundRepository(INotificationRepository notificationRepository, ITransactionRepository transactionRepository, IAccountRepository accountRepository, IRequestRepository requestRepository, IDeliveryLogRepository deliveryLogRepository, IOrderRepository orderRepository)
         {
-            _context = context;
             _notificationRepository = notificationRepository;
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;
@@ -45,6 +44,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<IdentityResult> BuyerReturnActionAsync(Account buyer,Order order)
         {
+            _context = new Swp391eventFlowerExchangePlatformContext();
             //gửi request lên admin
             var newRequest = new CreateRequest()
             {
@@ -99,6 +99,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<IdentityResult> UpdateRefundRequestStatusAsync(Account staff, Order order)
         {
+            _context = new Swp391eventFlowerExchangePlatformContext();
             //gửi thông báo cho nguồi mua
             var buyer = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.BuyerId });
             var newNotification = new CreateNotification()
@@ -130,6 +131,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<IdentityResult> UpdateSellerRefundConfirmationStatusAsync(Order order)
         {
+            _context = new Swp391eventFlowerExchangePlatformContext();
             //Tiền từ hệ thống sẽ chuyển về cho người mua 
             var buyer = await _accountRepository.GetUserByIdAsync(new Account() { Id = order.BuyerId });
             buyer.Balance += order.TotalPrice - this.CheckFeeShipForOrderBatch(order.DeliveredAt);

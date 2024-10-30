@@ -1097,6 +1097,37 @@
   },
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
+    "Method": "CancelOrderByBuyerAsync",
+    "RelativePath": "api/Order/CancelOrderByBuyer",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "reason",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.OrderController",
     "Method": "CheckOutOrderAsync",
     "RelativePath": "api/Order/CheckOutOrder",
     "HttpMethod": "POST",
@@ -2078,16 +2109,11 @@
   {
     "ContainingType": "SWP391.EventFlowerExchange.API.Controllers.TransactionController",
     "Method": "ViewAllTransactionByUserIdAndOrderIdAsync",
-    "RelativePath": "api/Transaction/ViewAllTransactionByUserIdAndOrderId/{userId}/{orderId}",
+    "RelativePath": "api/Transaction/ViewAllTransactionByUserIdAndOrderId/{orderId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.String",
-        "IsRequired": true
-      },
       {
         "Name": "orderId",
         "Type": "System.Int32",

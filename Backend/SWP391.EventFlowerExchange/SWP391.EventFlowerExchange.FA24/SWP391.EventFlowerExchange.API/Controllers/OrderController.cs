@@ -275,7 +275,50 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpPut("CancelOrderByBuyer")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CancelOrderByBuyerAsync(int orderId, string reason)
+        {
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                if (order.Status == "Pending")
+                {
+                    order.Status = "Fail";
+                    order.IssueReport = reason;
+                    await _service.UpdateOrderStatusFromAPIAsync(order);
 
+                    var orderItem = await _service.ViewOrderDetailFromAPIAsync(order);
+                    for (int i = 0; i < orderItem.Count; i++)
+                    {
+                        var product = await _productService.SearchProductByIdFromAPIAsync(orderItem[i]);
+                        product.Status = "Enable";
+                        await _productService.UpdateProductFromAPIAsync(product);
+                    }
+
+                    var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                    CreateNotification notiBuyer = new CreateNotification()
+                    {
+                        UserEmail = accountBuyer.Email,
+                        Content = "Your order has been cancel successfully"
+                    };
+                    await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                    var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                    CreateNotification notiSeller = new CreateNotification()
+                    {
+                        UserEmail = accountSeller.Email,
+                        Content = "Your product has been canceled because " + reason.ToLower()
+                    };
+                    await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+
+                    await SendOrderPriceToBuyer(order);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
 
         private async Task UpdateOrderStatusAutomaticAsync()
         {
@@ -285,8 +328,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)deliveryList[i].OrderId });
                 if (DateTime.Now > order.UpdateAt && order.UpdateAt != null)
                 {
-                    var transaction = await _transactionService.ViewAllTransactionByUserIdAndOrderIdFromAPIAsync(new Account() { Id = order.SellerId }, new Order() { OrderId = order.OrderId });
-                    if(transaction == null)
+                    var transaction = await _transactionService.ViewAllTransactionByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });
+                    if (transaction.Count == 1)
                     {
                         await SendOrderPriceToSeller(order);
 
@@ -368,7 +411,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             CreateNotification notificationSeller = new CreateNotification()
             {
                 UserEmail = accountSeller.Email,
-                Content = "Order payment system for sellers",
+                Content = $"Order payment system for {accountSeller.Name}",
             };
             await _notificationService.CreateNotificationFromApiAsync(notificationSeller);
         }
@@ -381,14 +424,21 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 productList.Add(item.ProductId);
             }
-            var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
 
-            //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
             decimal? originPrice = 0;
-            if (check)
-                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+            if (order.DeliveryPersonId != null)
+            {
+                var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
+                //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
+                if (check)
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+                else
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+            }
             else
-                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+            {
+                originPrice = order.TotalPrice;
+            }
 
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
             account.Balance += (decimal)originPrice;
@@ -429,7 +479,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             CreateNotification notificationBuyer = new CreateNotification()
             {
                 UserEmail = accountBuyer.Email,
-                Content = "Order payment system for Buyer",
+                Content = $"Order payment system for {accountBuyer.Name}",
             };
             await _notificationService.CreateNotificationFromApiAsync(notificationBuyer);
         }

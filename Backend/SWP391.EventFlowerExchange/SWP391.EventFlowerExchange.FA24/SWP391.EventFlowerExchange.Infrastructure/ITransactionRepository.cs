@@ -13,7 +13,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<List<Transaction>> ViewAllTransactionByUserIdAsync(Account account);
         public Task<Transaction> ViewTransactionByIdAsync(Transaction transaction);
         public Task<Transaction> ViewTransactionByCodeAsync(Transaction transaction);
-        public Task<Transaction> ViewAllTransactionByUserIdAndOrderIdAsync(Account account, Order order);
+        public Task<List<Transaction>> ViewAllTransactionByOrderIdAsync(Order order);
         public Task<bool> CreateTransactionAsync(Transaction transaction);
 
         public Dictionary<string, decimal> GetRevenueOrderStatistics();

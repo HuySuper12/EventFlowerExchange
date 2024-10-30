@@ -21,9 +21,9 @@ namespace SWP391.EventFlowerExchange.Application
             return await _repo.CreateTransactionAsync(transaction);
         }
 
-        public async Task<Transaction> ViewAllTransactionByUserIdAndOrderIdFromAPIAsync(Account account, Order order)
+        public async Task<List<Transaction>> ViewAllTransactionByOrderIdFromAPIAsync(Order order)
         {
-            return await _repo.ViewAllTransactionByUserIdAndOrderIdAsync(account, order);
+            return await _repo.ViewAllTransactionByOrderIdAsync(order);
         }
 
         public async Task<List<Transaction>> ViewAllTransactionByUserIdFromAPIAsync(Account account)

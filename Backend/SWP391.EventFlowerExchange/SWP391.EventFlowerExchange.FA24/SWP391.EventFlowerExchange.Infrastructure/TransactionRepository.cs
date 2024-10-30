@@ -33,10 +33,10 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             return await _context.Transactions.Where(x => x.UserId == account.Id).ToListAsync();
         }
 
-        public async Task<Transaction> ViewAllTransactionByUserIdAndOrderIdAsync(Account account, Order order)
+        public async Task<List<Transaction>> ViewAllTransactionByOrderIdAsync(Order order)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-            return await _context.Transactions.FirstOrDefaultAsync(x => x.UserId == account.Id && x.OrderId == order.OrderId);
+            return await _context.Transactions.Where(x => x.OrderId == order.OrderId).ToListAsync();
         }
 
         public async Task<Transaction> ViewTransactionByIdAsync(Transaction transaction)
