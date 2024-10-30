@@ -48,11 +48,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             var order = await _orderService.SearchOrderItemByProductIdFromAPIAsync(new GetProduct() { ProductId = productId });
 
-            var check = await _service.ViewRatingByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });     // ĐÃ SỬA 
-            if (check != null)
+            if (order != null)
             {
-                return Ok(check);
+                var check = await _service.ViewRatingByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });     // ĐÃ SỬA 
+                if (check != null)
+                {
+                    return Ok(check);
 
+                }
             }
             return Ok("Not found!");
         }
