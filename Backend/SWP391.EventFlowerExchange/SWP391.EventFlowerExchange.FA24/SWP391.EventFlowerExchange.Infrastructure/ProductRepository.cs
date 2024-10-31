@@ -335,66 +335,44 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public async Task<ProductStatistics> GetAllOrdersAndRatingBySellerEmail(Account account)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
-
+            ProductStatistics st = new ProductStatistics();
             // Lấy danh sách tất cả các orders theo sellerId
             var orderList = await _context.Orders
                                           .Where(x => x.SellerId == account.Id && x.Status == "Success")
                                           .ToListAsync();
+            var enableList = await GetEnableProductListBySellerEmailAsync(account);
+            var soldOutProduct = await GetDisableProductListBySellerEmailAsync(account);
 
             // Kiểm tra nếu không có đơn hàng nào
             if (!orderList.Any())
             {
-                return new ProductStatistics
-                {
-                    Order = 0,
-                    Rating = 0 // Không có đánh giá nếu không có đơn hàng
-                };
+                st.Order = 0;
+                st.Rating = 0; // Không có đánh giá nếu không có đơn hàng
+                st.EnableProducts = enableList.Count > 0 ? enableList.Count : 0;
+                st.SoldOut = soldOutProduct.Count > 0 ? soldOutProduct.Count : 0;
             }
-
-            // Lấy tất cả các reviews liên quan đến orders (dùng Join để lấy tất cả một lần)
-            var orderIds = orderList.Select(o => o.OrderId).ToList();
-            var reviews = await _context.Reviews
-                                        .Join(orderIds,
-                                              review => review.OrderId,
-                                              orderId => orderId,
-                                              (review, orderId) => review)
-                                        .ToListAsync();
-            // Tính tổng số rating từ tất cả các reviews (kiểm tra nếu null)
-            int sumRating = reviews.Where(r => r.Rating.HasValue)
-                                   .Sum(r => r.Rating.Value);
-            var enableList = await GetEnableProductListBySellerEmailAsync(account);
-            var soldOutProduct = await GetDisableProductListBySellerEmailAsync(account);
-            // Tạo đối tượng Statistics
-            ProductStatistics st = new ProductStatistics()
+            else
             {
-                Order = orderList.Count,
-                Rating = (reviews.Count > 0) ? (double)sumRating / reviews.Count : 0, // Kiểm tra số lượng review trước khi chia
-                EnableProducts = enableList.Count > 0 ? enableList.Count : 0,
-                SoldOut = soldOutProduct.Count > 0 ? soldOutProduct.Count : 0
-            };
+                var orderIds = orderList.Select(o => o.OrderId).ToList();
+                var reviews = await _context.Reviews
+                                            .Join(orderIds,
+                                                  review => review.OrderId,
+                                                  orderId => orderId,
+                                                  (review, orderId) => review)
+                                            .ToListAsync();
+                // Tính tổng số rating từ tất cả các reviews (kiểm tra nếu null)
+                int sumRating = reviews.Where(r => r.Rating.HasValue)
+                                       .Sum(r => r.Rating.Value);
+
+                // Tạo đối tượng Statistics
+
+                st.Order = orderList.Count;
+                st.Rating = (reviews.Count > 0) ? (double)sumRating / reviews.Count : 0; // Kiểm tra số lượng review trước khi chia
+                st.EnableProducts = enableList.Count > 0 ? enableList.Count : 0;
+                st.SoldOut = soldOutProduct.Count > 0 ? soldOutProduct.Count : 0;
+                st.AllProduct = st.EnableProducts + st.SoldOut;
+            }
             return st;
         }
-
-        //public async Task<Statistics> GetAllOrdersAndRatingBySellerEmail(Account account)
-        //{
-
-        //    _context = new Swp391eventFlowerExchangePlatformContext();
-        //    var orderList = await _context.Orders.Where(x => x.SellerId == account.Id).ToListAsync();
-        //    int ? sumRating = 0;
-
-
-        //    foreach (var order in orderList) 
-        //    {
-        //        var rating = _context.Reviews.SingleOrDefault(x => x.OrderId == order.OrderId);
-        //        sumRating += rating.Rating;
-        //    }
-
-        //    Statistics st = new Statistics()
-        //    {
-        //        Order = orderList.Count,
-        //        Rating = (double) sumRating/(orderList.Count)
-        //    };
-        //    return st;
-        //}
     }
 }

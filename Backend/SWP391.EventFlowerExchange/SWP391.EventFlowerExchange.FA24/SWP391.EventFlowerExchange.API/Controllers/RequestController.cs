@@ -33,7 +33,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.GetListRequestsFromAPIAsync(type));
         }
 
-        [HttpGet("GetRequestListBy/{type},{email}")]
+        [HttpGet("GetRequestListBy")]
         //[Authorize]
         public async Task<IActionResult> GetListRequestsByEmailAndType(string type, string email)
         {
@@ -65,75 +65,153 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(request);
         }
 
+        [HttpPost("CreateRequest")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateRequest(CreateRequest value)
+        {
+            bool request = false;
+            switch (value.RequestType)
+            {
+                case "Report":
+                    {
+                        value.RequestId = null;
+                        value.Amount = null;
+                        value.PaymentId = null;
+                        request = await _service.CreateRequestFromAPIAsync(value);
+                        break;
+                    }
+                case "Refund":
+                    {
+                        value.RequestId = null;
+                        value.Amount = null;
+                        value.PaymentId = null;
+                        request = await _service.CreateRequestFromAPIAsync(value);
+                        break;
+                    }
+            }
+
+            return Ok(request);
+        }
+
         [HttpPut("UpdateRequest")]
         //[Authorize]
         public async Task<ActionResult<bool>> UpdateRequest(CreateRequest value)
         {
-            var seller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = value.UserId });
+            var user = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = value.UserId });
             Request request = null;
+            GetProduct product = null;
 
-            if (value.RequestType == "Post")
+            switch (value.RequestType)
             {
-                var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = (int)value.ProductId });
-                ;
-                value.PaymentId = null;
-                value.Amount = null;
-
-                if (product != null)
-                {
-                    product.Status = "Enable";
-                    if (value.Status.ToLower().Contains("Rejected".ToLower()))
+                case "Post":
                     {
-                        product.Status = value.Status;
-                    }
-                    var check = await _productService.UpdateProductFromAPIAsync(product);
-                    if (check)
-                    {
-                        var followerList = await _followService.GetFollowerListFromApiAsync(seller);
+                        product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = (int)value.ProductId });
+                        value.PaymentId = null;
+                        value.Amount = null;
 
-                        //Thông báo cho chủ shop
-                        var sellerNotification = new CreateNotification()
+                        if (product != null)
                         {
-                            UserEmail = seller.Email,
-                            Content = $"Your product post has been accepted."
-                        };
-                        await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
-
-
-                        //Thông báo cho followers
-                        foreach (var item in followerList)
-                        {
-                            var follower = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = item.FollowerId });
-                            var followerNotification = new CreateShopNotification()
+                            product.Status = "Enable";
+                            if (value.Status.ToLower().Contains("Rejected".ToLower()))
                             {
-                                FollowerẸmail = follower.Email,
-                                SellerEmail = seller.Email,
-                                ProductId = product.ProductId,
-                                Content = $"{seller.Name} has added a new product in the shop you followed "
-                            };
-                            await _notificationService.CreateShopNotificationFromApiAsync(followerNotification);
+                                product.Status = value.Status;
+                            }
+                            var check = await _productService.UpdateProductFromAPIAsync(product);
+                            if (check)
+                            {
+                                var sellerNotification = new CreateNotification();
 
+                                if (value.Status.ToLower().Contains("Accepted".ToLower()))
+                                {
+                                    var followerList = await _followService.GetFollowerListFromApiAsync(user);
+
+                                    //Thông báo cho chủ shop
+                                    {
+                                        sellerNotification.UserEmail = user.Email;
+                                        sellerNotification.Content = $"Your product post has been accepted.";
+                                    };
+
+
+                                    //Thông báo cho followers
+                                    foreach (var item in followerList)
+                                    {
+                                        var follower = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = item.FollowerId });
+                                        var followerNotification = new CreateShopNotification()
+                                        {
+                                            FollowerẸmail = follower.Email,
+                                            SellerEmail = user.Email,
+                                            ProductId = product.ProductId,
+                                            Content = $"{user.Name} has added a new product in the shop you followed "
+                                        };
+                                        await _notificationService.CreateShopNotificationFromApiAsync(followerNotification);
+                                    }
+                                }
+                                else if (value.Status.ToLower().Contains("Rejected".ToLower()))
+                                {
+                                    sellerNotification.UserEmail = user.Email;
+                                    sellerNotification.Content = $"Your product post has been rejected.";
+                                }
+                                await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
+                            }
                         }
+                        request = await _service.GetRequestByProductIdFromAPIAsync((int)value.ProductId);
+                        break;
                     }
-                }
-                request = await _service.GetRequestByProductIdFromAPIAsync((int)value.ProductId);
 
-            }
-            else if (value.RequestType == "Withdraw")
-            {
-                value.ProductId = null;
-
-                if (value.Status.ToLower().Contains("Rejected".ToLower()))
-                {
-                    var sellerNotification = new CreateNotification()
+                case "Withdraw":
                     {
-                        UserEmail = seller.Email,
-                        Content = $"Your withdrawal request has been rejected."
-                    };
-                    await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
-                }
-                request = await _service.GetRequestByIdFromAPIAsync((int)value.RequestId);
-                value.PaymentId = null;
+                        value.ProductId = null;
+                        value.PaymentId = null;
+                        if (value.Status.ToLower().Contains("Rejected".ToLower()))
+                        {
+                            var sellerNotification = new CreateNotification()
+                            {
+                                UserEmail = user.Email,
+                                Content = $"Your withdrawal request has been rejected."
+                            };
+                            await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
+                        }
+                        request = await _service.GetRequestByIdFromAPIAsync((int)value.RequestId);
+                        break;
+                    }
+
+                case "Report":
+                    {
+                        value.PaymentId = null;
+                        value.Amount = null;
+                        product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = (int)value.ProductId });
+
+                        var buyerNotification = new CreateNotification();
+                        if (value.Status.ToLower().Contains("Rejected".ToLower()))
+                        {
+                            //Thông báo cho người dùng 
+                            {
+                                buyerNotification.UserEmail = user.Email;
+                                buyerNotification.Content = $"Your report to {product.ProductName} post has been rejected.";
+                            };
+                        }
+                        else if (value.Status.ToLower().Contains("Accepted".ToLower()))
+                        {
+                            //Thông báo cho người dùng 
+                            {
+                                buyerNotification.UserEmail = user.Email;
+                                buyerNotification.Content = $"Your report to {product.ProductName} post has been accepted.";
+                            };
+                            product.Status = "Rejected";
+                            await _productService.UpdateProductFromAPIAsync(product);
+
+                            var seller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = product.SellerId });
+                            var sellerNotification = new CreateNotification();
+                            sellerNotification.UserEmail = seller.Email;
+                            sellerNotification.Content = $"Your {product.ProductName} post has been banned.";
+
+                            await _notificationService.CreateNotificationFromApiAsync(sellerNotification);
+                        }
+                        await _notificationService.CreateNotificationFromApiAsync(buyerNotification);
+
+                        request = await _service.GetRequestByIdFromAPIAsync((int)value.RequestId);
+                        break;
+                    }
             }
 
 
@@ -141,8 +219,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             request.Amount = value.Amount;
             request.RequestType = value.RequestType;
             request.PaymentId = value.PaymentId;
-            request.Status = value.Status;
             request.UpdatedAt = DateTime.Now;
+            request.Reason = value.Reason;
 
             await _service.UpdateRequestFromAPIAsync(request);
 

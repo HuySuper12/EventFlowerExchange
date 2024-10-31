@@ -21,7 +21,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("ViewFollowerByUserEmail/{email}")]
+        [HttpGet("ViewFollowerByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewFollowerByUserEmail(string email)
         {
@@ -70,7 +70,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpDelete("RemoveFollower/{followerEmail}/{sellerEmail}")]
+        [HttpDelete("RemoveFollower")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> RemoveAccount(string followerEmail, string sellerEmail)// ĐÃ SỬA
         {
@@ -95,7 +95,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpGet("GetCountFollowByUserEmail/{email}")]
+        [HttpGet("GetCountFollowByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> GetCountFollowByUserEmail(string email)
         {
