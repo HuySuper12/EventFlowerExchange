@@ -6,7 +6,7 @@ import { Table } from "antd";
 import { Tab, Tabs } from "../../../component/tab";
 import api from "../../../config/axios"; // Assuming you have axios instance setup here
 
-const TransactionCustomer = () => {
+const TransactionSeller = () => {
   const [transactions, setTransactions] = useState([]);
   const [VNPAY, setVNPAY] = useState([]);
   const email = sessionStorage.getItem("email"); // Get email from sessionStorage
@@ -23,7 +23,7 @@ const TransactionCustomer = () => {
           }
         );
         console.log(response);
-        setTransactions(response.data.reverse()); // Set the response data to transactions state
+        setTransactions(response.data); // Set the response data to transactions state
       } catch (error) {
         console.error("Error fetching transaction data:", error);
       }
@@ -38,11 +38,11 @@ const TransactionCustomer = () => {
     const fetchVNPAY = async () => {
       try {
         // Call API with email as parameter
-        const response = await api.get("VNPAY/GetPaymentListBy", {
-          params: { email: email, type: 1 }, // Corrected the params syntax
+        const response = await api.get("Request/GetRequestListBy", {
+          params: { email: email, type: "Withdraw" }, // Corrected the params syntax
         });
         console.log(response);
-        setVNPAY(response.data); // Set the response data to transactions state
+        setVNPAY(response.data.reverse()); // Set the response data to transactions state
       } catch (error) {
         console.error("Error fetching transaction data:", error);
       }
@@ -85,7 +85,6 @@ const TransactionCustomer = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => formatCurrency(amount),
     },
     {
       title: "Status",
@@ -108,31 +107,24 @@ const TransactionCustomer = () => {
 
   const columns2 = [
     {
-      title: "Payment ID",
-      dataIndex: "paymentId",
-      key: "paymentId",
+      title: "Request ID",
+      dataIndex: "requestId",
+      key: "requestId",
     },
     {
-      title: "Payment Code",
-      dataIndex: "paymentCode",
-      key: "paymentCode",
-    },
-    {
-      title: "Content",
-      dataIndex: "paymentContent",
-      key: "paymentContent",
-    },
-    {
-      title: "Payment Type",
-      dataIndex: "paymentType",
-      key: "paymentType",
-      render: (value) => (value === 1 ? "Deposit" : value.toString()),
+      title: "Request Type",
+      dataIndex: "requestType",
+      key: "requestType",
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => formatCurrency(amount),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
     },
     {
       title: "Created At",
@@ -166,10 +158,10 @@ const TransactionCustomer = () => {
                   ;
                 </div>
               </Tab>
-              <Tab label="Transaction Deposit">
+              <Tab label="Transaction Withdraw">
                 <div className="py-4">
                   <h2 className="text-lg font-medium mb-2">
-                    Transaction Deposit
+                    Transaction Withdraw
                   </h2>
                   <Table
                     dataSource={VNPAY}
@@ -189,4 +181,4 @@ const TransactionCustomer = () => {
   );
 };
 
-export default TransactionCustomer;
+export default TransactionSeller;

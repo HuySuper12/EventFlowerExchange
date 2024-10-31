@@ -85,9 +85,7 @@ const WalletCustomer = () => {
 
   const formatCurrency = (amount) => {
     const validAmount = amount !== undefined ? amount : 0;
-    return (
-      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
-    );
+    return validAmount.toLocaleString('vi-VN') + " VNĐ";
   };
 
   return (

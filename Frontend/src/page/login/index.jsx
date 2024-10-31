@@ -47,6 +47,10 @@ const Login = () => {
         navigate("/admin/dashboard");
       } else if (role === "Seller") {
         navigate("/");
+      } else if (role === "Shipper") {
+        navigate("/delivery-detail");
+      } else if (role === "Manager") {
+        navigate("/manager/dashboard");
       }
     } catch (err) {
       toast.error("Your email or password is incorrect");

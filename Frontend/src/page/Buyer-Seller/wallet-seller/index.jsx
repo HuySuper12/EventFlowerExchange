@@ -115,9 +115,9 @@ const WalletSeller = () => {
             <p>
               Balance:{" "}
               <strong>
-                {accountData
+                {accountData && accountData.balance !== null
                   ? formatCurrency(accountData.balance)
-                  : "Loading..."}
+                  : "0 VNĐ"}
               </strong>
             </p>
             <button

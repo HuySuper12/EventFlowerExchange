@@ -17,6 +17,7 @@ import Header from "../../component/Header_delivery";
 import SidebarDelivery from "../../component/Sidebar_delivery";
 import api from "../../config/axios";
 import uploadFile from "../../utils/upload";
+import { toast } from "react-toastify";
 
 const { Step } = Steps;
 
@@ -36,75 +37,77 @@ const DeliveryDetail = () => {
   const [deliveryLog, setDeliveryLog] = useState(null);
   const email = sessionStorage.getItem("email");
   const [accountData, setAccountData] = useState(null);
-  const { orderId } = useParams();
   const [productData, setProductData] = useState([]);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailedModalOpen, setIsFailedModalOpen] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [deliveryTime, setDeliveryTime] = useState(null);
+  const [buyerAccount, setBuyerAccount] = useState(null);
+  const [orderDetails, setOrderDetails] = useState(null);
+  const fetchDeliveryLog = async () => {
+    try {
+      const response = await api.get(
+        `DeliveryLog/ViewDeliveryLogDeliveringByShipperEmail`,
+        {
+          params: { email: email },
+        }
+      );
+      setDeliveryLog(response.data);
+      updateStep(response.data.status);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching delivery log:", error);
+    }
+  };
+
+  const fetchAccountData = async () => {
+    try {
+      const response = await api.get(`Account/GetAccountByEmail/${email}`);
+      setAccountData(response.data);
+    } catch (error) {
+      console.error("Error fetching account data:", error);
+    }
+  };
+
+  const fetchOrderDetails = async () => {
+    if (!deliveryLog?.orderId) return;
+    try {
+      const response = await api.get(`Order/ViewOrderDetail`, {
+        params: { id: deliveryLog.orderId },
+      });
+      setProductData(response.data);
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDeliveryLog = async () => {
-      try {
-        const response = await api.get(
-          `DeliveryLog/ViewDeliveryLogShipperByEmail`,
-          {
-            params: { email: email },
-          }
-        );
-        setDeliveryLog(response.data[0]);
-        updateStep(response.data[0].status);
-      } catch (error) {
-        console.error("Error fetching delivery log:", error);
-      }
-    };
-
     fetchDeliveryLog();
   }, [email]);
 
   useEffect(() => {
-    const fetchAccountData = async () => {
-      try {
-        const response = await api.get(`Account/GetAccountByEmail/${email}`);
-        setAccountData(response.data);
-      } catch (error) {
-        console.error("Error fetching account data:", error);
-      }
-    };
-
     fetchAccountData();
   }, [email]);
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
-      if (!deliveryLog?.orderId) return;
-      try {
-        const response = await api.get(`Order/ViewOrderDetail`, {
-          params: { id: deliveryLog.orderId },
-        });
-        setProductData(response.data);
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-      }
-    };
-
     fetchOrderDetails();
   }, [deliveryLog?.orderId]);
 
   const updateStep = (status) => {
     switch (status) {
       case null:
-        setCurrentStep(0);
-        break;
-      case "Delivering":
         setCurrentStep(1);
         break;
-      case "Success":
+      case "Delivering":
         setCurrentStep(2);
         break;
+      case "Success":
+        setCurrentStep(3);
+        break;
       case "Fail":
-        setCurrentStep(2);
+        setCurrentStep(3);
         break;
       default:
         setCurrentStep(0);
@@ -158,6 +161,9 @@ const DeliveryDetail = () => {
       if (response.data === true) {
         message.success("Delivery confirmed!");
         setIsSuccessModalOpen(false);
+        fetchDeliveryLog();
+        fetchAccountData();
+        fetchOrderDetails();
       } else {
         console.log("Response error:", response); // Check if API response is correct
       }
@@ -199,6 +205,9 @@ const DeliveryDetail = () => {
         message.success("Order marked as failed!");
         setIsFailedModalOpen(false);
         console.log(response.data);
+        fetchDeliveryLog();
+        fetchAccountData();
+        fetchOrderDetails();
       }
     } catch (error) {
       console.error("Error updating delivery log:", error);
@@ -257,6 +266,99 @@ const DeliveryDetail = () => {
     </div>
   );
 
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Use 24-hour format
+    };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
+  const fetchDeliveryTime = async () => {
+    try {
+      const response = await api.get(`DeliveryLog/ViewDeliveryTime`, {
+        params: { id: deliveryLog?.orderId },
+      });
+      console.log("delivery time:", response.data);
+      setDeliveryTime(response.data);
+
+      // Handle the response data as needed
+    } catch (error) {
+      console.error("Error fetching delivery time:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchBuyerAccountByOrderId = async () => {
+      try {
+        const response = await api.get(`Account/ViewAccountBuyerByOrderId`, {
+          params: { orderId: deliveryLog?.orderId },
+        });
+        setBuyerAccount(response.data);
+        console.log("Buyer Account:", response.data);
+      } catch (error) {
+        console.error("Error fetching buyer account:", error);
+      }
+    };
+
+    fetchBuyerAccountByOrderId(deliveryLog?.orderId);
+  }, []);
+
+  useEffect(() => {
+    const fetchBuyerOrderByOrderId = async () => {
+      try {
+        const response = await api.get(`Order/SearchOrderByOrderId`, {
+          params: { orderId: deliveryLog?.orderId },
+        });
+        setOrderDetails(response.data);
+        console.log("Order Details:", response.data);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      }
+    };
+
+    fetchBuyerOrderByOrderId(deliveryLog?.orderId); // Gọi API khi component được mount
+  }, [deliveryLog?.orderId]);
+
+  useEffect(() => {
+    fetchDeliveryTime();
+  }, [deliveryLog?.orderId]);
+
+  const reportProblemWhileDelivery = async () => {
+    try {
+      const response = await api.put(
+        "Refund/UpdateDeliveryLogRefundDeliveringStatus",
+        null,
+        {
+          params: { orderId: deliveryLog?.orderId },
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.data == true) {
+        toast.success("Problem reported successfully.");
+      } else {
+        toast.error("Failed to report problem.");
+      }
+    } catch (error) {
+      console.error("Error reporting problem", error);
+      toast.error("Error reporting problem");
+    }
+  };
+
   return (
     <div>
       <Header title="" />
@@ -275,6 +377,10 @@ const DeliveryDetail = () => {
                 dataSource={productData}
                 pagination={false}
               />
+              <div className="mt-4 text-lg font-semibold">
+                {" "}
+                Total: {formatCurrency(orderDetails?.totalPrice)}
+              </div>
             </div>
 
             <div className="flex-1 w-[1000px]">
@@ -305,7 +411,7 @@ const DeliveryDetail = () => {
                 >
                   <Step
                     title="Take Order"
-                    description="Time"
+                    description={formatDate(deliveryLog?.takeOverAt)}
                     status={currentStep > 0 ? "finish" : "process"}
                     icon={
                       <div
@@ -328,7 +434,7 @@ const DeliveryDetail = () => {
                   />
                   <Step
                     title="On the way"
-                    description="Time"
+                    description={formatDate(deliveryTime?.deliveringTime)}
                     status={
                       currentStep > 1
                         ? "finish"
@@ -361,7 +467,7 @@ const DeliveryDetail = () => {
                         ? "Delivery Fail"
                         : "Delivered"
                     }
-                    description="Time"
+                    description={deliveryTime?.successOrFailTime}
                     status={
                       currentStep > 2
                         ? "finish"
@@ -397,19 +503,21 @@ const DeliveryDetail = () => {
                   </div>
                   <div className="flex items-center">
                     <Phone className="mr-2" style={{ color: "#52c41a" }} />
-                    <span>Phone: {}</span>
+                    <span>Phone: {orderDetails?.phoneNumber}</span>
                   </div>
                   <div className="flex items-center">
                     <User className="mr-2" style={{ color: "#f5222d" }} />
-                    <span>Customer: {}</span>
+                    <span>Customer: {buyerAccount?.name}</span>
                   </div>
                   <div className="flex items-center">
                     <Home className="mr-2" style={{ color: "#722ed1" }} />
-                    <span>Delivery at: {deliveryLog?.createdAt}</span>
+                    <span>Delivery at: {orderDetails?.deliveredAt}</span>
                   </div>
                   <div className="flex items-center">
                     <Clock className="mr-2" style={{ color: "#722ed1" }} />
-                    <span>Created At: {deliveryLog?.createdAt}</span>
+                    <span>
+                      Created At: {formatDate(deliveryLog?.createdAt)}
+                    </span>
                   </div>
                 </Space>
 
@@ -456,6 +564,20 @@ const DeliveryDetail = () => {
                         }}
                       >
                         Update Status to Fail
+                      </Button>
+                      <Button
+                        type="default"
+                        size="large"
+                        onClick={() =>
+                          reportProblemWhileDelivery(deliveryLog?.orderId)
+                        }
+                        style={{
+                          backgroundColor: "white",
+                          borderColor: "blueviolet",
+                          color: "blueviolet",
+                        }}
+                      >
+                        Report problem while delivery
                       </Button>
                     </Space>
                   )}

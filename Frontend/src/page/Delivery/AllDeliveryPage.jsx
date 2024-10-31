@@ -3,109 +3,116 @@ import { Table, Tabs, Pagination, Spin } from "antd";
 import { Link } from "react-router-dom";
 import Header from "../../component/Header_delivery";
 import SidebarDelivery from "../../component/Sidebar_delivery";
+import api from "../../config/axios";
 
 const { TabPane } = Tabs;
 
 const DeliveryList = () => {
   const [loading, setLoading] = useState(true);
+  const [dataSuccess, setDataSuccess] = useState([]);
+  const [dataFailed, setDataFailed] = useState([]);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const email = sessionStorage.getItem("email");
+  useEffect(() => {
+    const fetchDataSuccess = async () => {
+      try {
+        const response = await api.get(
+          "DeliveryLog/ViewDeliveryLogShipperByEmail",
+          {
+            params: { email: email },
+          }
+        );
+        const filteredData = response.data.filter(
+          (item) => item.status === "Delivery Success"
+        );
+        setDataSuccess(filteredData);
+        setLoading(false);
+        console.log(dataSuccess);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchDataSuccess();
+  }, [email]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setData([
-        {
-          key: "122324",
-          order: "#122324",
-          phone: "123-456-7890",
-          address: "123 Main St, City, Country",
-          products: ["https://example.com/product1.jpg"],
-          amount: "$2.00",
-          customer: "Joan Koch",
-          status: "Delivered",
-        },
-        {
-          key: "122325",
-          order: "#122325",
-          phone: "987-654-3210",
-          address: "456 Elm St, City, Country",
-          products: ["https://example.com/product2.jpg"],
-          amount: "$5.00",
-          customer: "John Doe",
-          status: "Failed",
-        },
-        {
-          key: "122326",
-          order: "#122326",
-          phone: "456-789-0123",
-          address: "789 Oak St, City, Country",
-          products: ["https://example.com/product3.jpg"],
-          amount: "$10.00",
-          customer: "Alice Smith",
-          status: "Delivered",
-        },
-        {
-          key: "122327",
-          order: "#122327",
-          phone: "321-654-9870",
-          address: "101 Pine St, City, Country",
-          products: ["https://example.com/product4.jpg"],
-          amount: "$15.00",
-          customer: "Bob Johnson",
-          status: "Failed",
-        },
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    const fetchDataFailed = async () => {
+      try {
+        const response = await api.get(
+          "DeliveryLog/ViewDeliveryLogShipperByEmail",
+          {
+            params: { email: email },
+          }
+        );
+        const filteredData = response.data.filter(
+          (item) => item.status === "Delivery Fail"
+        );
+        setDataFailed(filteredData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchDataFailed();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchDataFailed = async () => {
+      try {
+        const response = await api.get(
+          "DeliveryLog/ViewDeliveryLogShipperByEmail",
+          {
+            params: { email: email },
+          }
+        );
+
+        setData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchDataFailed();
+  }, [email]);
 
   const columns = [
     {
-      title: "Order",
-      dataIndex: "order",
-      key: "order",
-      render: (text, record) => <Link to={`/order/${record.key}`}>{text}</Link>,
-      sorter: (a, b) => a.order.localeCompare(b.order),
+      title: "Log ID",
+      dataIndex: "logId",
+      key: "logId",
     },
     {
-      title: "Products",
-      dataIndex: "products",
-      key: "products",
-      render: (products) => (
-        <div className="flex space-x-2">
-          {products.map((product, index) => (
-            <img
-              key={index}
-              src={product}
-              alt="Product"
-              className="w-8 h-8 object-cover rounded-md"
-            />
-          ))}
-        </div>
-      ),
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
     },
     {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      sorter: (a, b) =>
-        parseFloat(a.amount.substring(1)) - parseFloat(b.amount.substring(1)),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
     },
     {
-      title: "Customer",
-      dataIndex: "customer",
-      key: "customer",
+      title: "Reason",
+      dataIndex: "reason",
+      key: "reason",
     },
     {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Take Over At",
+      dataIndex: "takeOverAt",
+      key: "takeOverAt",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Delivery At",
+      dataIndex: "deliveryAt",
+      key: "deliveryAt",
     },
   ];
 
@@ -113,18 +120,10 @@ const DeliveryList = () => {
     setCurrentPage(page);
   };
 
-  const filteredData = (status) =>
-    data.filter((order) => order.status === status);
-
   const totalOrders = data.length;
-  const paginatedData = (status) =>
-    filteredData(status).slice(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize
-    );
 
   return (
-    <div >
+    <div>
       <Header title="" />
 
       <div className="flex ">
@@ -139,7 +138,7 @@ const DeliveryList = () => {
               <Spin spinning={loading}>
                 <Table
                   columns={columns}
-                  dataSource={paginatedData("Delivered")}
+                  dataSource={dataSuccess}
                   pagination={false}
                   className="rounded-lg shadow-2xl"
                 />
@@ -149,7 +148,7 @@ const DeliveryList = () => {
               <Spin spinning={loading}>
                 <Table
                   columns={columns}
-                  dataSource={paginatedData("Failed")}
+                  dataSource={dataFailed}
                   pagination={false}
                   className="rounded-lg shadow-2xl"
                 />
