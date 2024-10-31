@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Tag, Avatar, Button, message, Tabs, Pagination, Spin } from 'antd';
-import { UserOutlined, ExportOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from "react";
+import { Table, Avatar, Button, message, Tabs, Pagination, Spin } from "antd";
+import { UserOutlined, ExportOutlined } from "@ant-design/icons";
 import api from "../../config/axios";
-import { Modal } from 'antd';
+import { Modal } from "antd";
 
 const { confirm } = Modal;
-const Customers = () => {
+const CustomersManager = () => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); // Loading state
@@ -18,12 +18,12 @@ const Customers = () => {
       const response = await api.get(`Account/ViewAllAccount/${role}`);
       setTimeout(() => {
         setCustomers(response.data);
-        setLoading(false); 
-      }, 1000); 
+        setLoading(false);
+      }, 1000);
     } catch (error) {
-      console.error('Error fetching customer data:', error);
-      message.error('Failed to fetch customer data');
-      setLoading(false); 
+      console.error("Error fetching customer data:", error);
+      message.error("Failed to fetch customer data");
+      setLoading(false);
     }
   };
 
@@ -33,134 +33,141 @@ const Customers = () => {
 
   const toggleStatus = async (id, checked) => {
     confirm({
-      title: `Are you sure you want to ${checked ? 'activate' : 'disable'} this customer?`,
+      title: `Are you sure you want to ${
+        checked ? "activate" : "disable"
+      } this customer?`,
       content: checked
         ? `This will activate the customer with ID ${id}.`
         : `This will disable the customer with ID ${id}.`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       onOk: async () => {
         try {
           if (!checked) {
             const response = await api.delete(`/Account/DisableAccount/${id}`);
 
             if (response.data === true) {
-              setCustomers(customers.map(customer =>
-                customer.id === id
-                  ? { ...customer, status: checked }
-                  : customer
-              ));
+              setCustomers(
+                customers.map((customer) =>
+                  customer.id === id
+                    ? { ...customer, status: checked }
+                    : customer
+                )
+              );
               message.success(`Customer ${id} has been locked.`);
               console.log(response.data);
             } else {
-              message.error('Failed to update status.');
+              message.error("Failed to update status.");
               console.log(response.data);
             }
           }
         } catch (error) {
-          console.error('Error updating customer status:', error);
-          message.error('Error occurred while updating status.');
+          console.error("Error updating customer status:", error);
+          message.error("Error occurred while updating status.");
         }
       },
       onCancel() {
-        console.log('Action cancelled');
+        console.log("Action cancelled");
       },
     });
   };
 
-
   const handleExport = () => {
-    const csvData = customers.map(customer => ({
+    const csvData = customers.map((customer) => ({
       ID: customer.id,
       Name: customer.name,
       Email: customer.email,
       CreatedAt: customer.createdAt,
-      Status: customer.status ? 'Active' : 'Locked',
+      Status: customer.status ? "Active" : "Locked",
     }));
 
-    const csvHeaders = Object.keys(csvData[0]).join(',') + '\n';
-    const csvRows = csvData.map(row => Object.values(row).join(',')).join('\n');
+    const csvHeaders = Object.keys(csvData[0]).join(",") + "\n";
+    const csvRows = csvData
+      .map((row) => Object.values(row).join(","))
+      .join("\n");
     const csvContent = csvHeaders + csvRows;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'customers.csv');
-    link.style.visibility = 'hidden';
+    link.setAttribute("href", url);
+    link.setAttribute("download", "customers.csv");
+    link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    message.success('Customers exported successfully!');
+    message.success("Customers exported successfully!");
   };
 
-  const availableCustomers = customers.filter(customer => customer.status === true);
-  const unavailableCustomers = customers.filter(customer => customer.status === false);
+  const availableCustomers = customers.filter(
+    (customer) => customer.status === true
+  );
+  const unavailableCustomers = customers.filter(
+    (customer) => customer.status === false
+  );
   const totalCustomers = customers.length;
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
       sorter: (a, b) => a.id.localeCompare(b.id),
     },
     {
-      title: 'Avatar',
-      dataIndex: 'picture',
-      key: 'picture',
+      title: "Avatar",
+      dataIndex: "picture",
+      key: "picture",
       render: (avatar) => <Avatar src={avatar} icon={<UserOutlined />} />,
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      filters: [...new Set(customers.map(customer => ({ text: customer.name, value: customer.name })))],
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      filters: [
+        ...new Set(
+          customers.map((customer) => ({
+            text: customer.name,
+            value: customer.name,
+          }))
+        ),
+      ],
       onFilter: (value, record) => record.name.includes(value),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      filters: [...new Set(customers.map(customer => ({ text: customer.email, value: customer.email })))],
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      filters: [
+        ...new Set(
+          customers.map((customer) => ({
+            text: customer.email,
+            value: customer.email,
+          }))
+        ),
+      ],
       onFilter: (value, record) => record.email.includes(value),
     },
     {
-      title: 'Phone',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
+      title: "Phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
       sorter: (a, b) => a.phone.localeCompare(b.phone),
     },
     {
-      title: 'Balance',
-      dataIndex: 'balance',
-      key: 'balance',
+      title: "Balance",
+      dataIndex: "balance",
+      key: "balance",
       sorter: (a, b) => a.balance - b.balance,
       render: (balance) => `$${balance.toFixed(2)}`, // Formats balance as currency
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
-    
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        record.status ? (
-          <Button 
-            type="danger" 
-            onClick={() => toggleStatus(record.id, false)}
-            className="bg-red-600 text-white"
-          >
-            Disable
-          </Button>
-        ) : null 
-      ),
-    }
   ];
 
   return (
@@ -176,25 +183,34 @@ const Customers = () => {
         <Tabs.TabPane tab={`Available (${availableCustomers.length})`} key="1">
           <div className="shadow-lg bg-white rounded-lg overflow-hidden">
             <Spin spinning={loading}>
-              <Table 
+              <Table
                 columns={columns}
-                dataSource={availableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
-                rowKey="id" 
-                pagination={false} 
+                dataSource={availableCustomers.slice(
+                  (currentPage - 1) * pageSize,
+                  currentPage * pageSize
+                )}
+                rowKey="id"
+                pagination={false}
                 className="rounded-lg"
                 rowClassName="hover:bg-gray-100"
               />
             </Spin>
           </div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`Unavailable (${unavailableCustomers.length})`} key="2">
+        <Tabs.TabPane
+          tab={`Unavailable (${unavailableCustomers.length})`}
+          key="2"
+        >
           <div className="shadow-lg bg-white rounded-lg overflow-hidden">
             <Spin spinning={loading}>
-              <Table 
+              <Table
                 columns={columns}
-                dataSource={unavailableCustomers.slice((currentPage - 1) * pageSize, currentPage * pageSize)} 
-                rowKey="id" 
-                pagination={false} 
+                dataSource={unavailableCustomers.slice(
+                  (currentPage - 1) * pageSize,
+                  currentPage * pageSize
+                )}
+                rowKey="id"
+                pagination={false}
                 className="rounded-lg"
                 rowClassName="hover:bg-gray-100"
               />
@@ -202,19 +218,18 @@ const Customers = () => {
           </div>
         </Tabs.TabPane>
       </Tabs>
-      
+
       <div className="flex justify-between mt-4 opacity-50">
         <span>{totalCustomers} customers in total</span>
-        <Pagination 
-          current={currentPage} 
-          pageSize={pageSize} 
-          total={totalCustomers} 
-          onChange={page => setCurrentPage(page)} 
-          showSizeChanger={false} 
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalCustomers}
+          onChange={(page) => setCurrentPage(page)}
+          showSizeChanger={false}
         />
       </div>
     </div>
   );
 };
-
-export default Customers;
+export default CustomersManager;

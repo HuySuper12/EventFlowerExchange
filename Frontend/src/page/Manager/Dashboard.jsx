@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, List, Avatar, Badge, Typography, Button, Table, Dropdown, Menu } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Row, Col, Card, List, Avatar, Typography, Table } from "antd";
 import {
   LineChart,
   Line,
@@ -10,203 +10,161 @@ import {
   CartesianGrid,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
-} from 'recharts';
-import {
-  MoreOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
-import { message } from 'antd';
+} from "recharts";
+import api from "../../config/axios";
 
-const Dashboard = () => {
-  const [timePeriod, setTimePeriod] = useState('weekly');
+const DashboardManager = () => {
+  const [orders, setOrders] = useState([]);
+  const [ordersData, setOrdersData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [recentProducts, setRecentProducts] = useState([]);
 
-  // Weekly data
-  const weeklyRevenueData = [
-    { name: 'Mon', revenue: 300 },
-    { name: 'Tue', revenue: 450 },
-    { name: 'Wed', revenue: 400 },
-    { name: 'Thu', revenue: 550 },
-    { name: 'Fri', revenue: 500 },
-    { name: 'Sat', revenue: 600 },
-    { name: 'Sun', revenue: 450 },
-  ];
+  useEffect(() => {
+    const fetchOrdersData = async () => {
+      try {
+        const response = await api.get("Order/GetMonthlyOrderStatistics");
+        setOrdersData(
+          response.data.map((item) => ({ name: item.name, orders: item.total }))
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const weeklyOrdersData = [
-    { name: 'Mon', orders: 30 },
-    { name: 'Tue', orders: 40 },
-    { name: 'Wed', orders: 35 },
-    { name: 'Thu', orders: 50 },
-    { name: 'Fri', orders: 45 },
-    { name: 'Sat', orders: 60 },
-    { name: 'Sun', orders: 40 },
-  ];
+    const fetchRevenueData = async () => {
+      try {
+        const response = await api.get("Transaction/GetRevenueOrderStatistics");
+        setRevenueData(
+          response.data.map((item) => ({
+            name: item.name,
+            revenue: item.total,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching revenue data:", error);
+      }
+    };
 
-  const weeklyCustomersData = [
-    { name: 'Mon', customers: 15 },
-    { name: 'Tue', customers: 25 },
-    { name: 'Wed', customers: 20 },
-    { name: 'Thu', customers: 30 },
-    { name: 'Fri', customers: 35 },
-    { name: 'Sat', customers: 40 },
-    { name: 'Sun', customers: 25 },
-  ];
+    const fetchRecentOrders = async () => {
+      try {
+        const response = await api.get("Order/ViewAllOrder");
+        const recentOrders = response.data
+          .reverse()
+          .slice(0, 5)
+          .map((order) => ({
+            key: order.orderId,
+            orderId: order.orderId,
+            customerName: order.buyerId,
+            amount: `${order.totalPrice}`,
+            status: order.status,
+          }));
+        setOrders(recentOrders);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
 
-  // Monthly data
-  const monthlyRevenueData = [
-    { name: 'Week 1', revenue: 2000 },
-    { name: 'Week 2', revenue: 2500 },
-    { name: 'Week 3', revenue: 3000 },
-    { name: 'Week 4', revenue: 3500 },
-  ];
+    const fetchRecentProducts = async () => {
+      try {
+        const response = await api.get("Product/GetProductList/Enable");
+        const products = response.data
+          .reverse()
+          .slice(0, 5)
+          .map((product) => ({
+            name: product.productName,
+            price: product.price,
+            sales: product.quantity,
+            image: product.productImage[0],
+          }));
+        setRecentProducts(products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
-  const monthlyOrdersData = [
-    { name: 'Week 1', orders: 150 },
-    { name: 'Week 2', orders: 200 },
-    { name: 'Week 3', orders: 250 },
-    { name: 'Week 4', orders: 300 },
-  ];
-
-  const monthlyCustomersData = [
-    { name: 'Week 1', customers: 40 },
-    { name: 'Week 2', customers: 60 },
-    { name: 'Week 3', customers: 80 },
-    { name: 'Week 4', customers: 100 },
-  ];
-
-  const trendingProducts = [
-    {
-      name: 'Red Rose Bouquet',
-      price: 120,
-      sales: 120,
-      image: 'https://tapchivietnamhuongsac.vn/Upload/quoc-hoa-cac-nuoc-tg/mexico_hoathuocduoc.jpg',
-    },
-    {
-      name: 'Sunflower Arrangement',
-      price: 95,
-      sales: 95,
-      image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/48-300x300.png',
-    },
-    {
-      name: 'Orchid Plant',
-      price: 80,
-      sales: 80,
-      image: 'https://ganhhanghoa.vn/wp-content/uploads/2021/11/8-300x300.png',
-    },
-    {
-      name: 'Tulip Mix',
-      price: 75,
-      sales: 75,
-      image: 'https://noithatmeta.com/wp-content/uploads/2022/02/Hoa-Anh-Dao.jpg',
-    },
-  ];
-
-  const [orders, setOrders] = useState([
-    { key: 1, orderId: '1001', customerName: 'Alice', productName: 'Red Rose Bouquet', quantity: 2, amount: '$30.59' },
-    { key: 2, orderId: '1002', customerName: 'Bob', productName: 'Sunflower Arrangement', quantity: 3, amount: '$25.79' },
-    { key: 3, orderId: '1003', customerName: 'Charlie', productName: 'Orchid Plant', quantity: 1, amount: '$40.00' },
-  ]);
-
-  const handleTimePeriodChange = (period) => {
-    setTimePeriod(period);
-  };
-
-  const handleAccept = (orderId) => {
-    setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
-    message.success(`Order ${orderId} accepted!`);
-  };
-
-  const handleReject = (orderId) => {
-    setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
-    message.error(`Order ${orderId} rejected!`);
-  };
-
-  const revenueData = timePeriod === 'weekly' ? weeklyRevenueData : monthlyRevenueData;
-  const ordersData = timePeriod === 'weekly' ? weeklyOrdersData : monthlyOrdersData;
-  const customersData = timePeriod === 'weekly' ? weeklyCustomersData : monthlyCustomersData;
+    fetchOrdersData();
+    fetchRevenueData();
+    fetchRecentOrders();
+    fetchRecentProducts();
+  }, []);
 
   const columns = [
     {
-      title: 'Order ID',
-      dataIndex: 'orderId',
-      key: 'orderId',
-      render: (text) => <Typography.Text strong>{text}</Typography.Text>
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
+      render: (text) => <Typography.Text strong>{text}</Typography.Text>,
     },
     {
-      title: 'Customer Name',
-      dataIndex: 'customerName',
-      key: 'customerName',
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
-      render: (text, record) => (
-        <span>
-          {text} <Typography.Text type="secondary"> x{record.quantity}</Typography.Text>
-        </span>
-      ),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => {
+        let colorClass, borderClass;
+        if (!text) {
+          colorClass = "text-gray-500";
+          borderClass = "border-gray-500";
+        } else {
+          switch (text.toLowerCase()) {
+            case "success":
+              colorClass = "text-green-500";
+              borderClass = "border-green-500";
+              break;
+            case "fail":
+              colorClass = "text-red-500";
+              borderClass = "border-red-500";
+              break;
+            case "delivering":
+              colorClass = "text-blue-500";
+              borderClass = "border-blue-500";
+              break;
+            case "take over":
+              colorClass = "text-purple-500";
+              borderClass = "border-purple-500";
+              break;
+            default:
+              colorClass = "text-black";
+              borderClass = "border-black";
+          }
+        }
+        return (
+          <div className={`border ${borderClass} p-2 rounded-md flex justify-center items-center w-[100px]`}>
+            <Typography.Text className={colorClass}>{text || "Unknown"}</Typography.Text>
+          </div>
+        );
+      },
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
       render: (text, record) => (
         <div className="flex items-center justify-between">
           <Typography.Text>{record.amount}</Typography.Text>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item
-                  key="accept"
-                  icon={<CheckCircleOutlined style={{ color: 'green', fontSize: '17px' }} />}
-                  style={{ fontSize: '15px' }}
-                  onClick={() => handleAccept(record.orderId)}
-                >
-                  Accept
-                </Menu.Item>
-                <Menu.Item
-                  key="reject"
-                  icon={<CloseCircleOutlined style={{ color: 'red', fontSize: '17px' }} />}
-                  style={{ fontSize: '15px' }}
-                  onClick={() => handleReject(record.orderId)}
-                >
-                  Reject
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button icon={<MoreOutlined />} />
-          </Dropdown>
         </div>
       ),
     },
+  ];
+
+  const monthlyCustomersData = [
+    { name: "Week 1", customers: 40 },
+    { name: "Week 2", customers: 60 },
+    { name: "Week 3", customers: 80 },
+    { name: "Week 4", customers: 100 },
   ];
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
-      <div className="flex justify-end mb-4">
-        <Button.Group>
-          <Button
-            onClick={() => handleTimePeriodChange('weekly')}
-            className={timePeriod === 'weekly' ? 'bg-blue-300 text-white' : ''}
-          >
-            Weekly
-          </Button>
-          <Button
-            onClick={() => handleTimePeriodChange('monthly')}
-            className={timePeriod === 'monthly' ? 'bg-blue-300 text-white' : ''}
-          >
-            Monthly
-          </Button>
-        </Button.Group>
-      </div>
-
       <Row gutter={16}>
         <Col span={8}>
-          <Card title={timePeriod === 'weekly' ? "Weekly Revenue" : "Monthly Revenue"}>
+          <Card title="Monthly Revenue">
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -219,7 +177,7 @@ const Dashboard = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card title={timePeriod === 'weekly' ? "Weekly Orders" : "Monthly Orders"}>
+          <Card title="Monthly Orders">
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={ordersData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -232,9 +190,9 @@ const Dashboard = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card title={timePeriod === 'weekly' ? "New Weekly Customers" : "New Monthly Customers"}>
+          <Card title="New Monthly Customers">
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={customersData}>
+              <BarChart data={monthlyCustomersData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -247,23 +205,27 @@ const Dashboard = () => {
       </Row>
 
       <Row gutter={16} className="mt-4">
-      <Col span={16}>
+        <Col span={16}>
           <Card title="Recent Orders">
-            <Table dataSource={orders} columns={columns} pagination={false} bordered={false} showHeader={false} />
+            <Table
+              dataSource={orders}
+              columns={columns}
+              pagination={false}
+              bordered={false}
+              showHeader={false}
+            />
           </Card>
         </Col>
         <Col span={8}>
-          <Card className="h-full" title="Trending Products">
+          <Card className="h-full" title="Recent Products">
             <List
               itemLayout="horizontal"
-              dataSource={trendingProducts}
-              renderItem={(item, index) => (
+              dataSource={recentProducts}
+              renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
                     avatar={
-                      <Badge count={index + 1} offset={[-10, 10]}>
-                        <Avatar shape="square" size={80} src={item.image} />
-                      </Badge>
+                      <Avatar shape="square" size={80} src={item.image} />
                     }
                     title={item.name}
                     description={`Price: $${item.price} | Sales: ${item.sales}`}
@@ -278,4 +240,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardManager;
