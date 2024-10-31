@@ -138,7 +138,11 @@ const Profile = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <img
-                src={accountData ? accountData.picture : "default_image_url"}
+                src={
+                  accountData
+                    ? accountData.picture
+                    : "https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
+                }
                 alt="Profile"
                 className="w-16 h-16 rounded-full"
               />

@@ -76,17 +76,14 @@ const Cart = () => {
   const handleCheckProductHasSameSeller = async () => {
     try {
       const response = await api.post(
-        "Order/CheckProductHasSameSeller",
+        "Order/DivideProductHasSameSeller",
         productListArray
       );
-      if (response.data === true) {
-        toast.success("Please enter delivery information to checkout");
-        const subtotal = calculateSubtotal();
-        localStorage.setItem("subtotal", subtotal);
-        navigate("/checkout");
-      } else {
-        toast.error("Please choose product has same seller");
-      }
+      localStorage.setItem("listProductDevide", JSON.stringify(response.data));
+      toast.success("Please enter delivery information to checkout");
+      const subtotal = calculateSubtotal();
+      localStorage.setItem("subtotal", subtotal);
+      navigate("/checkout");
     } catch (error) {
       console.error("Error checking product seller", error);
     }

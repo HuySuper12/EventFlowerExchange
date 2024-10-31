@@ -13,7 +13,7 @@ import Shippers from "./page/Admin/Shippers";
 import Transactions from "./page/Admin/Transactions";
 import Payments from "./page/Admin/Payments";
 import Requests from "./page/Admin/Request";
-import Vouchers from "./page/Admin/Vouchers"; 
+import Vouchers from "./page/Admin/Vouchers";
 import AdminProfileEdit from "./component/AdminProfileEdit";
 import "./styles/main.scss";
 
@@ -33,7 +33,7 @@ import TransactionCustomer from "./page/Buyer-Seller/transaction-customer";
 import Profile from "./page/Buyer-Seller/profile";
 import WalletCustomer from "./page/Buyer-Seller/wallet-customer";
 import ChangePasswordCustomer from "./page/Buyer-Seller/changpassword-customer";
-import ProductCustomer from "./page/Buyer-Seller/product-customer";
+import Notification from "./page/Buyer-Seller/notification";
 import AddProduct from "./page/Buyer-Seller/addprocduct";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,12 +43,32 @@ import SuccessCheckout from "./page/Buyer-Seller/Success/index1";
 import SuccessTransaction from "./page/Buyer-Seller/Success";
 import FailedTransaction from "./page/Buyer-Seller/Failed";
 import FailedCheckout from "./page/Buyer-Seller/Failed/index1";
-import OrderSumary from "./page/Buyer-Seller/orderSumary";
 import "./styles/main.scss";
 import WalletSeller from "./page/Buyer-Seller/wallet-seller";
 import SellerPage from "./page/Buyer-Seller/seller-page";
 import DeliveryDetail from "./page/Delivery/DeliveryDetail";
 import DeliveryList from "./page/Delivery/AllDeliveryPage";
+import DashboardManager from "./page/Manager/Dashboard";
+import PostsManager from "./page/Manager/Posts";
+import OrdersManager from "./page/Manager/Orders";
+import CustomersManager from "./page/Manager/Customers";
+import StaffsManager from "./page/Manager/Staffs";
+import TransactionsManager from "./page/Manager/Transactions";
+import VouchersManager from "./page/Manager/Vouchers";
+import ShippersManager from "./page/Manager/Shippers";
+import PaymentsManager from "./page/Manager/Payments";
+import RequestsManager from "./page/Manager/Request";
+import PostSeller from "./page/Buyer-Seller/post-seller";
+import CreateOrderId from "./page/Buyer-Seller/create-order-id";
+import CreateOrder from "./page/Buyer-Seller/create-order";
+import Order_Seller_Page from "./page/Buyer-Seller/order-seller";
+import Rating_Page from "./page/Buyer-Seller/reviewAndRating";
+import Chat_Page from "./page/Buyer-Seller/chat";
+import TransactionSeller from "./page/Buyer-Seller/transaction-seller";
+import RequestPendingManager from "./page/Manager/RequestPending";
+import Contact from "./page/Buyer-Seller/contact";
+import About from "./page/Buyer-Seller/about";
+import CancelOrder_Page from "./page/Buyer-Seller/cancelorder";
 
 const { Content } = Layout;
 
@@ -129,8 +149,8 @@ function App() {
       element: <ChangePasswordCustomer />,
     },
     {
-      path: "product-customer",
-      element: <ProductCustomer />,
+      path: "notification",
+      element: <Notification />,
     },
 
     {
@@ -162,12 +182,12 @@ function App() {
       element: <FailedCheckout />,
     },
     {
-      path: "order-summary",
-      element: <OrderSumary />,
-    },
-    {
       path: "seller/:id",
       element: <SellerPage />,
+    },
+    {
+      path: "post-seller",
+      element: <PostSeller />,
     },
     {
       path: "delivery-detail",
@@ -176,6 +196,46 @@ function App() {
     {
       path: "all-delivery",
       element: <DeliveryList />,
+    },
+    {
+      path: "product-seller",
+      element: <ProductSeller />,
+    },
+    {
+      path: "create-order-id/:id",
+      element: <CreateOrderId />,
+    },
+    {
+      path: "create-order",
+      element: <CreateOrder />,
+    },
+    {
+      path: "order-seller",
+      element: <Order_Seller_Page />,
+    },
+    {
+      path: "rating-page/:id",
+      element: <Rating_Page />,
+    },
+    {
+      path: "chat/:id",
+      element: <Chat_Page />,
+    },
+    {
+      path: "transaction-seller",
+      element: <TransactionSeller />,
+    },
+    {
+      path: "contact",
+      element: <Contact />,
+    },
+    {
+      path: "about",
+      element: <About />,
+    },
+    {
+      path: "cancelorder/:id",
+      element: <CancelOrder_Page />,
     },
 
     // Admin Routes wrapped in PrivateRoute
@@ -189,12 +249,7 @@ function App() {
               darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
             }`}
           >
-            <Header
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              language={language}
-              toggleLanguage={toggleLanguage}
-            />
+            <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
             <Content
               className={`p-6 transition-all duration-300 ${
                 darkMode ? "bg-gray-900" : "bg-gray-100"
@@ -214,10 +269,62 @@ function App() {
         { path: "transactions", element: <Transactions darkMode={darkMode} /> },
         { path: "vouchers", element: <Vouchers darkMode={darkMode} /> },
         { path: "profile", element: <AdminProfileEdit darkMode={darkMode} /> },
-        { path: "request-pending", element: <RequestPending darkMode={darkMode} /> },
+        {
+          path: "request-pending",
+          element: <RequestPending darkMode={darkMode} />,
+        },
         { path: "shippers", element: <Shippers darkMode={darkMode} /> },
         { path: "payments", element: <Payments darkMode={darkMode} /> },
         { path: "requests", element: <Requests darkMode={darkMode} /> },
+      ],
+    },
+
+    {
+      path: "manager",
+      element: (
+        <Layout className={`min-h-screen ${darkMode ? "dark" : ""}`}>
+          <Sidebar darkMode={darkMode} />
+          <Layout
+            className={`transition-all duration-300 ${
+              darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+            }`}
+          >
+            <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <Content
+              className={`p-6 transition-all duration-300 ${
+                darkMode ? "bg-gray-900" : "bg-gray-100"
+              } min-h-[calc(100vh-64px)]`}
+            >
+              <PrivateRoute />
+            </Content>
+          </Layout>
+        </Layout>
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <DashboardManager darkMode={darkMode} />,
+        },
+        { path: "posts", element: <PostsManager darkMode={darkMode} /> },
+        { path: "orders", element: <OrdersManager darkMode={darkMode} /> },
+        {
+          path: "customers",
+          element: <CustomersManager darkMode={darkMode} />,
+        },
+        { path: "staffs", element: <StaffsManager darkMode={darkMode} /> },
+        {
+          path: "transactions",
+          element: <TransactionsManager darkMode={darkMode} />,
+        },
+        { path: "vouchers", element: <VouchersManager darkMode={darkMode} /> },
+        { path: "profile", element: <AdminProfileEdit darkMode={darkMode} /> },
+        {
+          path: "request-pending",
+          element: <RequestPendingManager darkMode={darkMode} />,
+        },
+        { path: "shippers", element: <ShippersManager darkMode={darkMode} /> },
+        { path: "payments", element: <PaymentsManager darkMode={darkMode} /> },
+        { path: "requests", element: <RequestsManager darkMode={darkMode} /> },
       ],
     },
   ]);

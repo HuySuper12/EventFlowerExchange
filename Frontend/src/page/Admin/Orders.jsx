@@ -1,17 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Modal, Button, message, Pagination, List, Input } from 'antd';
-import { ExportOutlined } from '@ant-design/icons';
-import api from "../../config/axios"; 
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Tag,
+  Space,
+  Modal,
+  Button,
+  message,
+  Pagination,
+  List,
+  Input,
+} from "antd";
+import { ExportOutlined } from "@ant-design/icons";
+import api from "../../config/axios";
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]); 
+  const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [shippers, setShippers] = useState([]); 
-  const [address, setAddress] = useState(''); // State for address input
+  const [shippers, setShippers] = useState([]);
+  const [address, setAddress] = useState(""); // State for address input
   const [assignedShippers, setAssignedShippers] = useState([]); // Track assigned shippers
   const pageSize = 12;
   const totalOrders = orders.length;
-  
+
   // Modal state for checking
   const [isCheckModalVisible, setIsCheckModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -20,13 +30,14 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get('Order/ViewAllOrder');
-        setOrders(response.data);
+        const response = await api.get("Order/ViewAllOrder");
+        setOrders(response.data.reverse());
         // Set assigned shippers based on orders
         const assigned = response.data
-          .filter(order => order.status === 'Take Over')
-          .map(order => order.deliveryPersonEmail); // Assuming deliveryPersonEmail is the identifier
+          .filter((order) => order.status === "Take Over")
+          .map((order) => order.deliveryPersonEmail); // Assuming deliveryPersonEmail is the identifier
         setAssignedShippers(assigned);
+        console.log(response.data.reverse());
       } catch (error) {
         console.error("Error fetching orders: ", error);
         message.error("Failed to load orders.");
@@ -38,56 +49,62 @@ const Orders = () => {
 
   const columns = [
     {
-      title: 'Order ID',
-      dataIndex: 'orderId',
-      key: 'orderId',
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
     },
     {
-      title: 'Delivery Address',
-      dataIndex: 'deliveredAt',
-      key: 'deliveredAt',
+      title: "Delivery Address",
+      dataIndex: "deliveredAt",
+      key: "deliveredAt",
     },
     {
-      title: 'Phone Number',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
-      title: 'Total Price',
-      dataIndex: 'totalPrice',
-      key: 'totalPrice',
-      render: (price) => `$${(price / 1000).toFixed(2)}k`, 
+      title: "Total Price",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (price) => `$${(price / 1000).toFixed(2)}k`,
       sorter: (a, b) => a.totalPrice - b.totalPrice,
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status) => (
-        <Tag color={
-          status === 'Pending' ? 'gold' 
-          : status === 'Take Over' ? 'blue' 
-          : status === 'Delivery' ? 'purple' 
-          : status === 'Success' ? 'green' 
-          : 'red'
-        }>
-          {status.toUpperCase()}
+        <Tag
+          color={
+            status === "Pending"
+              ? "gold"
+              : status === "Success"
+              ? "green"
+              : status === "Delivering"
+              ? "purple"
+              : status === "Take over"
+              ? "blue"
+              : "red"
+          }
+        >
+          {status}
         </Tag>
       ),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => showOrderDetails(record)}>View Details</Button>
-          {record.status === 'Pending' && (
+          {record.status === "Pending" && (
             <Button onClick={() => handleCheck(record)}>Check</Button>
           )}
         </Space>
@@ -100,11 +117,21 @@ const Orders = () => {
       title: `Order Details - ${order.orderId}`,
       content: (
         <div>
-          <p><strong>Status:</strong> {order.status}</p>
-          <p><strong>Delivery Address:</strong> {order.deliveredAt}</p>
-          <p><strong>Total Price:</strong> ${order.totalPrice}</p>
-          <p><strong>Phone Number:</strong> {order.phoneNumber}</p>
-          <p><strong>Created At:</strong> {order.createdAt}</p>
+          <p>
+            <strong>Status:</strong> {order.status}
+          </p>
+          <p>
+            <strong>Delivery Address:</strong> {order.deliveredAt}
+          </p>
+          <p>
+            <strong>Total Price:</strong> ${order.totalPrice}
+          </p>
+          <p>
+            <strong>Phone Number:</strong> {order.phoneNumber}
+          </p>
+          <p>
+            <strong>Created At:</strong> {order.createdAt}
+          </p>
         </div>
       ),
       onOk() {},
@@ -112,21 +139,25 @@ const Orders = () => {
   };
 
   const handleCheck = (order) => {
-    setSelectedOrder(order); 
-    setIsCheckModalVisible(true); 
-    setAddress(order.deliveredAt); 
-    fetchShippers(order.deliveredAt); 
+    setSelectedOrder(order);
+    setIsCheckModalVisible(true);
+    setAddress(order.deliveredAt);
+    fetchShippers(order.deliveredAt);
   };
 
   const fetchShippers = async (address) => {
     try {
-      const response = await api.get(`Account/SearchShipper/${encodeURIComponent(address)}`);
+      const response = await api.get(
+        `Account/SearchShipper/${encodeURIComponent(address)}`
+      );
       // Filter out shippers that are already assigned
-      const availableShippers = response.data.filter(shipper => !assignedShippers.includes(shipper.email));
+      const availableShippers = response.data.filter(
+        (shipper) => !assignedShippers.includes(shipper.email)
+      );
       setShippers(availableShippers);
     } catch (error) {
-      message.error('Failed to fetch shippers for the given address.');
-      console.error('API error:', error);
+      message.error("Failed to fetch shippers for the given address.");
+      console.error("API error:", error);
     }
   };
 
@@ -135,24 +166,33 @@ const Orders = () => {
 
     const deliveryLog = {
       orderId: selectedOrder.orderId,
-      deliveryPersonEmail: shipper.email, 
+      deliveryPersonEmail: shipper.email,
     };
 
     try {
-      const response = await api.post('DeliveryLog/CreateDeliveryLog', deliveryLog);
+      const response = await api.post(
+        "DeliveryLog/CreateDeliveryLog",
+        deliveryLog
+      );
       if (response.data === true) {
-        message.success(`Delivery log created for order ${selectedOrder.orderId}`);
-        setOrders(orders.map(order =>
-          order.orderId === selectedOrder.orderId ? { ...order, status: 'Take Over' } : order
-        ));
-        setAssignedShippers([...assignedShippers, shipper.email]); // Add shipper to assigned list
-        setIsCheckModalVisible(false); 
+        message.success(
+          `Delivery log created for order ${selectedOrder.orderId}`
+        );
+        setOrders(
+          orders.map((order) =>
+            order.orderId === selectedOrder.orderId
+              ? { ...order, status: "Take Over" }
+              : order
+          )
+        );
+        setAssignedShippers([...assignedShippers, shipper.email]);
+        setIsCheckModalVisible(false);
       } else {
-        message.error('Failed to create delivery log.');
+        message.error("Failed to create delivery log.");
       }
     } catch (error) {
-      message.error('Error creating delivery log.');
-      console.error('API error:', error);
+      message.error("Error creating delivery log.");
+      console.error("API error:", error);
     }
   };
 
@@ -166,28 +206,38 @@ const Orders = () => {
         onCancel={() => setIsCheckModalVisible(false)}
         footer={null}
       >
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <p>Select a shipper from the list below:</p>
-          <Input 
+          <Input
             placeholder="Enter address to search for shippers"
             value={address}
-            onChange={(e) => setAddress(e.target.value)} 
+            onChange={(e) => setAddress(e.target.value)}
           />
           <List
             dataSource={shippers}
-            renderItem={shipper => (
+            renderItem={(shipper) => (
               <List.Item>
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
                   <div>
-                    <p><strong>{shipper.name}</strong></p>
+                    <p>
+                      <strong>{shipper.name}</strong>
+                    </p>
                     <p>Phone: {shipper.phoneNumber}</p>
                   </div>
-                  <Button 
-                    type="primary" 
-                    onClick={() => handleSelectShipper(shipper)} 
-                    disabled={assignedShippers.includes(shipper.email)} // Disable if already assigned
+                  <Button
+                    type="primary"
+                    onClick={() => handleSelectShipper(shipper)}
+                    disabled={assignedShippers.includes(shipper.email)}
                   >
-                    {assignedShippers.includes(shipper.email) ? 'Assigned' : 'Select Shipper'}
+                    {assignedShippers.includes(shipper.email)
+                      ? "Assigned"
+                      : "Select Shipper"}
                   </Button>
                 </div>
               </List.Item>
@@ -197,29 +247,46 @@ const Orders = () => {
       </Modal>
     );
   };
-  
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <h1 className="text-3xl font-bold mb-4">Orders</h1>
         <Button type="primary" icon={<ExportOutlined />}>
           Export
         </Button>
       </div>
-      <Table 
-        columns={columns} 
-        dataSource={orders.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
-        rowKey="orderId" 
+      <Table
+        columns={columns}
+        dataSource={orders.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        )}
+        rowKey="orderId"
         pagination={false}
       />
-      <div style={{ marginTop: '16px', marginLeft: '10px', opacity: 0.5, display: 'flex', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          marginTop: "16px",
+          marginLeft: "10px",
+          opacity: 0.5,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <span>{totalOrders} orders in total</span>
-        <Pagination 
-          current={currentPage} 
-          pageSize={pageSize} 
-          total={totalOrders} 
-          onChange={page => setCurrentPage(page)} 
-          showSizeChanger={false} 
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalOrders}
+          onChange={(page) => setCurrentPage(page)}
+          showSizeChanger={false}
         />
       </div>
 
@@ -229,4 +296,4 @@ const Orders = () => {
   );
 };
 
-export default Orders; 
+export default Orders;

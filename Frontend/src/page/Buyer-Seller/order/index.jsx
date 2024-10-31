@@ -3,14 +3,38 @@ import api from "../../../config/axios"; // Import axios
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import { Button, Modal } from "antd";
+import { Tabs, Tab } from "../../../component/tab";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Order_Page() {
-  const [orders, setOrders] = useState([]); // Store user's orders
-  const [orderDetails, setOrderDetails] = useState([]); // Store order details
+  const [orders, setOrders] = useState([]);
+  const [orderDetails, setOrderDetails] = useState([]);
+  const [orders2, setOrders2] = useState([]);
+  const [orderDetails2, setOrderDetails2] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [status, setStatus] = useState("");
+  const [selectedOrderDetails, setSelectedOrderDetails] = useState({});
+  const [accountBuyer, setAccountBuyer] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const role = sessionStorage.getItem("role");
+    if (role === "Seller") {
+      navigate("/");
+    } else if (role === "Admin") {
+      navigate("/admin");
+    } else if (role === "Staff") {
+      navigate("/staff");
+    } else if (role === "Shipper") {
+      navigate("/delivery-detail");
+    } else if (!role) {
+      navigate("/login");
+      toast.error("Please login first.");
+    }
+  }, [navigate]);
 
   // Fetch all orders
   useEffect(() => {
@@ -21,22 +45,110 @@ function Order_Page() {
       return;
     }
 
-    api
-      .get("Order/ViewOrderByBuyerEmail", {
-        params: { email: userEmail },
-      })
-      .then((response) => {
+    (async () => {
+      try {
+        const response = await api.get("Order/ViewOrderByBuyerEmail", {
+          params: { email: userEmail },
+        });
         console.log("API response:", response.data); // Kiểm tra dữ liệu trả về
         if (Array.isArray(response.data)) {
-          setOrders(response.data); // Sử dụng response.data
+          const filteredOrders = response.data.filter(
+            (order) => order.status !== null
+          );
+          setOrders(filteredOrders.reverse()); // Sử dụng response.data
         } else {
           setOrders([]);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching orders", error);
-      });
+      }
+    })();
   }, []);
+
+  useEffect(() => {
+    const fetchOrdersByStatus = async () => {
+      const userEmail = sessionStorage.getItem("email");
+      console.log("User Email:", userEmail);
+      if (!userEmail) {
+        console.error("No email found in session storage");
+        return;
+      }
+
+      try {
+        const response = await api.get("Order/ViewOrderByStatusAndBuyerEmail", {
+          params: { email: userEmail, status: "null" },
+        });
+        console.log("API response:", response.data);
+        if (Array.isArray(response.data)) {
+          setOrders2(response.data.reverse());
+        } else {
+          setOrders2([]);
+        }
+      } catch (error) {
+        console.error("Error fetching orders", error);
+      }
+    };
+
+    fetchOrdersByStatus();
+  }, []);
+
+  useEffect(() => {
+    const fetchAccountBuyer = async () => {
+      const userEmail = sessionStorage.getItem("email");
+      const encodedEmail = encodeURIComponent(userEmail);
+
+      console.log("User Email:", userEmail);
+      if (!userEmail) {
+        console.error("No email found in session storage");
+        return;
+      }
+
+      try {
+        const response = await api.get(
+          `Account/GetAccountByEmail/${encodedEmail}`
+        );
+        console.log("API response:", response.data);
+        setAccountBuyer(response.data);
+      } catch (error) {
+        console.error("Error fetching account", error);
+      }
+    };
+
+    fetchAccountBuyer();
+  }, []);
+
+  // Fetch order details for each order
+  useEffect(() => {
+    const fetchOrderDetails2 = async () => {
+      setLoading(true);
+      try {
+        const details = await Promise.all(
+          orders2.map((order) =>
+            api
+              .get("Order/ViewOrderDetail", {
+                params: { id: order.orderId },
+              })
+              .then((response) => {
+                return response.data.map((product) => ({
+                  ...product,
+                  orderId: order.orderId,
+                }));
+              })
+          )
+        );
+        const allProducts = details.flat();
+        setOrderDetails2(allProducts);
+      } catch (error) {
+        console.error("Error fetching order details", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (orders2.length > 0) {
+      fetchOrderDetails2();
+    }
+  }, [orders2]);
 
   // Fetch order details for each order
   useEffect(() => {
@@ -83,8 +195,38 @@ function Order_Page() {
     return acc;
   }, {});
 
-  const showOrderDetails = (orderId, status) => {
+  const groupedOrderDetails2 = orderDetails2.reduce((acc, item) => {
+    if (!acc[item.orderId]) {
+      acc[item.orderId] = [];
+    }
+    acc[item.orderId].push(item);
+    return acc;
+  }, {});
+
+  const showOrderDetails = async (orderId, status) => {
+    const order = orders.find((o) => o.orderId === orderId);
+    const name = await fetchAccountByOrderId(orderId);
+    console.log("Order found:", order); // Debugging line
     setSelectedOrder(groupedOrderDetails[orderId]);
+    setSelectedOrderDetails({
+      deliveredAt: order.deliveredAt,
+      totalPrice: order.totalPrice,
+      phoneNumber: order.phoneNumber,
+      orderId: order.orderId, // Ensure orderId is included
+      name, // Add userName to the details
+    });
+    setStatus(status);
+    setIsModalOpen(true);
+  };
+
+  const showOrderDetails2 = (orderId, status) => {
+    const order = orders2.find((o) => o.orderId === orderId);
+    setSelectedOrder(groupedOrderDetails2[orderId]);
+    setSelectedOrderDetails({
+      deliveredAt: order.deliveredAt,
+      totalPrice: order.totalPrice,
+      phoneNumber: order.phoneNumber,
+    });
     setStatus(status);
     setIsModalOpen(true);
   };
@@ -103,14 +245,88 @@ function Order_Page() {
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-};
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
 
   const formatCurrency = (amount) => {
     const validAmount = amount !== undefined ? amount : 0;
     return (
       validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
     );
+  };
+
+  const handleReview = (orderId) => {
+    navigate(`/rating-page/${orderId}`);
+  };
+
+  const handleAccept = async (orderId) => {
+    const order = orders2.find((o) => o.orderId === orderId);
+
+    if (accountBuyer.balance < order.totalPrice) {
+      navigate("/wallet-customer");
+      toast.error("Your balance is not enough");
+      return;
+    }
+
+    try {
+      const response = await api.put(
+        "Order/UpdateOrderStatusCreatedBySeller",
+        null,
+        {
+          params: {
+            orderId: orderId,
+            status: "Accepted",
+          },
+        }
+      );
+      if (response.data === true) {
+        toast.success("Accept order successfully");
+        window.location.reload();
+      } else {
+        toast.error("Accept order failed");
+      }
+    } catch (error) {
+      console.error("Error updating order status", error);
+      toast.error("Error updating order status");
+    }
+  };
+
+  const handleReject = async (orderId) => {
+    const order = orders2.find((o) => o.orderId === orderId);
+
+    const response = await api.put(
+      "Order/UpdateOrderStatusCreatedBySeller",
+      null,
+      {
+        params: {
+          orderId: orderId,
+          status: "Rejected",
+        },
+      }
+    );
+    if (response.data === true) {
+      toast.success("Reject order successfully");
+      window.location.reload();
+    } else {
+      toast.error("Reject order failed");
+    }
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    navigate(`/cancelorder/${orderId}`);
+  };
+
+  const fetchAccountByOrderId = async (orderId) => {
+    try {
+      const response = await api.get("Account/ViewAccountBuyerByOrderId", {
+        params: { orderId },
+      });
+      console.log("API response:", response.data.name); // Kiểm tra dữ liệu trả về
+      return response.data.name; // Lấy thuộc tính name
+    } catch (error) {
+      console.error("Error fetching account by orderId", error);
+      return null;
+    }
   };
 
   return (
@@ -124,78 +340,192 @@ function Order_Page() {
             <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
           </div>
         </div>
+      </div>
 
-        {/* Hiển thị sản phẩm theo từng đơn hàng */}
-        <div>
-          {loading ? (
-            <p>Loading...</p>
-          ) : orders.length > 0 ? (
-            orders.map((order) => (
-              <div key={order.orderId} className="mb-8">
-                <h3 className="text-xl font-bold mb-4">
-                  Order ID: {order.orderId}
-                </h3>
-                {groupedOrderDetails[order.orderId]?.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`py-4 text-gray-700 ${
-                      index === 0 ? "border-t" : ""
-                    } ${
-                      index === groupedOrderDetails[order.orderId].length - 1
-                        ? "border-b"
-                        : ""
-                    }`}
-                  >
-                    {/* Product details */}
-                    <div className="flex items-start justify-between gap-6 text-sm">
-                      <div className="flex items-start gap-6">
-                        <img
-                          src={item.productImage[0]}
-                          alt={item.productName}
-                          className="w-16 sm:w-20"
-                        />
-                        <div className="flex-1">
-                          <p className="sm:text-base font-medium">
-                            {item.productName}
-                          </p>
-                          <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                            <p className="text-lg">{formatCurrency(item.price)}</p>
-                            <p>Quantity: {item.quantity}</p>
+      <div className="ml-[300px] w-[1100px]">
+        <Tabs>
+          <Tab label="Your Orders">
+            <div className="py-4 ">
+              {/* Hiển thị sản phẩm theo từng đơn hàng */}
+              <div>
+                {loading ? (
+                  <p>Loading...</p>
+                ) : orders.length > 0 ? (
+                  orders.map((order) => (
+                    <div key={order.orderId} className="mb-8">
+                      <h3 className="text-xl font-bold mb-4">
+                        Order ID: {order.orderId}
+                      </h3>
+                      {groupedOrderDetails[order.orderId]?.map(
+                        (item, index) => (
+                          <div
+                            key={index}
+                            className={`py-4 text-gray-700 ${
+                              index === 0 ? "border-t" : ""
+                            } ${
+                              index ===
+                              groupedOrderDetails[order.orderId].length - 1
+                                ? "border-b"
+                                : ""
+                            }`}
+                          >
+                            {/* Product details */}
+                            <div className="flex items-start justify-between gap-6 text-sm">
+                              <div className="flex items-start gap-6">
+                                <img
+                                  src={item.productImage[0]}
+                                  alt={item.productName}
+                                  className="w-16 sm:w-20"
+                                />
+                                <div className="flex-1">
+                                  <p className="sm:text-base font-medium">
+                                    {item.productName}
+                                  </p>
+                                  <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
+                                    <p className="text-lg">
+                                      {formatCurrency(item.price)}
+                                    </p>
+                                  </div>
+                                  <p>
+                                    Date:{" "}
+                                    <span className="text-gray-500">
+                                      {formatDate(item.createdAt)}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+
+                              {index === 0 && (
+                                <div className="flex items-center gap-2">
+                                  <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
+                                  <p className="text-sm md:text-base">
+                                    {order.status}
+                                  </p>
+                                </div>
+                              )}
+
+                              {index === 0 && (
+                                <Button
+                                  onClick={() =>
+                                    showOrderDetails(
+                                      order.orderId,
+                                      order.status
+                                    )
+                                  }
+                                >
+                                  Track Order
+                                </Button>
+                              )}
+                            </div>
                           </div>
-                          <p>
-                            Date:{" "}
-                            <span className="text-gray-500">
-                              {formatDate(item.createdAt)}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-
-                      {index === 0 && (
-                        <div className="flex items-center gap-2">
-                          <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
-                          <p className="text-sm md:text-base">{order.status}</p>
-                        </div>
-                      )}
-
-                      {index === 0 && (
-                        <Button
-                          onClick={() =>
-                            showOrderDetails(order.orderId, order.status)
-                          }
-                        >
-                          Track Order
-                        </Button>
+                        )
                       )}
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p>No products found.</p>
+                )}
               </div>
-            ))
-          ) : (
-            <p>No products found.</p>
-          )}
-        </div>
+            </div>
+          </Tab>
+          <Tab label="Your Orders Requested">
+            <div className="py-4">
+              {/* Display products for each order */}
+              <div>
+                {loading ? (
+                  <p>Loading...</p>
+                ) : orders2.length > 0 ? (
+                  orders2.map((order2) => (
+                    <div key={order2.orderId} className="mb-8">
+                      <h3 className="text-xl font-bold mb-4">
+                        Order ID: {order2.orderId}
+                      </h3>
+                      {groupedOrderDetails2[order2.orderId]?.map(
+                        (item, index) => (
+                          <div
+                            key={index}
+                            className={`py-4 text-gray-700 ${
+                              index === 0 ? "border-t" : ""
+                            } ${
+                              index ===
+                              groupedOrderDetails2[order2.orderId].length - 1
+                                ? "border-b"
+                                : ""
+                            }`}
+                          >
+                            {/* Product details */}
+                            <div className="flex items-start justify-between gap-6 text-sm">
+                              <div className="flex items-start gap-6">
+                                <img
+                                  src={item.productImage[0]}
+                                  alt={item.productName}
+                                  className="w-16 sm:w-20"
+                                />
+                                <div className="flex-1">
+                                  <p className="sm:text-base font-medium">
+                                    {item.productName}
+                                  </p>
+                                  <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
+                                    <p className="text-lg">
+                                      {formatCurrency(item.price)}
+                                    </p>
+                                    <p>Quantity: {item.quantity}</p>
+                                  </div>
+                                  <p>
+                                    Date:{" "}
+                                    <span className="text-gray-500">
+                                      {formatDate(item.createdAt)}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+
+                              {index === 0 && (
+                                <div className="flex items-center gap-2">
+                                  <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
+                                  <p className="text-sm md:text-base">
+                                    {order2.status || "Pending"}
+                                  </p>
+                                </div>
+                              )}
+
+                              {index === 0 && (
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    onClick={() =>
+                                      showOrderDetails2(
+                                        order2.orderId,
+                                        order2.status
+                                      )
+                                    }
+                                  >
+                                    CheckOrder
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleAccept(order2.orderId)}
+                                  >
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleReject(order2.orderId)}
+                                  >
+                                    Reject
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p>No products found.</p>
+                )}
+              </div>
+            </div>
+          </Tab>
+        </Tabs>
       </div>
 
       <Modal
@@ -203,11 +533,48 @@ function Order_Page() {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
+          status === "Success" && (
+            <Button
+              key="review"
+              type="primary"
+              onClick={() => {
+                handleReview(selectedOrderDetails.orderId);
+                console.log("orderid", selectedOrderDetails.orderId);
+              }}
+            >
+              Review and Rating
+            </Button>
+          ),
+          status === "Pending" && (
+            <Button
+              key="cancel"
+              onClick={() => {
+                handleCancelOrder(selectedOrderDetails.orderId);
+                console.log("orderid", selectedOrderDetails.orderId);
+              }}
+            >
+              Cancel Order
+            </Button>
+          ),
           <Button key="back" onClick={handleCancel}>
             Close
           </Button>,
         ]}
       >
+        {/* Display additional order details */}
+        <div className="mt-5">
+          <p className="text-lg font-bold text-center">Delivery Information</p>
+          <p className="text-md font-medium">
+            Buyer Name: {selectedOrderDetails.name}
+          </p>
+          <p className="text-md font-medium">
+            Phone Number: {selectedOrderDetails.phoneNumber}
+          </p>
+          <p className="text-md font-medium">
+            Delivered At: {selectedOrderDetails.deliveredAt}
+          </p>
+        </div>
+
         {/* Thêm tiến trình giao hàng vào dưới phần chi tiết sản phẩm */}
         <div className="mt-5">
           <ul className="flex items-center justify-between relative">
@@ -273,16 +640,21 @@ function Order_Page() {
               <div>
                 <p className="sm:text-base font-medium">{item.productName}</p>
                 <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                  <p className="text-lg">{item.price}</p>
-                  <p>Quantity: {item.quantity}</p>
+                  <p className="text-lg">{formatCurrency(item.price)}</p>
                 </div>
                 <p>
-                  Date: <span className="text-gray-500">{item.createdAt}</span>
+                  Date:{" "}
+                  <span className="text-gray-500">
+                    {formatDate(item.createdAt)}
+                  </span>
                 </p>
               </div>
             </div>
           </div>
         ))}
+        <p className="text-lg ml-[220px] mt-[10px] mb-[30px] font-bold">
+          Total Price: {formatCurrency(selectedOrderDetails.totalPrice)}
+        </p>
       </Modal>
 
       <Footer />

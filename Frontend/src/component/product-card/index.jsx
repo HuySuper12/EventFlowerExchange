@@ -87,6 +87,9 @@ function ProductCard({ products }) {
   }, [email]);
 
   const formatCurrency = (amount) => {
+    if (amount === 0) {
+      return "For Deal";
+    }
     const validAmount = amount !== undefined ? amount : 0;
     return (
       validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
@@ -107,6 +110,10 @@ function ProductCard({ products }) {
                 colors[index % colors.length]
               } rounded-lg max-w-xs shadow-lg group`}
               style={{ width: "250px", height: "400px" }}
+              onClick={() => {
+                window.scrollTo(0, 0); // Cuộn lên đầu trang
+                navigate(`/product-page/${product.productId}`); // Điều hướng đến trang sản phẩm
+              }}
             >
               <Link to={`/product-page/${product.productId}`}>
                 <div className="relative pt-10 px-10 flex items-center justify-center group-hover:scale-110 transition-transform">

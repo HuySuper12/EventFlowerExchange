@@ -53,7 +53,10 @@ const Home = () => {
 
       <Link to={"/product"}>
         <div className="flex justify-center mt-4">
-          <button className="flex items-center bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-blue-500 hover:text-white rounded-[50px] ">
+          <button
+            className="flex items-center bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-blue-500 hover:text-white rounded-[50px]"
+            onClick={() => window.scrollTo(0, 0)}
+          >
             <img
               src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/6207.png_860_preview_rev_1.png?alt=media&token=f40c66c1-e8c8-4e7c-81ea-e0994f92601a"
               alt="icon"

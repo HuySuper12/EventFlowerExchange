@@ -1,37 +1,88 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import SidebarCustomer from "../../../component/slidebar-customer";
 import Header from "../../../component/header";
-import api from "../../../config/axios";
 import Footer from "../../../component/footer";
+import {
+  Table,
+  Pagination,
+  Modal,
+  Button,
+  Input,
+  Form,
+  Image,
+  Tag,
+} from "antd";
+import api from "../../../config/axios";
 import SlidebarSeller from "../../../component/slidebar-seller";
-import { Button, Image, Table, Form, Input, Modal } from "antd";
 
-const ProductSeller = () => {
-  const [products, setProducts] = useState([]);
+const PostSeller = () => {
+  const [combinedData, setCombinedData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
-  const navigate = useNavigate();
-
+  const requestsPerPage = 8;
   const email = sessionStorage.getItem("email");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchRequestsAndProducts = async () => {
+    if (email) {
       try {
-        const response = await api.get("Product/GetProductList/Deal/Seller", {
-          params: { email: email },
+        const encodedEmail = encodeURIComponent(email);
+        const requestResponse = await api.get(`Request/GetRequestListBy`, {
+          params: {
+            email: email,
+            type: "Post",
+          },
         });
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+        console.log("Requests response:", requestResponse.data.reverse());
 
-    fetchProducts();
-  }, [email]);
+        const dataWithProducts = await Promise.all(
+          requestResponse.data.map(async (request) => {
+            const product = await fetchProduct(request.productId);
+            return { ...request, product };
+          })
+        );
+
+        console.log("Combined data with products:", dataWithProducts);
+        setCombinedData(
+          dataWithProducts.filter((item) => item.product !== null)
+        );
+      } catch (error) {
+        console.error("Error fetching requests and products:", error);
+      }
+    }
+  };
+
+  const fetchProduct = async (id) => {
+    try {
+      const response = await api.get(`Product/SearchProduct/${id}`);
+      console.log("Product response for ID", id, ":", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchRequestsAndProducts();
+  }, []);
+
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentData = combinedData.slice(
+    indexOfFirstRequest,
+    indexOfLastRequest
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleViewDetails = (productId) => {
-    const product = products.find((p) => p.productId === productId);
-    setProductDetails(product);
+    const product = combinedData.find(
+      (item) => item.product.productId === productId
+    );
+    setProductDetails(product.product);
     setDetailsVisible(true);
   };
 
@@ -40,102 +91,81 @@ const ProductSeller = () => {
     setProductDetails(null);
   };
 
-  const handleCreateOrder = (productId) => {
-    navigate(`/create-order-id/${productId}`);
-  };
-
   const columns = [
     {
       title: "Product Name",
-      dataIndex: "productName",
+      dataIndex: ["product", "productName"],
       key: "productName",
     },
     {
-      title: "Freshness Duration",
-      dataIndex: "freshnessDuration",
-      key: "freshnessDuration",
-    },
-    {
       title: "Combo Type",
-      dataIndex: "comboType",
+      dataIndex: ["product", "comboType"],
       key: "comboType",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => formatCurrency(price), // Check if price is defined
-    },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-    },
-    {
-      title: "Image",
-      dataIndex: "productImage",
-      key: "productImage",
-      render: (images) =>
-        images && images.length > 0 ? (
-          <Image
-            src={images[0]}
-            alt="Product"
-            style={{ width: 50, height: 50 }}
-          />
-        ) : (
-          <span>No Image</span>
-        ),
-    },
-    {
       title: "Created At",
-      dataIndex: "createdAt",
+      dataIndex: ["product", "createdAt"],
       key: "createdAt",
       render: (createdAt) => new Date(createdAt).toLocaleString(),
     },
     {
       title: "Expired At",
-      dataIndex: "expireddAt",
+      dataIndex: ["product", "expireddAt"],
       key: "expireddAt",
       render: (expireddAt) => new Date(expireddAt).toLocaleString(),
     },
-
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag
+          color={
+            status === "Pending"
+              ? "gold"
+              : status === "Accepted"
+              ? "green"
+              : "red"
+          }
+        >
+          {status.toUpperCase()}
+        </Tag>
+      ),
+    },
     {
       title: "Action",
       key: "action",
       render: (record) => (
-        <>
-          <Button onClick={() => handleViewDetails(record.productId)}>
-            Detail
-          </Button>
-          <Button
-            className="mt-[10px]"
-            onClick={() => handleCreateOrder(record.productId)}
-          >
-            Create order
-          </Button>
-        </>
+        <Button onClick={() => handleViewDetails(record.product.productId)}>
+          Detail
+        </Button>
       ),
     },
   ];
 
-  const formatCurrency = (amount) => {
-    if (amount === 0) {
-      return "For Deal";
-    }
-    const validAmount = amount !== undefined ? amount : 0;
-    return (
-      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
-    );
-  };
-
   return (
-    <div>
+    <>
       <Header />
-      <div className="flex mt-[50px] ml-[30px]">
+
+      <div className="flex mt-[50px]">
         <SlidebarSeller />
-        <div className="ml-[50px] w-[1100px] shadow-md p-[20px]">
-          <p className="text-3xl ml-[500px] mb-[40px]">ALL PRODUCTS</p>
-          <Table dataSource={products} columns={columns} pagination={4} />
+        <div className="w-full ml-[30px] bg-white shadow-2xl rounded-xl p-4">
+          <div className="mb-6 p-4 border border-gray-300 rounded-lg">
+            <h4 className="text-lg font-bold mb-[20px]">Products</h4>
+            <Table
+              dataSource={currentData}
+              columns={columns}
+              pagination={false}
+              rowKey="requestId"
+            />
+            <Pagination
+              current={currentPage}
+              pageSize={requestsPerPage}
+              total={combinedData.length}
+              onChange={handlePageChange}
+              className="mt-4"
+            />
+          </div>
         </div>
       </div>
 
@@ -274,9 +304,10 @@ const ProductSeller = () => {
           <p>No details available</p>
         )}
       </Modal>
+
       <Footer />
-    </div>
+    </>
   );
 };
 
-export default ProductSeller;
+export default PostSeller;
