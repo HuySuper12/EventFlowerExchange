@@ -50,7 +50,7 @@ const Payments = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      render: (value) => `$${value.toFixed(2)}`,
+      render: (value) => formatCurrency(value),
     },
     {
       title: 'Status',
@@ -74,6 +74,7 @@ const Payments = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
     },
     {
       title: 'Actions',
@@ -91,7 +92,7 @@ const Payments = () => {
         <div>
           <p>User ID: {payment.userId}</p>
           <p>Payment Type: {payment.paymentType}</p>
-          <p>Amount: ${payment.amount.toFixed(2)}</p>
+          <p>Amount: {formatCurrency(payment.amount.toFixed(2))}</p>
           <p>Status: {payment.status}</p>
           <p>Date/Time: {new Date(payment.createdAt).toLocaleString()}</p>
         </div>
@@ -101,6 +102,29 @@ const Payments = () => {
   };
 
   const totalPayments = payments.length;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
 
   return (
     <div>

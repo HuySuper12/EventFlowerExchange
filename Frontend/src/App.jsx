@@ -14,7 +14,6 @@ import Transactions from "./page/Admin/Transactions";
 import Payments from "./page/Admin/Payments";
 import Requests from "./page/Admin/Request";
 import Vouchers from "./page/Admin/Vouchers";
-import AdminProfileEdit from "./component/AdminProfileEdit";
 import "./styles/main.scss";
 
 import Home from "././page/Buyer-Seller/home";
@@ -69,6 +68,8 @@ import RequestPendingManager from "./page/Manager/RequestPending";
 import Contact from "./page/Buyer-Seller/contact";
 import About from "./page/Buyer-Seller/about";
 import CancelOrder_Page from "./page/Buyer-Seller/cancelorder";
+import ProfileStaff from "./page/Admin/ProfileStaff";
+import ProfileManager from "./page/Manager/ProfileManager";
 
 const { Content } = Layout;
 
@@ -268,7 +269,7 @@ function App() {
         { path: "staffs", element: <Staffs darkMode={darkMode} /> },
         { path: "transactions", element: <Transactions darkMode={darkMode} /> },
         { path: "vouchers", element: <Vouchers darkMode={darkMode} /> },
-        { path: "profile", element: <AdminProfileEdit darkMode={darkMode} /> },
+
         {
           path: "request-pending",
           element: <RequestPending darkMode={darkMode} />,
@@ -276,6 +277,7 @@ function App() {
         { path: "shippers", element: <Shippers darkMode={darkMode} /> },
         { path: "payments", element: <Payments darkMode={darkMode} /> },
         { path: "requests", element: <Requests darkMode={darkMode} /> },
+        { path: "profile", element: <ProfileStaff darkMode={darkMode} /> },
       ],
     },
 
@@ -317,7 +319,7 @@ function App() {
           element: <TransactionsManager darkMode={darkMode} />,
         },
         { path: "vouchers", element: <VouchersManager darkMode={darkMode} /> },
-        { path: "profile", element: <AdminProfileEdit darkMode={darkMode} /> },
+        { path: "profile", element: <ProfileManager darkMode={darkMode} /> },
         {
           path: "request-pending",
           element: <RequestPendingManager darkMode={darkMode} />,

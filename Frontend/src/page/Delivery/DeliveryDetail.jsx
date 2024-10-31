@@ -46,6 +46,7 @@ const DeliveryDetail = () => {
   const [deliveryTime, setDeliveryTime] = useState(null);
   const [buyerAccount, setBuyerAccount] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [deliveryStatus, setDeliveryStatus] = useState(null);
   const fetchDeliveryLog = async () => {
     try {
       const response = await api.get(
@@ -164,6 +165,7 @@ const DeliveryDetail = () => {
         fetchDeliveryLog();
         fetchAccountData();
         fetchOrderDetails();
+        setDeliveryStatus("success");
       } else {
         console.log("Response error:", response); // Check if API response is correct
       }
@@ -201,13 +203,16 @@ const DeliveryDetail = () => {
         }
       );
 
-      if (response.data === true) {
+      console.log(response.data);
+
+      if (response.data == true) {
         message.success("Order marked as failed!");
         setIsFailedModalOpen(false);
         console.log(response.data);
         fetchDeliveryLog();
         fetchAccountData();
         fetchOrderDetails();
+        setDeliveryStatus("fail");
       }
     } catch (error) {
       console.error("Error updating delivery log:", error);
@@ -267,6 +272,9 @@ const DeliveryDetail = () => {
   );
 
   const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
     const options = {
       year: "numeric",
       month: "2-digit",
@@ -274,9 +282,9 @@ const DeliveryDetail = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Use 24-hour format
+      hour12: false,
     };
-    return new Date(dateString).toLocaleDateString("en-US", options);
+    return date.toLocaleDateString("en-US", options);
   };
 
   const formatCurrency = (amount) => {
@@ -304,7 +312,7 @@ const DeliveryDetail = () => {
     const fetchBuyerAccountByOrderId = async () => {
       try {
         const response = await api.get(`Account/ViewAccountBuyerByOrderId`, {
-          params: { orderId: deliveryLog?.orderId },
+          params: { orderId: deliveryLog.orderId },
         });
         setBuyerAccount(response.data);
         console.log("Buyer Account:", response.data);
@@ -314,7 +322,7 @@ const DeliveryDetail = () => {
     };
 
     fetchBuyerAccountByOrderId(deliveryLog?.orderId);
-  }, []);
+  }, [deliveryLog?.orderId]);
 
   useEffect(() => {
     const fetchBuyerOrderByOrderId = async () => {
@@ -410,14 +418,13 @@ const DeliveryDetail = () => {
                   }}
                 >
                   <Step
-                    title="Take Order"
-                    description={formatDate(deliveryLog?.takeOverAt)}
-                    status={currentStep > 0 ? "finish" : "process"}
+                    title="Pending"
+                    description={formatDate(deliveryLog?.createdAt)}
+                    status={deliveryStatus ? "finish" : "process"}
                     icon={
                       <div
                         style={{
-                          backgroundColor:
-                            currentStep > 0 ? "#52c41a" : "#d9d9d9", // Màu xanh khi hoàn thành, xám khi chưa
+                          backgroundColor: deliveryStatus ? "#52c41a" : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",
@@ -433,20 +440,13 @@ const DeliveryDetail = () => {
                     }
                   />
                   <Step
-                    title="On the way"
-                    description={formatDate(deliveryTime?.deliveringTime)}
-                    status={
-                      currentStep > 1
-                        ? "finish"
-                        : currentStep === 1
-                        ? "process"
-                        : "wait"
-                    }
+                    title="Take Order"
+                    description={deliveryTime?.deliveringTime ? formatDate(deliveryTime.deliveringTime) : ""}
+                    status={deliveryStatus ? "finish" : "wait"}
                     icon={
                       <div
                         style={{
-                          backgroundColor:
-                            currentStep > 1 ? "#52c41a" : "#d9d9d9", // Màu xanh khi hoàn thành, xám khi chưa
+                          backgroundColor: deliveryStatus ? "#52c41a" : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",
@@ -462,24 +462,13 @@ const DeliveryDetail = () => {
                     }
                   />
                   <Step
-                    title={
-                      deliveryLog?.status === "Delivery Fail"
-                        ? "Delivery Fail"
-                        : "Delivered"
-                    }
+                    title={deliveryStatus === "fail" ? "Fail" : "Delivered"}
                     description={deliveryTime?.successOrFailTime}
-                    status={
-                      currentStep > 2
-                        ? "finish"
-                        : currentStep === 2
-                        ? "process"
-                        : "wait"
-                    }
+                    status="finish"
                     icon={
                       <div
                         style={{
-                          backgroundColor:
-                            currentStep > 2 ? "#52c41a" : "#d9d9d9", // Màu xanh khi hoàn thành, xám khi chưa
+                          backgroundColor: deliveryStatus === "success" ? "#52c41a" : deliveryStatus === "fail" ? "#f5222d" : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",

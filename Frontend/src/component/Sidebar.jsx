@@ -23,8 +23,15 @@ const Sidebar = ({ darkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const role = sessionStorage.getItem("role");
+
   const menuItems = [
-    { key: "dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
+    { key: "profile", icon: <UserOutlined />, label: "Profile" },
+
+    ...(role !== "Staff"
+      ? [{ key: "dashboard", icon: <DashboardOutlined />, label: "Dashboard" }]
+      : []),
+
     { key: "posts", icon: <EditOutlined />, label: "Posts" },
     {
       key: "request-pending",

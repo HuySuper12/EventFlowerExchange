@@ -135,6 +135,10 @@ function Header() {
     loadNotifications();
   }, []);
 
+  const handleShowMoreNoti = () => {
+    navigate("/notification");
+  };
+
   return (
     <div className="header flex items-center justify-between py-5 font-medium relative shadow-md">
       <Link to={"/"}>
@@ -213,7 +217,7 @@ function Header() {
                     </div>
                   ))}
 
-                  <button className="text-blue-500 text-sm cursor-pointer hover:underline text-center">
+                  <button className="text-blue-500 text-sm cursor-pointer hover:underline text-center" onClick={handleShowMoreNoti}>
                     Show more
                   </button>
                 </div>

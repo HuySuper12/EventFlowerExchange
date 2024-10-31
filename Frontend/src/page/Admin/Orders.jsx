@@ -67,7 +67,7 @@ const Orders = () => {
       title: "Total Price",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (price) => `$${(price / 1000).toFixed(2)}k`,
+      render: (price) => formatCurrency(price),
       sorter: (a, b) => a.totalPrice - b.totalPrice,
     },
     {
@@ -75,6 +75,7 @@ const Orders = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
     },
     {
       title: "Status",
@@ -245,6 +246,29 @@ const Orders = () => {
           />
         </div>
       </Modal>
+    );
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount != null ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
     );
   };
 

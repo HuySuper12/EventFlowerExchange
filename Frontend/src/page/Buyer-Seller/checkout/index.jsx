@@ -20,7 +20,12 @@ const Checkout = () => {
   useEffect(() => {
     const fetchVouchers = async () => {
       try {
-        const response = await api.get("voucher/GetAllVoucher");
+        const savedSubtotal = localStorage.getItem("subtotal");
+        const response = await api.get("Voucher/GetAllVoucherValid", {
+          params: {
+            price: savedSubtotal ? parseFloat(savedSubtotal) : 0,
+          },
+        });
         setVouchers(response.data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
@@ -80,7 +85,7 @@ const Checkout = () => {
     try {
       const values = form.getFieldsValue();
       const rawValue = localStorage.getItem("listProductDevide") || "";
-      const formattedValue = rawValue.replace(/"/g, ""); // Loại bỏ dấu nháy
+      const formattedValue = rawValue.replace(/"/g, "");
 
       console.log("Formatted Value:", formattedValue);
 

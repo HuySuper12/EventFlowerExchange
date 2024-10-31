@@ -82,6 +82,29 @@ const RequestPending = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
   const columns = [
     {
       title: "Request ID",
@@ -105,7 +128,7 @@ const RequestPending = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (value) => (value != null ? `$${value.toFixed(2)}` : "N/A"),
+      render: (value) => formatCurrency(value),
     },
     {
       title: "Status",
@@ -131,6 +154,7 @@ const RequestPending = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
     },
     {
       title: "Actions",
