@@ -105,29 +105,20 @@ public partial class Swp391eventFlowerExchangePlatformContext : IdentityDbContex
 
         modelBuilder.Entity<Follow>(entity =>
         {
-            entity.HasKey(e => e.FollowId).HasName("PK_Follow");
+            entity.HasKey(e => e.FollowId).HasName("PK__Follow__15A691443703BF66");
 
             entity.ToTable("Follow");
 
-            entity.HasIndex(e => new { e.FollowerId, e.SellerId }).IsUnique();
+            entity.HasIndex(e => new { e.FollowerId, e.SellerId }, "IX_Follow_Unique").IsUnique();
 
             entity.Property(e => e.FollowId).HasColumnName("follow_id");
             entity.Property(e => e.FollowerId).HasColumnName("follower_id");
             entity.Property(e => e.SellerId).HasColumnName("seller_id");
 
-            // Thiết lập quan hệ với Account cho Buyer
-            entity.HasOne(d => d.Buyer)
-                .WithMany(p => p.FollowsAsBuyer) // Đặt thuộc tính điều hướng trong Account cho Buyer
-                .HasForeignKey(d => d.FollowerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Follow_buyer_id");
-
-            // Thiết lập quan hệ với Account cho Seller
-            entity.HasOne(d => d.Seller)
-                .WithMany(p => p.FollowsAsSeller) // Đặt thuộc tính điều hướng trong Account cho Seller
+            entity.HasOne(d => d.Seller).WithMany(p => p.Follows)
                 .HasForeignKey(d => d.SellerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Follow_seller_id");
+                .HasConstraintName("FK__Follow__seller_i__395884C4");
         });
 
         modelBuilder.Entity<Cart>(entity =>

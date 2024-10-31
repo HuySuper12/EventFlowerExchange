@@ -21,7 +21,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("ViewFollowerByUserEmail/{email}")]
+        [HttpGet("ViewFollowerByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewFollowerByUserEmail(string email)
         {
@@ -70,7 +70,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpDelete("RemoveFollower/{followerEmail}/{sellerEmail}")]
+        [HttpDelete("RemoveFollower")]
         //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> RemoveAccount(string followerEmail, string sellerEmail)// ĐÃ SỬA
         {
@@ -95,7 +95,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpGet("GetCountFollowByUserEmail/{email}")]
+        [HttpGet("GetCountFollowByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> GetCountFollowByUserEmail(string email)
         {
@@ -113,6 +113,30 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
 
             return Ok("Not found!");
+        }
+
+        [HttpGet("CheckFollowByUserEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CheckFollowByUserEmail(string followerEmail, string sellerEmail)
+        {
+            Account acc = new Account();
+            acc.Email = followerEmail;
+            var check1 = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            Account acc2 = new Account();
+            acc2.Email = sellerEmail;
+            var check2 = await _accountService.GetUserByEmailFromAPIAsync(acc2);
+
+            if (check1 != null && check2 != null)
+            {
+                var result = await _service.CheckFollowByUserEmailFromApiAsync(check1, check2);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

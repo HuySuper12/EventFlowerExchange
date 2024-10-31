@@ -146,6 +146,16 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             return Ok(await _service.GetExpiredProductListBySellerEmailFromAPIAsync(acc));
         }
+    
+        [HttpGet("GetProductList/Deal/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> GetDealProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            var list = await _service.GetEnableProductListFromAPIAsync();
+            var filter = list.Where(p => p.SellerId.Contains(acc.Id) && p.Price == 0).ToList();
+            return Ok(filter);
+        }
 
         [HttpGet("SearchProduct/{id:int}")]
         public async Task<IActionResult> SearchProductByID(int id)

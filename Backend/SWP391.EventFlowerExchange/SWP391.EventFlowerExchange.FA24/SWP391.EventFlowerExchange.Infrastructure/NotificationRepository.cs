@@ -21,6 +21,20 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _context = context;
         }
 
+        public async Task<int> CountNotificationsByEmailAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            int count = await _context.Notifications.Where(x => x.UserId == account.Id).CountAsync();
+            return count;
+        }
+
+        public async Task<int> CountShopNotificationByEmailAsync(Account account)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            int count = await _context.ShopNotifications.Where(x => x.FollowerId == account.Id).CountAsync();
+            return count;
+        }
+
         public async Task<IdentityResult> CreateNotificationAsync(CreateNotification notification)
         {
             _context = new Swp391eventFlowerExchangePlatformContext();

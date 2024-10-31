@@ -74,11 +74,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.ViewTransactionByCodeFromAPIAsync(new Transaction() { TransactionCode = code }));
         }
 
-        [HttpGet("ViewAllTransactionByUserIdAndOrderId/{userId}/{orderId}")]
+        [HttpGet("ViewAllTransactionByUserIdAndOrderId/{orderId}")]
         //[Authorize]
-        public async Task<IActionResult> ViewAllTransactionByUserIdAndOrderIdAsync(string userId, int orderId)
+        public async Task<IActionResult> ViewAllTransactionByUserIdAndOrderIdAsync(int orderId)
         {
-            return Ok(await _service.ViewAllTransactionByUserIdAndOrderIdFromAPIAsync(new Account() { Id = userId }, new Order() { OrderId = orderId }));
+            return Ok(await _service.ViewAllTransactionByOrderIdFromAPIAsync(new Order() { OrderId = orderId }));
         }
 
         [HttpPost("CreateTransaction")]

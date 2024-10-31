@@ -5,6 +5,7 @@ using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
 using SWP391.EventFlowerExchange.Infrastructure;
+using System.Collections.Generic;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -122,27 +123,99 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Not found!!!");
         }
 
-        [HttpPost("CheckProductHasSameSeller")]
-        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> CheckProductHasSameSellerAsync(List<int> productIdList)
+        [HttpGet("SearchOrderByOrderId")]
+        //[Authorize]
+        public async Task<IActionResult> SearchOrderByOrderId(int orderId)
         {
-            return await _service.CheckProductHasSameSellerFromAPIAsync(productIdList);
+            await UpdateOrderStatusAutomaticAsync();
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if(order != null)
+            {
+                return Ok(order);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpPost("DivideProductHasSameSeller")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
+        public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
+        {
+            return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
         }
 
         [HttpPost("CheckOutOrder")]
         //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
-        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore)
+        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
         {
-            var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
-            var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, checkOutBefore.ListProduct, voucher);
-            if (voucher != null)
+            var list = new List<CheckOutBefore>();
+            string[] s = value.Split(',');
+
+            CheckOutAfter checkOutAfter = new CheckOutAfter()
             {
-                if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                SubTotal = 0,
+                Discount = 0,
+                Ship = 0,
+                Total = 0
+            };
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                var listProduct = new List<int>();
+                string[] productIdList = s[i].Split('-');
+                for (int j = 0; j < productIdList.Length; j++)
                 {
-                    return BadRequest("Voucher is invalid.");
+                    listProduct.Add(int.Parse(productIdList[j]));
                 }
+
+                var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
+                var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, listProduct, voucher);
+                if (voucher != null)
+                {
+                    if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                    {
+                        return BadRequest("Voucher is invalid.");
+                    }
+                }
+
+                checkOutAfter.SubTotal += result.SubTotal;
+                checkOutAfter.Ship += result.Ship;
+                checkOutAfter.Discount += result.Discount;
+                checkOutAfter.Total += result.Total;
+
             }
-            return Ok(result);
+            return Ok(checkOutAfter);
+        }
+
+        [HttpPost("CreateListOrder")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateListOrderAsync(string value, DeliveryInformation deliveryInformation)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
+            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
+
+            if (account != null)
+            {
+                var list = new List<int>();
+                string[] s = value.Split(',');  //Phan don hang can tao
+
+                for (int i = 0; i < s.Length; i++)
+                {
+                    var listProduct = new List<int>();
+                    string[] productIdList = s[i].Split('-');
+                    for (int j = 0; j < productIdList.Length; j++)
+                    {
+                        listProduct.Add(int.Parse(productIdList[j]));
+                    }
+
+                    deliveryInformation.Product = listProduct;
+
+                    await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
+
+                }
+                return true;
+
+            }
+            return false;
         }
 
         [HttpPost("CreateOrder")]
@@ -189,15 +262,60 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        [HttpPut("UpdateOrderStatusCreatedBySeller/{orderId}")]
+        [HttpPut("UpdateOrderStatusCreatedBySeller")]
         //[Authorize(Roles =ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId)
+        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId, string status)
         {
             //Cap nhat trang thai status
             var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
             if (order != null)
             {
-                return await _service.UpdateOrderPendingStatusFromAPIAsync(order);
+                return await _service.UpdateOrderStatusByUserFromAPIAsync(order, status);
+            }
+            return false;
+        }
+
+        [HttpPut("CancelOrderByBuyer")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CancelOrderByBuyerAsync(int orderId, string reason)
+        {
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                if (order.Status == "Pending")
+                {
+                    order.Status = "Fail";
+                    order.IssueReport = reason;
+                    await _service.UpdateOrderStatusFromAPIAsync(order);
+
+                    var orderItem = await _service.ViewOrderDetailFromAPIAsync(order);
+                    for (int i = 0; i < orderItem.Count; i++)
+                    {
+                        var product = await _productService.SearchProductByIdFromAPIAsync(orderItem[i]);
+                        product.Status = "Enable";
+                        await _productService.UpdateProductFromAPIAsync(product);
+                    }
+
+                    var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                    CreateNotification notiBuyer = new CreateNotification()
+                    {
+                        UserEmail = accountBuyer.Email,
+                        Content = "Your order has been cancel successfully"
+                    };
+                    await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                    var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                    CreateNotification notiSeller = new CreateNotification()
+                    {
+                        UserEmail = accountSeller.Email,
+                        Content = "Your product has been canceled because " + reason.ToLower()
+                    };
+                    await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+
+                    await SendOrderPriceToBuyer(order);
+                    return true;
+                }
+                return false;
             }
             return false;
         }
@@ -210,8 +328,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)deliveryList[i].OrderId });
                 if (DateTime.Now > order.UpdateAt && order.UpdateAt != null)
                 {
-                    var transaction = await _transactionService.ViewAllTransactionByUserIdAndOrderIdFromAPIAsync(new Account() { Id = order.SellerId }, new Order() { OrderId = order.OrderId });
-                    if(transaction == null)
+                    var transaction = await _transactionService.ViewAllTransactionByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });
+                    if (transaction.Count == 1)
                     {
                         await SendOrderPriceToSeller(order);
 
@@ -293,7 +411,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             CreateNotification notificationSeller = new CreateNotification()
             {
                 UserEmail = accountSeller.Email,
-                Content = "Order payment system for sellers",
+                Content = $"Order payment system for {accountSeller.Name}",
             };
             await _notificationService.CreateNotificationFromApiAsync(notificationSeller);
         }
@@ -306,14 +424,21 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 productList.Add(item.ProductId);
             }
-            var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
 
-            //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
             decimal? originPrice = 0;
-            if (check)
-                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+            if (order.DeliveryPersonId != null)
+            {
+                var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
+                //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
+                if (check)
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+                else
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+            }
             else
-                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+            {
+                originPrice = order.TotalPrice;
+            }
 
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
             account.Balance += (decimal)originPrice;
@@ -354,7 +479,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             CreateNotification notificationBuyer = new CreateNotification()
             {
                 UserEmail = accountBuyer.Email,
-                Content = "Order payment system for Buyer",
+                Content = $"Order payment system for {accountBuyer.Name}",
             };
             await _notificationService.CreateNotificationFromApiAsync(notificationBuyer);
         }

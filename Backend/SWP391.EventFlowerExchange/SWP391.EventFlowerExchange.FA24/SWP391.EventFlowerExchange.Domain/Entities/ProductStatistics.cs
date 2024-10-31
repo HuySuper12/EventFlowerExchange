@@ -15,5 +15,7 @@ namespace SWP391.EventFlowerExchange.Domain.Entities
         public int EnableProducts { get; set; }
 
         public int SoldOut { get; set; }
+
+        public int AllProduct { get; set; }
     }
 }

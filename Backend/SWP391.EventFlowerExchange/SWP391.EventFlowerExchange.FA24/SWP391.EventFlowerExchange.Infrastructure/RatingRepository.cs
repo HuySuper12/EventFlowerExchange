@@ -59,5 +59,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             return null;
         }
+
+        public async Task<Review> ViewRatingByOrderIdAsync(Order order)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            return await _context.Reviews.FirstOrDefaultAsync(x => x.OrderId == order.OrderId);
+        }
     }
 }

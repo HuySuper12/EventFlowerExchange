@@ -40,7 +40,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 Status = "enable"
             };*/
 
-            var fo = new Follow
+            var fo = new Follow()
             {
                 FollowerId = follower.FollowerEmail,        // FollowerEmail chứa giá trị id
                 SellerId = follower.SellerEmail             // SellerEmail chứa giá trị id
@@ -108,6 +108,19 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var count = await _context.Follows
                 .Where(x => x.SellerId == account.Id).CountAsync();
             return count;
+        }
+
+        public async Task<IdentityResult> CheckFollowByUserEmailAsync(Account follower, Account seller)
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var follow = await _context.Follows
+                .FirstOrDefaultAsync(x => x.FollowerId == follower.Id && x.SellerId == seller.Id);
+
+            if (follow != null)
+                return IdentityResult.Success;
+            else
+                return IdentityResult.Failed();
         }
     }
 }

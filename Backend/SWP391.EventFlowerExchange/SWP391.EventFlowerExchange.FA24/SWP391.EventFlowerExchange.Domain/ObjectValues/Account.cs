@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391.EventFlowerExchange.Domain.ObjectValues;
 
@@ -51,17 +52,12 @@ public class Account : IdentityUser
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
+    [NotMapped]
     public virtual ICollection<ShopNotification> ShopNotificationFollowers { get; set; } = new List<ShopNotification>();
 
     public virtual ICollection<ShopNotification> ShopNotificationSellers { get; set; } = new List<ShopNotification>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     public virtual ICollection<Payment> Payment { get; set; } = new List<Payment>();
-
-    // Thuộc tính điều hướng cho người mua
-    public virtual ICollection<Follow> FollowsAsBuyer { get; set; }
-
-    // Thuộc tính điều hướng cho người bán
-    public virtual ICollection<Follow> FollowsAsSeller { get; set; }
 
 }

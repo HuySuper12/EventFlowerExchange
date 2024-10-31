@@ -51,17 +51,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public async Task<bool> UpdateRequestAsync(Request value)
         {
-            //Request request = new Request()
-            //{
-            //    Amount = value.Amount,
-            //    PaymentId = value.PaymentId,
-            //    ProductId = value.ProductId,
-            //    UserId = value.UserId,
-            //    RequestType = value.RequestType,
-            //    Status = value.Status,
-            //    CreatedAt = value.CreatedAt,
-            //    UpdatedAt = value.UpdatedAt,
-            //};
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Requests.Update(value);
             await _context.SaveChangesAsync();
