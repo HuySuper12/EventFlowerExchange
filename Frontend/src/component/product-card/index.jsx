@@ -152,10 +152,10 @@ function ProductCard({ products }) {
                   Post date: {formatDate(product.createdAt)}
                 </div>
                 <div className="flex justify-center mt-4">
-                  {role !== "Seller" &&
+                  {role !== "Seller" && product.price !== 0 &&
                     !cartData.some(
                       (item) => item.productId === product.productId
-                    ) && (
+                    ) &&  (
                       <button
                         className="bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-orange-400 hover:text-white rounded-[70px] product-card-button"
                         onClick={(event) =>

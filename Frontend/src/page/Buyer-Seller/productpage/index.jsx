@@ -22,13 +22,15 @@ const ProductPage = () => {
   const [ordersAndRating, setOrdersAndRating] = useState([]);
   const [rating, setRating] = useState([]);
   const [buyerRating, setBuyerRating] = useState([]);
+  const [cartData, setCartData] = useState([]);
+  const email = sessionStorage.getItem("email");
   // Function to fetch product details from API
   const fetchProductDetails = async () => {
     try {
       const response = await api.get(`Product/SearchProduct/${id}`);
       setProductDetails(response.data);
       setMainImage(response.data.productImage[0] || "");
-      console.log(response.data);
+      console.log("product", response.data);
 
       // Fetch seller details using sellerId
       const sellerResponse = await api.get(
@@ -84,6 +86,12 @@ const ProductPage = () => {
     }
 
     console.log("Adding product with ID:", id);
+
+    setCartData((prevCartData) => [
+      ...prevCartData,
+      { productId }, // Assuming productId is enough to identify the product
+    ]);
+
     try {
       const response = await api.post("Cart/CreateCartItem", {
         productId: id,
@@ -100,6 +108,10 @@ const ProductPage = () => {
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Add product failed");
+
+      setCartData((prevCartData) =>
+        prevCartData.filter((item) => item.productId !== productId)
+      );
     }
   };
 
@@ -268,6 +280,25 @@ const ProductPage = () => {
     navigate(`/chat/${seller.id}`); // Navigate to the chat page with the seller's ID
   };
 
+  useEffect(() => {
+    const fetchCartData = async () => {
+      if (email) {
+        try {
+          const response = await api.get(`Cart/ViewCartByUserEmail`, {
+            params: { email: email },
+          });
+          setCartData(response.data);
+        } catch (error) {
+          console.error("Error fetching cart data:", error);
+        }
+      } else {
+        console.error("Email is not set in sessionStorage.");
+      }
+    };
+
+    fetchCartData();
+  }, [email]);
+
   return (
     <>
       <Header />
@@ -357,16 +388,21 @@ const ProductPage = () => {
             </div>
 
             {/* Chỉ hiển thị nút "Add to Cart" nếu người dùng không phải là seller */}
-            {userRole !== "Seller" && (
-              <div className="flex items-center gap-4 mb-6">
-                <button
-                  className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition ml-[200px] mt-[20px]"
-                  onClick={handleAddToCart}
-                >
-                  Add to Cart
-                </button>
-              </div>
-            )}
+            {userRole !== "Seller" &&
+              !cartData.some(
+                (item) => item.productId === productDetails.productId
+              ) && (
+                <div className="flex items-center gap-4 mb-6">
+                  <button
+                    className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition ml-[200px] mt-[20px]"
+                    onClick={(event) =>
+                      handleAddToCart(event, productDetails.productId)
+                    }
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>

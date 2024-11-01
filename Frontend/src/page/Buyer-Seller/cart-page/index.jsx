@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../component/header";
 import api from "../../../config/axios";
 import Footer from "../../../component/footer";
@@ -26,6 +26,7 @@ const Cart = () => {
           params: { email: userEmail },
         });
         setCartData(response.data);
+        console.log("cart", response.data);
       } catch (error) {
         console.error("Error fetching cart data:", error);
       }
@@ -97,6 +98,9 @@ const Cart = () => {
 
   //Tách số
   const formatCurrency = (amount) => {
+    if (amount === 0) {
+      return "For Deal";
+    }
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"; // Định dạng số
   };
 
@@ -108,6 +112,72 @@ const Cart = () => {
     localStorage.removeItem("listProduct");
     setListProduct([]);
   }, []);
+
+  const fetchSellerId = async (productId) => {
+    try {
+      const response = await api.get(`Product/SearchProduct`, {
+        params: { id: productId },
+      });
+      return response.data.sellerId;
+    } catch (error) {
+      console.error("Error fetching sellerId:", error);
+      return null;
+    }
+  };
+
+  const fetchSellerName = async (sellerId) => {
+    try {
+      const response = await api.get(`Account/GetAccountById/${sellerId}`);
+      return response.data.name; // Giả sử API trả về một đối tượng có thuộc tính 'name'
+    } catch (error) {
+      console.error("Error fetching seller name:", error);
+      return "Unknown Seller";
+    }
+  };
+
+  const groupProductsBySeller = async () => {
+    const groupedProducts = {};
+
+    for (const item of cartData) {
+      const sellerId = await fetchSellerId(item.productId);
+      if (sellerId) {
+        const sellerName = await fetchSellerName(sellerId);
+        if (!groupedProducts[sellerId]) {
+          groupedProducts[sellerId] = { name: sellerName, products: [] };
+        }
+        groupedProducts[sellerId].products.push(item);
+      }
+    }
+
+    return groupedProducts;
+  };
+
+  const [groupedProducts, setGroupedProducts] = useState({});
+
+  useEffect(() => {
+    const organizeCart = async () => {
+      const grouped = await groupProductsBySeller();
+      setGroupedProducts(grouped);
+    };
+
+    organizeCart();
+  }, [cartData]);
+
+  const handleSelectAllBySeller = (sellerId, isChecked) => {
+    const sellerProducts = groupedProducts[sellerId].products.map(
+      (item) => item.productId
+    );
+    let updatedList;
+
+    if (isChecked) {
+      updatedList = [...new Set([...listProduct, ...sellerProducts])];
+    } else {
+      updatedList = listProduct.filter((id) => !sellerProducts.includes(id));
+    }
+
+    setListProduct(updatedList);
+    localStorage.setItem("listProduct", JSON.stringify(updatedList));
+  };
 
   return (
     <div>
@@ -125,7 +195,7 @@ const Cart = () => {
           <div className="mx-auto max-w-screen-xl px-4 2xl:px-0 ml-[500px]">
             {/* Status */}
             <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-800 dark:text-gray-400 sm:text-base">
-              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
                 <span className="flex items-center after:mx-2 text-gray-800">
                   <img
                     src="https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg"
@@ -135,7 +205,8 @@ const Cart = () => {
                   Cart
                 </span>
               </li>
-              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+                {" "}
                 <span className="flex items-center after:mx-2 text-gray-800">
                   <img
                     src="https://thumbs.dreamstime.com/b/check-icon-vector-mark-perfect-black-pictogram-illustration-white-background-148914823.jpg"
@@ -183,58 +254,94 @@ const Cart = () => {
                 </thead>
 
                 <tbody className="whitespace-nowrap divide-y">
+                <div className="mt-[30px] mb-[30px]">
                   {cartData.length > 0 ? (
-                    cartData.map((item, index) => (
-                      <tr key={index}>
-                        <td className="px-2 py-4">
-                          <input
-                            type="checkbox"
-                            className="w-5 h-5"
-                            aria-label={`Select ${item.productName}`}
-                            checked={listProduct.includes(item.productId)}
-                            onChange={() =>
-                              handleCheckboxChange(item.productId)
-                            }
-                          />
-                        </td>
-                        <td className="px-2 py-4">
-                          <div className="flex items-center gap-4 w-max">
-                            <div className="h-32 shrink-0">
-                              <img
-                                src={item.productImage}
-                                className="w-[200px] h-[120px] object-cover rounded-lg"
-                                alt="Product Image"
-                              />
-                            </div>
-                            <div>
-                              <p className="text-base font-bold text-gray-800">
-                                {item.productName}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-2 py-4">{item.comboType}</td>
-                        <td className="px-2 py-4">{item.quantity}</td>
-                        <td className="px-2 py-4">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem(item.productId)}
-                            className="bg-transparent border flex justify-center items-center w-11 h-10 rounded-lg"
-                          >
-                            <img
-                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST1mtZCRWh6vOvjwovfizM2BvKFMTiCDawFw&s"
-                              className="w-[20px]"
-                              alt="Remove Icon"
-                            />
-                          </button>
-                        </td>
-                        <td className="px-2 py-4">
-                          <h4 className="text-base font-bold text-gray-800">
-                            ${item.price}
-                          </h4>
-                        </td>
-                      </tr>
-                    ))
+                    Object.entries(groupedProducts).map(
+                      ([sellerId, { name, products }]) => (
+                        <>
+                          
+                            <tr className="mt-[20px]" key={sellerId}>
+                              <td
+                                colSpan="6"
+                                className="text-left font-bold text-gray-800"
+                              >
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 w-[30px] h-[20px]"
+                                  onChange={(e) =>
+                                    handleSelectAllBySeller(
+                                      sellerId,
+                                      e.target.checked
+                                    )
+                                  }
+                                  checked={products.every((item) =>
+                                    listProduct.includes(item.productId)
+                                  )}
+                                />
+                                Seller: {name}
+                              </td>
+                            </tr>
+                         
+
+                          {products.map((item, index) => (
+                            <tr key={index} className="table-row">
+                              <td className="px-2 py-4">
+                                <input
+                                  type="checkbox"
+                                  className="w-5 h-5"
+                                  aria-label={`Select ${item.productName}`}
+                                  checked={listProduct.includes(item.productId)}
+                                  onChange={() =>
+                                    handleCheckboxChange(item.productId)
+                                  }
+                                />
+                              </td>
+                              <td className="px-2 py-4">
+                                <div className="flex items-center gap-4 w-max">
+                                  <div className="h-32 shrink-0">
+                                    <img
+                                      src={item.productImage}
+                                      className="w-[200px] h-[120px] object-cover rounded-lg"
+                                      alt="Product Image"
+                                    />
+                                  </div>
+                                  <div>
+                                    <p className="text-base font-bold text-gray-800">
+                                      {item.productName}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-2 py-4">{item.comboType}</td>
+                              <td className="px-2 py-4">{item.quantity}</td>
+                              <td className="px-2 py-4">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleRemoveItem(item.productId)
+                                  }
+                                  className="bg-transparent border flex justify-center items-center w-11 h-10 rounded-lg"
+                                >
+                                  <img
+                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST1mtZCRWh6vOvjwovfizM2BvKFMTiCDawFw&s"
+                                    className="w-[20px]"
+                                    alt="Remove Icon"
+                                  />
+                                </button>
+                              </td>
+                              <td className="px-2 py-4">
+                                <h4 className="text-base font-bold text-gray-800">
+                                  {formatCurrency(item.price)}
+                                </h4>
+                              </td>
+                            </tr>
+                             
+                          ))}
+                          
+                        </>
+                        
+                      )
+                    )
                   ) : (
                     <tr>
                       <td

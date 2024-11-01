@@ -31,7 +31,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const response = await api.get("Order/ViewAllOrder");
-        setOrders(response.data.reverse());
+        setOrders(response.data);
         // Set assigned shippers based on orders
         const assigned = response.data
           .filter((order) => order.status === "Take Over")
@@ -107,6 +107,9 @@ const Orders = () => {
           <Button onClick={() => showOrderDetails(record)}>View Details</Button>
           {record.status === "Pending" && (
             <Button onClick={() => handleCheck(record)}>Check</Button>
+          )}
+          {record.status === "Pending" && (
+            <Button danger onClick={() => showOrderDetails(record)}>Reject</Button>
           )}
         </Space>
       ),
