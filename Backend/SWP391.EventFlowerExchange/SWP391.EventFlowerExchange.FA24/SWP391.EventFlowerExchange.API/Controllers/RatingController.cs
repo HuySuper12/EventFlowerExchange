@@ -43,42 +43,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
-        [HttpGet("ViewRatingByProductId")]
-        public async Task<IActionResult> ViewRatingByProductId(int productId)
-        {
-            var order = await _orderService.SearchOrderItemByProductIdFromAPIAsync(new GetProduct() { ProductId = productId });
-
-            if (order != null)
-            {
-                var check = await _service.ViewRatingByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });     // ĐÃ SỬA 
-                if (check != null)
-                {
-                    return Ok(check);
-
-                }
-            }
-            return Ok("Not found!");
-        }
-
-        [HttpPost("PostRating")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
-        public async Task<ActionResult<bool>> PostRating(CreateRating rate)  //KÊU QUÝ MINH TRUYỀN EMAIL VÀO BUYER ID. ĐỂ KHỎI PHẢI SỬA TÊN CreateRating Ở TRONG REPOSITORY
+        [HttpGet("CheckRatingByUserEmail")]
+        //[Authorize]
+        public async Task<bool> CheckRatingByUserEmail(string email)
         {
             Account acc = new Account();
-            acc.Email = rate.BuyerEmail;
-            var deleteAccount = await _accountService.GetUserByEmailFromAPIAsync(acc);
+            acc.Email = email;
 
-            if (deleteAccount != null)
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc);     // ĐÃ SỬA 
+            if (check != null)
             {
-                var result = await _service.PostRatingFromApiAsync(rate);
-                if (result.Succeeded)
+                var result = await _service.ViewAllRatingByUserIdFromApiAsync(check);
+                if (result != null)
                 {
                     return true;
                 }
-                return false;
             }
 
             return false;
         }
+
     }
 }
