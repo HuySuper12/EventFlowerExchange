@@ -98,9 +98,6 @@ const Cart = () => {
 
   //Tách số
   const formatCurrency = (amount) => {
-    if (amount === 0) {
-      return "For Deal";
-    }
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"; // Định dạng số
   };
 
@@ -254,13 +251,12 @@ const Cart = () => {
                 </thead>
 
                 <tbody className="whitespace-nowrap divide-y">
-                <div className="mt-[30px] mb-[30px]">
                   {cartData.length > 0 ? (
                     Object.entries(groupedProducts).map(
                       ([sellerId, { name, products }]) => (
                         <>
-                          
-                            <tr className="mt-[20px]" key={sellerId}>
+                          <tr className="" key={sellerId}>
+                            <div className="mt-[30px] mb-[10px]">
                               <td
                                 colSpan="6"
                                 className="text-left font-bold text-gray-800"
@@ -278,10 +274,10 @@ const Cart = () => {
                                     listProduct.includes(item.productId)
                                   )}
                                 />
-                                Seller: {name}
+                                {name}
                               </td>
-                            </tr>
-                         
+                            </div>
+                          </tr>
 
                           {products.map((item, index) => (
                             <tr key={index} className="table-row">
@@ -335,11 +331,8 @@ const Cart = () => {
                                 </h4>
                               </td>
                             </tr>
-                             
                           ))}
-                          
                         </>
-                        
                       )
                     )
                   ) : (

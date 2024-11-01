@@ -21,6 +21,9 @@ const Posts = () => {
   const [loading, setLoading] = useState(true);
   const [productDetails, setProductDetails] = useState(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
+  const [rejectVisible, setRejectVisible] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
   const pageSize = 8;
 
   const fetchPosts = async () => {
@@ -40,7 +43,12 @@ const Posts = () => {
   const fetchProductDetails = async (productId) => {
     setLoading(true);
     try {
-      const response = await api.get(`Product/SearchProduct/${productId}`);
+      const response = await api.get(`Product/SearchProduct`, {
+        params: {
+          id: productId,
+        },
+      });
+      console.log("Product details:", response.data);
       setProductDetails(response.data);
       setDetailsVisible(true);
     } catch (error) {
@@ -98,7 +106,7 @@ const Posts = () => {
     }
   };
 
-  const handleReject = async (post) => {
+  const handleReject = async (post, reason) => {
     setLoading(true);
     try {
       const response = await api.put("Request/UpdateRequest", {
@@ -106,7 +114,7 @@ const Posts = () => {
         requestType: "Post",
         productId: post.productId,
         status: "Rejected",
-        reason: "",
+        reason: reason,
       });
 
       if (response.data === true) {
@@ -125,6 +133,24 @@ const Posts = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const showRejectModal = (post) => {
+    setSelectedPost(post);
+    setRejectVisible(true);
+  };
+
+  const handleRejectOk = () => {
+    if (selectedPost) {
+      handleReject(selectedPost, rejectReason);
+    }
+    setRejectVisible(false);
+    setRejectReason("");
+  };
+
+  const handleRejectCancel = () => {
+    setRejectVisible(false);
+    setRejectReason("");
   };
 
   const renderList = () => {
@@ -192,7 +218,7 @@ const Posts = () => {
                         >
                           Accept
                         </Button>
-                        <Button danger onClick={() => handleReject(record)}>
+                        <Button danger onClick={() => showRejectModal(record)}>
                           Reject
                         </Button>
                       </>
@@ -238,8 +264,6 @@ const Posts = () => {
     };
     return date.toLocaleDateString("en-US", options);
   };
-
-  
 
   return (
     <div>
@@ -361,24 +385,40 @@ const Posts = () => {
                 flexWrap: "wrap",
               }}
             >
-              {productDetails.productImage.map((url, index) => (
-                <Image
-                  key={index}
-                  src={url}
-                  alt="Product"
-                  style={{
-                    width: 150,
-                    height: 150,
-                    margin: 5,
-                    objectFit: "cover",
-                  }}
-                />
-              ))}
+              {Array.isArray(productDetails.productImage) ? (
+                productDetails.productImage.map((url, index) => (
+                  <Image
+                    key={index}
+                    src={url}
+                    alt="Product"
+                    style={{
+                      width: 150,
+                      height: 150,
+                      margin: 5,
+                      objectFit: "cover",
+                    }}
+                  />
+                ))
+              ) : (
+                <p>No images available</p>
+              )}
             </div>
           </Form>
         ) : (
           <p>No details available</p>
         )}
+      </Modal>
+      <Modal
+        title="Reject Reason"
+        visible={rejectVisible}
+        onOk={handleRejectOk}
+        onCancel={handleRejectCancel}
+      >
+        <Input.TextArea
+          value={rejectReason}
+          onChange={(e) => setRejectReason(e.target.value)}
+          placeholder="Enter reason for rejection"
+        />
       </Modal>
     </div>
   );
