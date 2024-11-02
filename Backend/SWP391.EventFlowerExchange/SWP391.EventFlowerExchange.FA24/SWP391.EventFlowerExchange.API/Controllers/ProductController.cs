@@ -34,8 +34,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         }
 
+        [HttpGet("GetProductList/Disable")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllDisableProductList()
+        {
+            return Ok(await _service.GetDisableProductListFromAPIAsync());
+        }
 
-        
+        [HttpGet("GetProductList/InProgress")]
+        //[Authorize(Roles = ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetAllInProgressProductList()
+        {
+            return Ok(await _service.GetInProgressProductListFromAPIAsync());
+        }
 
+        [HttpGet("GetProductList/Rejected")]
+        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetAllRejectedProductList()
+        {
+            return Ok(await _service.GetRejectedProductListFromAPIAsync());
+        }
     }
 }
