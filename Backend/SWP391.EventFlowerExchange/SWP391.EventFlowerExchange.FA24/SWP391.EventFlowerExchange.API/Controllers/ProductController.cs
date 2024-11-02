@@ -54,5 +54,27 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         {
             return Ok(await _service.GetRejectedProductListFromAPIAsync());
         }
+
+        [HttpGet("GetProductList/Latest")]
+        public async Task<IActionResult> GetLatestProductList()
+        {
+            var products = await _service.GetLatestProductsFromAPIAsync();
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            return Ok(products);
+        }
+
+        [HttpGet("GetProductList/Oldest")]
+        public async Task<IActionResult> GetOldestProductList()
+        {
+            var products = await _service.GetOldestProductsFromAPIAsync();
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            return Ok(products);
+        }
     }
 }
