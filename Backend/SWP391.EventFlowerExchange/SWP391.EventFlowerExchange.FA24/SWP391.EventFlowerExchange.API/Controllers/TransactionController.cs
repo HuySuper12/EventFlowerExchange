@@ -40,6 +40,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
+        [HttpGet("ViewAllTransaction")]
+        //[Authorize(Roles = ApplicationRoles.Manager)]
+        public async Task<IActionResult> ViewAllTransactionAsync()
+        {
+            return Ok(await _service.ViewAllTransactionFromAPIAsync());
+        }
+
+        [HttpGet("ViewAllTransactionByEmail")]
+        //[Authorize]
+        public async Task<IActionResult> ViewAllTransactionByUserIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            if (account != null)
+            {
+                return Ok(await _service.ViewAllTransactionByUserIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found");
+        }
+
 
     }
 }
