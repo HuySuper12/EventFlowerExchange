@@ -71,5 +71,43 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return NotFound();
         }
+
+        [HttpPost("CreateVoucher")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> CreateVoucherAsync(CreateVoucher voucher)
+        {
+            var voucherResult = await _service.SearchVoucherByCodeFromAPIAsync(voucher.Code);
+            if (voucherResult == null)
+            {
+                return await _service.CreateVoucherFromAPIAsync(voucher);
+            }
+            return false;
+        }
+
+        [HttpPut("UpdateVoucher")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> UpdateVoucherAsync(Voucher voucher)
+        {
+            var searchVoucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = voucher.VoucherId });
+            if (searchVoucher != null)
+            {
+                await _service.UpdateVoucherFromAPIAsync(voucher);
+                return true;
+            }
+            return false;
+        }
+
+        [HttpDelete("RemoveVoucher/{id}")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> RemoveVoucherAsync(string id)
+        {
+            var voucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = int.Parse(id) });
+            if (voucher != null)
+            {
+                await _service.DeleteVoucherFromAPIAsync(voucher);
+                return true;
+            }
+            return false;
+        }
     }
 }
