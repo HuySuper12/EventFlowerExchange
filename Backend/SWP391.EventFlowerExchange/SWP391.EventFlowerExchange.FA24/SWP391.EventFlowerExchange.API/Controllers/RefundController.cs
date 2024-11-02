@@ -51,7 +51,73 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-        
+        [HttpPost("CreateDeliveryLogForRefund")]
+        //[Authorize(Roles = ApplicationRoles.Staff)]
+        public async Task<ActionResult<bool>> CreateDeliveryLogForRefund(CreateDeliveryLog createDeliveryLog)
+        {
+            var deliveryLogResult = await deliveryLogService.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
+
+            if (deliveryLogResult != null)
+            {
+                var account = await accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createDeliveryLog.DeliveryPersonEmail });
+                DeliveryLog deliveryLog = new DeliveryLog()
+                {
+                    OrderId = createDeliveryLog.OrderId,
+                    DeliveryPersonId = account.Id,
+                    CreatedAt = DateTime.Now
+                };
+                await deliveryLogService.CreateDeliveryLogFromAsync(deliveryLog);
+
+                //Gan shipper vao don hang, thay doi trang thai don hang thanh giao hang
+                var order = await orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
+                order.Status = "Refund";
+                order.DeliveryPersonId = account.Id;
+                order.UpdateAt = DateTime.Now;
+                await orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                var accountSeller = await accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+
+                //Gui thong bao don hang dang giao
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = accountSeller.Email,
+                    Content = "Shipper is coming to pick up your refund order"
+                };
+                await noti.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
+
+        [HttpPut("UpdateDeliveryLogRefundDeliveringStatus")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogRefundDeliveringStatus(int orderId)
+        {
+            var deliveryLog = await deliveryLogService.ViewDeliveryLogDeliveringByOrderIdFromAsync(new Order() { OrderId = orderId });
+            var order = await orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            var accountSeller = await accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+
+            if (deliveryLog.Status == null)
+            {
+                deliveryLog.Status = "Delivering";
+                deliveryLog.TakeOverAt = DateTime.Now;
+                await deliveryLogService.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+                order.Status = "Delivering";
+                await orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = accountSeller.Email,
+                    Content = "Your refund order is on its way"
+                };
+                await noti.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
 
     }
 }
