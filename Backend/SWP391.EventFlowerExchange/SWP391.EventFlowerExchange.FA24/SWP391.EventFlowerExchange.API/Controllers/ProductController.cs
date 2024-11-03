@@ -76,5 +76,62 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return Ok(products);
         }
+
+        [HttpGet("GetProductList/EnableAndDisable")]
+        //[Authorize]
+        public async Task<IActionResult> GetEnableAndDisableProductList()
+        {
+            var disable = await _service.GetDisableProductListFromAPIAsync();
+            var enable = await _service.GetEnableProductListFromAPIAsync();
+            var combinedList = enable.Concat(disable).ToList();
+            return Ok(combinedList);
+
+        }
+
+        [HttpGet("GetProductList/Enable/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> GetEnableProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            //var list = await _service.GetEnableProductListFromAPIAsync();
+            //var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            var filter = await _service.GetEnableProductListBySellerEmailFromAPIAsync(acc);
+            return Ok(filter);
+        }
+
+
+        [HttpGet("GetProductList/Disable/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> GetDisableProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            //var list = await _service.GetDisableProductListFromAPIAsync();
+            //var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+
+            var filter = await _service.GetDisableProductListBySellerEmailFromAPIAsync(acc);
+            return Ok(filter);
+        }
+
+
+        [HttpGet("GetProductList/InProgress/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> GetInProgressProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            var list = await _service.GetInProgressProductListFromAPIAsync();
+            var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            return Ok(filter);
+        }
+
+
+        [HttpGet("GetProductList/Rejected/Seller")]
+        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        public async Task<IActionResult> GetRejectedProductListBySellerEmail(string email)
+        {
+            var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            var list = await _service.GetRejectedProductListFromAPIAsync();
+            var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
+            return Ok(filter);
+        }
     }
 }
