@@ -119,5 +119,67 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpPut("UpdateDeliveryLogRefundSuccessStatus")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogRefundSuccessStatus(int orderId, string url)
+        {
+            var deliveryLog = await deliveryLogService.ViewDeliveryLogDeliveringByOrderIdFromAsync(new Order() { OrderId = orderId });
+
+            if (deliveryLog == null)
+            {
+                return false;
+            }
+
+            deliveryLog.Status = "Delivery Success";
+            deliveryLog.PhotoUrl = url;
+            deliveryLog.DeliveryAt = DateTime.Now;
+            await deliveryLogService.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+            //Cap nhat thoi gian chuyen tien cho seller
+            var order = await orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+
+            if (order.UpdateAt != null)
+            {
+                order.Status = "Success";
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                await orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                var account = await accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "Your refund order has been delivered successfully."
+                };
+
+                await noti.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
+
+        [HttpPost("StaffApproveRefundRequest")]
+        //[Authorize(Roles = ApplicationRoles.Staff)]
+        public async Task<ActionResult<bool>> StaffApproveRefundRequest(string staffEmail, int orderId)
+        {
+            var getOrder = new Order { OrderId = orderId };
+            var order = await orderService.SearchOrderByOrderIdFromAPIAsync(getOrder);
+
+            var getStaff = new Account { Email = staffEmail };
+            var staff = await accountService.GetUserByEmailFromAPIAsync(getStaff);
+
+            if (staff != null && order != null)
+            {
+                var result = await refundService.UpdateRefundRequestStatusFromApiAsync(staff, order);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
     }
 }
