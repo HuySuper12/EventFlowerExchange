@@ -133,5 +133,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var filter = list.Where(p => p.SellerId.Contains(acc.Id)).ToList();
             return Ok(filter);
         }
+
+        [HttpPost("CreateProduct")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
+        {
+            var account = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = product.SellerEmail });
+            return await _service.CreateNewProductFromAPIAsync(product, account);
+
+        }
     }
 }
