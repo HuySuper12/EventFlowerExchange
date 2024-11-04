@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\OrderController.cs",
               "ToolTip": "D:\\git_main_SWP391\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\OrderController.cs",
               "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\OrderController.cs",
-              "ViewState": "AgIAADEAAAAAAAAAAAAWwDUAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAAEEAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-04T15:48:08.82Z",
               "EditorCaption": ""
@@ -87,8 +87,7 @@
               "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\TransactionController.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAIwEYAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-03T04:20:10.193Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-03T04:20:10.193Z"
             },
             {
               "$type": "Document",
@@ -100,8 +99,7 @@
               "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\ProductController.cs",
               "ViewState": "AgIAAHwAAAAAAAAAAAAowI8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-02T16:31:29.61Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-02T16:31:29.61Z"
             }
           ]
         }

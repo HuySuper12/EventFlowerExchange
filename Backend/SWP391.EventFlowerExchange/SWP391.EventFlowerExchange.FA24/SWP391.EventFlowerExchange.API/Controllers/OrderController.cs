@@ -53,6 +53,30 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
+        private async Task UpdateOrderStatusAutomaticAsync()
+        {
+            var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
+            for (int i = 0; i < deliveryList.Count; i++)
+            {
+                var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)deliveryList[i].OrderId });
+                if (DateTime.Now > order.UpdateAt && order.UpdateAt != null)
+                {
+                    var transaction = await _transactionService.ViewAllTransactionByOrderIdFromAPIAsync(new Order() { OrderId = order.OrderId });
+                    if (transaction.Count == 1)
+                    {
+                        await SendOrderPriceToSeller(order);
+
+                        if (order.Status == "Fail")
+                            await SendOrderPriceToBuyer(order);
+
+                        await _service.UpdateOrderStatusFromAPIAsync(order);
+                        break;
+                    }
+
+                }
+            }
+        }
+
         private async Task SendOrderPriceToSeller(Order order)
         {
             //Kiem tra phi ship
