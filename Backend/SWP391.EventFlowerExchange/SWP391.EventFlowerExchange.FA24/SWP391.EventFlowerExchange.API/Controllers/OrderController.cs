@@ -53,6 +53,144 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
-        
+        private async Task SendOrderPriceToSeller(Order order)
+        {
+            //Kiem tra phi ship
+            var searchOrderItemList = await _service.ViewOrderDetailFromAPIAsync(order);
+            List<int> productList = new List<int>();
+            foreach (var item in searchOrderItemList)
+            {
+                productList.Add(item.ProductId);
+            }
+            var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
+
+            //Lenh chuyen tien ve cho nguoi ban hang
+            decimal? originPrice;
+            if (check)
+                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+            else
+                originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+
+            //Lay gia goc khong tinh giam gia
+            if (order.VoucherId != null)
+            {
+                var voucher = await _voucherService.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = (int)order.VoucherId });
+                originPrice /= (1 - voucher.DiscountValue);
+            }
+
+            //Cap nhat lai tien tra cho nguoi ban
+            originPrice *= (decimal)0.9;
+
+            var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+            account.Balance += originPrice;
+            await _accountService.UpdateAccountFromAPIAsync(account);
+
+            //Tru tien he thong
+            var system = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = "ManagerEVESystem@gmail.com" });
+            system.Balance -= originPrice;
+            await _accountService.UpdateAccountFromAPIAsync(system);
+
+            var transactionCode = "EVE";
+            while (true)
+            {
+                transactionCode = "EVE" + new Random().Next(100000, 999999).ToString();
+                var result = await _transactionService.ViewTransactionByCodeFromAPIAsync(new Transaction() { TransactionCode = transactionCode });
+                if (result == null)
+                {
+                    break;
+                }
+
+            }
+
+            Transaction transaction = new Transaction()
+            {
+                TransactionCode = transactionCode,
+                Amount = originPrice,
+                CreatedAt = DateTime.Now,
+                OrderId = order.OrderId,
+                UserId = account.Id,
+                TransactionType = 1,
+                TransactionContent = $"Payment of orders {order.OrderId} to sellers",
+                Status = false
+            };
+            await _transactionService.CreateTransactionFromAPIAsync(transaction);
+
+            var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+
+            CreateNotification notificationSeller = new CreateNotification()
+            {
+                UserEmail = accountSeller.Email,
+                Content = $"Order payment system for {accountSeller.Name}",
+            };
+            await _notificationService.CreateNotificationFromApiAsync(notificationSeller);
+        }
+
+        private async Task SendOrderPriceToBuyer(Order order)
+        {
+            var searchOrderItemList = await _service.ViewOrderDetailFromAPIAsync(order);
+            List<int> productList = new List<int>();
+            foreach (var item in searchOrderItemList)
+            {
+                productList.Add(item.ProductId);
+            }
+
+            decimal? originPrice = 0;
+            if (order.DeliveryPersonId != null)
+            {
+                var check = await _service.CheckFeeShipEventOrBatchFromAPIAsync(productList);
+                //Lenh chuyen tien ve cho nguoi mua hang chi tru tien ship
+                if (check)
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderEvent(order.DeliveredAt);
+                else
+                    originPrice = order.TotalPrice - _service.CheckFeeShipForOrderBatch(order.DeliveredAt);
+            }
+            else
+            {
+                originPrice = order.TotalPrice;
+            }
+
+            var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+            account.Balance += (decimal)originPrice;
+            await _accountService.UpdateAccountFromAPIAsync(account);
+
+            //Tru tien he thong
+            var system = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = "ManagerEVESystem@gmail.com" });
+            system.Balance -= (decimal)originPrice;
+            await _accountService.UpdateAccountFromAPIAsync(system);
+
+            //Tao giao dich
+            var transactionCode = "EVE";
+            while (true)
+            {
+                transactionCode = "EVE" + new Random().Next(100000, 999999).ToString();
+                var result = await _transactionService.ViewTransactionByCodeFromAPIAsync(new Transaction() { TransactionCode = transactionCode });
+                if (result == null)
+                {
+                    break;
+                }
+            }
+
+            Transaction transaction = new Transaction()
+            {
+                TransactionCode = transactionCode,
+                Amount = originPrice,
+                CreatedAt = DateTime.Now,
+                OrderId = order.OrderId,
+                UserId = account.Id,
+                TransactionType = 1,
+                TransactionContent = $"Payment of orders {order.OrderId} to buyer",
+                Status = false
+            };
+            await _transactionService.CreateTransactionFromAPIAsync(transaction);
+
+            var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+            CreateNotification notificationBuyer = new CreateNotification()
+            {
+                UserEmail = accountBuyer.Email,
+                Content = $"Order payment system for {accountBuyer.Name}",
+            };
+            await _notificationService.CreateNotificationFromApiAsync(notificationBuyer);
+        }
     }
 }
