@@ -42,7 +42,7 @@ const SidebarCustomer = () => {
           <span>Wallet</span>
         </Link>
         <Link
-          to="/transaction-customer"
+          to={role === "Seller" ? "/transaction-seller" : "/transaction-customer"}
           className="text-gray-700 rounded-3xl border border-transparent hover:border hover:border-blue-500 p-2 transition-transform transform duration-300 ease-in-out flex items-center space-x-2 hover:scale-90"
         >
           <img
@@ -54,15 +54,15 @@ const SidebarCustomer = () => {
         </Link>
 
         <Link
-          to="/product-customer"
+          to="/notification"
           className="text-gray-700 rounded-3xl border border-transparent hover:border hover:border-blue-500 p-2 transition-transform transform duration-300 ease-in-out flex items-center space-x-2 hover:scale-90"
         >
           <img
-            src="https://cdn-icons-png.flaticon.com/512/1311/1311095.png"
-            alt="Transaction Icon"
+            src="https://static-00.iconduck.com/assets.00/notification-icon-1842x2048-xr57og4y.png"
+            alt="Notification Icon"
             className="w-[40px] h-[40px]"
           />
-          <span>Product</span>
+          <span>Notifications</span>
         </Link>
       </nav>
     </div>

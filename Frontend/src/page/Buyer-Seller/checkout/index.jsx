@@ -4,75 +4,116 @@ import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../../component/footer";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [vouchers, setVouchers] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [orderResponse, setOrderResponse] = useState(null);
+  const [accountData, setAccountData] = useState({});
+  const [form] = Form.useForm();
+
+  // Lấy thông tin người dùng từ sessionStorage
+  const email = sessionStorage.getItem("email") || "";
 
   useEffect(() => {
     const fetchVouchers = async () => {
       try {
-        const response = await api.get("voucher/GetAllVoucher");
+        const savedSubtotal = localStorage.getItem("subtotal");
+        const response = await api.get("Voucher/GetAllVoucherValid", {
+          params: {
+            price: savedSubtotal ? parseFloat(savedSubtotal) : 0,
+          },
+        });
         setVouchers(response.data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
       }
     };
 
+    const fetchAccountData = async () => {
+      try {
+        const response = await api.get(`Account/GetAccountByEmail/${email}`);
+        setAccountData(response.data);
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    };
+
     fetchVouchers();
+    fetchAccountData();
 
     const savedSubtotal = localStorage.getItem("subtotal");
     if (savedSubtotal) {
       setSubtotal(parseFloat(savedSubtotal));
     }
-  }, []);
+  }, [email]);
 
   const handleCheckOut = async (values) => {
+    const value = localStorage.getItem("listProductDevide") || "";
+    const formattedValue = value.replace(/"/g, "");
+
+    if (!formattedValue) {
+      console.error("Value is empty");
+      return;
+    }
+
     const orderData = {
       address: values.address,
       voucherCode: values.voucher || "",
-      listProduct: JSON.parse(localStorage.getItem("listProduct")) || [],
     };
 
     try {
-      const response = await api.post("order/checkOutOrder", orderData);
-      console.log("Order response:", response.data);
+      const response = await api.post(
+        `Order/CheckOutOrder?value=${formattedValue}`,
+        orderData
+      );
       setOrderResponse(response.data);
-
-      const paymentData = {
-        name: values.name,
-        email: sessionStorage.getItem("email") || "",
-        address: values.address,
-        phone: values.phone,
-        voucher: values.voucher ? values.voucher : "",
-      };
-
-      // Save the initial payment data to localStorage
-      localStorage.setItem("paymentData", JSON.stringify(paymentData));
     } catch (error) {
       console.error("Error checking out:", error);
     }
   };
 
-  const handleProceedToPayment = () => {
-    const savedPaymentData =
-      JSON.parse(localStorage.getItem("paymentData")) || {};
+  const handleCompleteOrder = async () => {
+    if (accountData.balance < orderResponse.subTotal) {
+      navigate("/wallet-customer");
+      toast.error("Your balance is not enough to checkout!");
+      return;
+    }
 
-    // Update the payment data with subtotal, shipping, discount, and total
-    const updatedPaymentData = {
-      ...savedPaymentData,
-      subtotal: orderResponse ? orderResponse.subTotal : subtotal,
-      shipping: orderResponse ? orderResponse.ship : 0,
-      discount: orderResponse ? orderResponse.discount : 0,
-      total: orderResponse ? orderResponse.total : subtotal,
-    };
+    try {
+      const values = form.getFieldsValue();
+      const rawValue = localStorage.getItem("listProductDevide") || "";
+      const formattedValue = rawValue.replace(/"/g, "");
 
-    // Save the updated payment data to localStorage
-    localStorage.setItem("paymentData", JSON.stringify(updatedPaymentData));
+      console.log("Formatted Value:", formattedValue);
 
-    navigate("/order-summary");
+      const orderData = {
+        email: email,
+        phoneNumber: accountData.phoneNumber,
+        address: values.address,
+        voucherCode: values.voucher || "",
+        product: [],
+      };
+
+      console.log("Prepared Order Data:", orderData);
+
+      const response = await api.post(
+        `Order/CreateListOrder?value=${formattedValue}`,
+        orderData
+      );
+      console.log("Order Response:", response.data);
+
+      if (response.data === true) {
+        navigate("/success-transaction");
+        localStorage.clear();
+      } else {
+        console.error("Order creation failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -81,10 +122,19 @@ const Checkout = () => {
   };
 
   const formatCurrency = (amount) => {
-    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ";
+    return amount
+      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+      : "0 VNĐ";
   };
 
-  const email = sessionStorage.getItem("email") || "";
+  const handleVoucherChange = async (value) => {
+    try {
+      const values = form.getFieldsValue();
+      await handleCheckOut({ ...values, voucher: value });
+    } catch (error) {
+      console.error("Error on voucher change:", error);
+    }
+  };
 
   return (
     <>
@@ -104,7 +154,7 @@ const Checkout = () => {
               <span className="flex items-center after:mx-2 text-gray-800">
                 <img
                   src="https://png.pngtree.com/png-vector/20190228/ourmid/pngtree-check-mark-icon-design-template-vector-isolated-png-image_711429.jpg"
-                  alt=""
+                  alt="Cart"
                   className="w-[40px]"
                 />
                 Cart
@@ -114,7 +164,7 @@ const Checkout = () => {
               <span className="flex items-center after:mx-2 text-gray-800">
                 <img
                   src="https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg"
-                  alt=""
+                  alt="Checkout"
                   className="w-[40px]"
                 />
                 Checkout
@@ -123,7 +173,7 @@ const Checkout = () => {
             <li className="flex shrink-0 items-center text-gray-800">
               <img
                 src="https://thumbs.dreamstime.com/b/check-icon-vector-mark-perfect-black-pictogram-illustration-white-background-148914823.jpg"
-                alt=""
+                alt="Order summary"
                 className="w-[40px]"
               />
               Order summary
@@ -131,9 +181,10 @@ const Checkout = () => {
           </ol>
 
           <Form
+            form={form}
             layout="vertical"
             className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16"
-            onFinish={handleCheckOut}
+            onFinish={handleCompleteOrder}
           >
             <div className="min-w-0 flex-1 space-y-8">
               <div className="space-y-4">
@@ -141,17 +192,16 @@ const Checkout = () => {
                   Delivery Details
                 </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Form.Item
-                    label="Your name"
-                    name="name"
-                    rules={[
-                      { required: true, message: "Please input your name!" },
-                    ]}
-                  >
-                    <Input placeholder="Bonnie Green" />
+                  <Form.Item label="Your name" name="name">
+                    <Input disabled placeholder={accountData.name} />
                   </Form.Item>
-                  <Form.Item label="Your email" name="email">
-                    <Input value={email} disabled placeholder={email} />
+
+                  <Form.Item
+                    label="Your email"
+                    name="email"
+                    initialValue={email}
+                  >
+                    <Input disabled placeholder={email} />
                   </Form.Item>
                   <Form.Item
                     label="Address"
@@ -160,22 +210,34 @@ const Checkout = () => {
                       { required: true, message: "Please input your address!" },
                     ]}
                   >
-                    <Input placeholder="Address" />
+                    <Input
+                      placeholder="Address"
+                      onChange={async (e) => {
+                        try {
+                          // Lấy tất cả giá trị hiện tại của form
+                          const values = form.getFieldsValue();
+                          // Gửi dữ liệu với voucher hiện tại
+                          await handleCheckOut({
+                            ...values,
+                            address: e.target.value,
+                            voucher: values.voucher || "", // Lấy giá trị voucher hiện tại
+                          });
+                        } catch (error) {
+                          console.error("Error on address change:", error);
+                        }
+                      }}
+                    />
                   </Form.Item>
-                  <Form.Item
-                    label="Phone"
-                    name="phone"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your phone number!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Phone" />
+
+                  <Form.Item label="Phone" name="phone">
+                    <Input disabled placeholder={accountData.phoneNumber} />
                   </Form.Item>
+
                   <Form.Item label="Voucher" name="voucher">
-                    <Select placeholder="Select a voucher">
+                    <Select
+                      placeholder="Select a voucher"
+                      onChange={handleVoucherChange}
+                    >
                       {vouchers.map((voucher) => (
                         <Select.Option key={voucher.code} value={voucher.code}>
                           <div>
@@ -191,22 +253,13 @@ const Checkout = () => {
                   </Form.Item>
                 </div>
               </div>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="w-[200px] ml-[300px] bg-gray-800 hover:bg-gray-900 text-white rounded-lg "
-                >
-                  Verify
-                </Button>
-              </Form.Item>
             </div>
 
             <div className="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
               <div className="flow-root">
-                <div className="-my-3 divide-y divide-gray-200 ">
+                <div className="-my-3 divide-y divide-gray-200">
                   <dl className="flex items-center justify-between gap-4 py-3">
-                    <dt className="text-base font-normal text-gray-500 ">
+                    <dt className="text-base font-normal text-gray-500">
                       Subtotal
                     </dt>
                     <dd className="text-base font-medium text-gray-900">
@@ -216,7 +269,7 @@ const Checkout = () => {
                     </dd>
                   </dl>
                   <dl className="flex items-center justify-between gap-4 py-3">
-                    <dt className="text-base font-normal text-gray-500 ">
+                    <dt className="text-base font-normal text-gray-500">
                       Shipping
                     </dt>
                     <dd className="text-base font-medium text-green-500">
@@ -226,7 +279,7 @@ const Checkout = () => {
                     </dd>
                   </dl>
                   <dl className="flex items-center justify-between gap-4 py-3">
-                    <dt className="text-base font-normal text-gray-500 ">
+                    <dt className="text-base font-normal text-gray-500">
                       Discount
                     </dt>
                     <dd className="text-base font-medium text-gray-900">
@@ -236,7 +289,7 @@ const Checkout = () => {
                     </dd>
                   </dl>
                   <dl className="flex items-center justify-between gap-4 py-3">
-                    <dt className="text-base font-normal text-gray-500 ">
+                    <dt className="text-base font-normal text-gray-500">
                       Total
                     </dt>
                     <dd className="text-base font-semibold text-gray-900">
@@ -250,7 +303,7 @@ const Checkout = () => {
 
               <Button
                 type="primary"
-                onClick={handleProceedToPayment}
+                htmlType="submit"
                 className="mt-3 w-full rounded-lg border border-gray-200 bg-gray-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-900 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
               >
                 Proceed to Payment

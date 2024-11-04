@@ -56,7 +56,7 @@ const Vouchers = () => {
       title: "Min Order Value",
       dataIndex: "minOrderValue",
       key: "minOrderValue",
-      render: (value) => `$${value}`,
+      render: (value) => formatCurrency(value),
     },
     {
       title: "Expiry Date",
@@ -100,10 +100,7 @@ const Vouchers = () => {
 
       console.log("Formatted values before sending:", formattedValues);
 
-      const response = await api.post(
-        "Voucher/CreateVoucher",
-        formattedValues
-      );
+      const response = await api.post("Voucher/CreateVoucher", formattedValues);
       if (response.data === true) {
         message.success("New voucher added successfully");
         fetchVouchers();
@@ -138,6 +135,13 @@ const Vouchers = () => {
       message.error("Failed to delete voucher");
       console.error("API error:", error);
     }
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
   };
 
   return (

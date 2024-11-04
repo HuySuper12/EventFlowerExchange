@@ -87,6 +87,9 @@ function ProductCard({ products }) {
   }, [email]);
 
   const formatCurrency = (amount) => {
+    if (amount === 0) {
+      return "For Deal";
+    }
     const validAmount = amount !== undefined ? amount : 0;
     return (
       validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
@@ -107,6 +110,10 @@ function ProductCard({ products }) {
                 colors[index % colors.length]
               } rounded-lg max-w-xs shadow-lg group`}
               style={{ width: "250px", height: "400px" }}
+              onClick={() => {
+                window.scrollTo(0, 0); // Cuộn lên đầu trang
+                navigate(`/product-page/${product.productId}`); // Điều hướng đến trang sản phẩm
+              }}
             >
               <Link to={`/product-page/${product.productId}`}>
                 <div className="relative pt-10 px-10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -145,10 +152,10 @@ function ProductCard({ products }) {
                   Post date: {formatDate(product.createdAt)}
                 </div>
                 <div className="flex justify-center mt-4">
-                  {role !== "Seller" &&
+                  {role !== "Seller" && product.price !== 0 &&
                     !cartData.some(
                       (item) => item.productId === product.productId
-                    ) && (
+                    ) &&  (
                       <button
                         className="bg-white text-black border border-black px-4 py-2 transition-colors duration-300 hover:bg-orange-400 hover:text-white rounded-[70px] product-card-button"
                         onClick={(event) =>

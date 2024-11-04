@@ -8,6 +8,7 @@ import api from "../../../config/axios"; // Assuming you have axios instance set
 
 const TransactionCustomer = () => {
   const [transactions, setTransactions] = useState([]);
+  const [VNPAY, setVNPAY] = useState([]);
   const email = sessionStorage.getItem("email"); // Get email from sessionStorage
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const TransactionCustomer = () => {
           }
         );
         console.log(response);
-        setTransactions(response.data); // Set the response data to transactions state
+        setTransactions(response.data.reverse()); // Set the response data to transactions state
       } catch (error) {
         console.error("Error fetching transaction data:", error);
       }
@@ -32,6 +33,24 @@ const TransactionCustomer = () => {
     fetchTransactions();
   }, [email]); // Dependency array to re-run effect when email changes
 
+  useEffect(() => {
+    // Function to fetch data
+    const fetchVNPAY = async () => {
+      try {
+        // Call API with email as parameter
+        const response = await api.get("VNPAY/GetPaymentListBy", {
+          params: { email: email, type: 1 }, // Corrected the params syntax
+        });
+        console.log(response);
+        setVNPAY(response.data); // Set the response data to transactions state
+      } catch (error) {
+        console.error("Error fetching transaction data:", error);
+      }
+    };
+
+    // Invoke the function to fetch transactions
+    fetchVNPAY();
+  }, [email]); // Dependency array to re-run effect when email changes
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -41,8 +60,14 @@ const TransactionCustomer = () => {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-
     });
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
   };
 
   const columns1 = [
@@ -60,6 +85,7 @@ const TransactionCustomer = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (amount) => formatCurrency(amount),
     },
     {
       title: "Status",
@@ -82,24 +108,37 @@ const TransactionCustomer = () => {
 
   const columns2 = [
     {
-      title: "Transaction ID",
-      dataIndex: "transactionId",
-      key: "transactionId",
+      title: "Payment ID",
+      dataIndex: "paymentId",
+      key: "paymentId",
+    },
+    {
+      title: "Payment Code",
+      dataIndex: "paymentCode",
+      key: "paymentCode",
+    },
+    {
+      title: "Content",
+      dataIndex: "paymentContent",
+      key: "paymentContent",
+    },
+    {
+      title: "Payment Type",
+      dataIndex: "paymentType",
+      key: "paymentType",
+      render: (value) => (value === 1 ? "Deposit" : value.toString()),
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (amount) => formatCurrency(amount),
     },
     {
-      title: "Transaction Code",
-      dataIndex: "transactionCode",
-      key: "transactionCode",
-    },
-    {
-      title: "Transaction Content",
-      dataIndex: "transactionContent",
-      key: "transactionContent",
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => formatDate(createdAt),
     },
   ];
 
@@ -133,7 +172,7 @@ const TransactionCustomer = () => {
                     Transaction Deposit
                   </h2>
                   <Table
-                    dataSource={transactions}
+                    dataSource={VNPAY}
                     columns={columns2}
                     pagination={{ pageSize: 4 }}
                   />

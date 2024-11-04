@@ -15,7 +15,7 @@ function Product() {
     event: false,
     wedding: false,
     birthday: false,
-    workshop: false,
+    conference: false,
   });
 
   // Handle sorting change
@@ -60,30 +60,44 @@ function Product() {
 
   // Function to filter products based on selected filters
   const filterProducts = () => {
+    if (!allProducts || allProducts.length === 0) {
+      console.warn("No products available to filter.");
+      return;
+    }
+
     const filteredProducts = allProducts.filter((product) => {
       const matchesSearch = product.productName
         .toLowerCase()
         .includes(searchKeyword.toLowerCase());
 
-      // Sử dụng toán tử || để kiểm tra nếu bất kỳ bộ lọc nào được chọn
       const matchesComboType =
-        (filters.batch && product.comboType === "batch") ||
-        (filters.event && product.comboType === "event") ||
-        (filters.wedding && product.category === "wedding") ||
-        (filters.birthday && product.category === "birthday") ||
-        (filters.workshop && product.category === "workshop") ||
-        // Nếu không có bộ lọc nào được chọn, hiển thị tất cả sản phẩm
+        (filters.batch && product.comboType.toLowerCase() === "batch") ||
+        (filters.event && product.comboType.toLowerCase() === "event") ||
+        (filters.wedding && product.category.toLowerCase() === "wedding") ||
+        (filters.birthday && product.category.toLowerCase() === "birthday") ||
+        (filters.conference &&
+          product.category.toLowerCase() === "conference") ||
         (!filters.batch &&
           !filters.event &&
           !filters.wedding &&
           !filters.birthday &&
-          !filters.workshop);
+          !filters.conference);
+
+      console.log(
+        `Product: ${product.productName}, Matches Search: ${matchesSearch}, Matches ComboType: ${matchesComboType}`
+      );
 
       return matchesSearch && matchesComboType;
     });
 
-    setProducts(filteredProducts); // Cập nhật danh sách sản phẩm
-    setVisibleCount(12); // Reset visibleCount về 12 sản phẩm
+    console.log("Filtered Products:", filteredProducts);
+
+    if (filteredProducts.length === 0) {
+      console.warn("No products match the current filters.");
+    }
+
+    setProducts(filteredProducts);
+    setVisibleCount(12);
   };
 
   // Get only the visible products based on the visibleCount
@@ -211,8 +225,8 @@ function Product() {
                 <input
                   className="w-4 h-4 mr-2"
                   type="checkbox"
-                  name="workshop"
-                  checked={filters.workshop}
+                  name="conference"
+                  checked={filters.conference}
                   onChange={handleFilterChange}
                 />
                 Hoa hội nghị

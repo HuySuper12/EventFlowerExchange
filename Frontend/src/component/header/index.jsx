@@ -9,9 +9,16 @@ function Header() {
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
   const [accountData, setAccountData] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [systemNotifications, setSystemNotifications] = useState([]);
+  const [shopNotifications, setShopNotifications] = useState([]);
 
   const handleOrder = () => {
-    navigate("/order");
+    if (role === "Buyer") {
+      navigate("/order");
+    } else if (role === "Seller") {
+      navigate("/order-seller");
+    }
   };
 
   const handleProfile = () => {
@@ -66,6 +73,72 @@ function Header() {
     }
   }, []);
 
+  const fetchCartCount = async () => {
+    if (email) {
+      try {
+        const response = await api.get(`Cart/GetCountCartItemByUserEmail`, {
+          params: {
+            email: email,
+          },
+        });
+        setCartCount(response.data);
+      } catch (error) {
+        console.error("Error fetching cart count:", error);
+      }
+    }
+  };
+
+  const fetchNotifications = async () => {
+    if (email) {
+      try {
+        const encodedEmail = encodeURIComponent(email);
+        const response = await api.get(
+          `Notification/ViewNotificationByUserEmail/${encodedEmail}`
+        );
+        setSystemNotifications(response.data.reverse());
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAccountData();
+    fetchCartCount();
+    fetchNotifications();
+  }, [email]);
+
+  const fetchShopNotifications = async (email) => {
+    try {
+      const encodedEmail = encodeURIComponent(email);
+      const response = await api.get(
+        `Notification/ViewShopNotificationByUserEmail/${encodedEmail}`
+      );
+      setShopNotifications(response.data.reverse());
+    } catch (error) {
+      console.error("Error fetching shop notifications:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const loadNotifications = async () => {
+      const email = sessionStorage.getItem("email");
+      if (email) {
+        const systemNotifs = await fetchSystemNotifications(email);
+        const shopNotifs = await fetchShopNotifications(email);
+        setSystemNotifications(systemNotifs || []);
+        setShopNotifications(shopNotifs || []);
+      }
+    };
+
+    loadNotifications();
+  }, []);
+
+  const handleShowMoreNoti = () => {
+    navigate("/notification");
+  };
+
   return (
     <div className="header flex items-center justify-between py-5 font-medium relative shadow-md">
       <Link to={"/"}>
@@ -107,6 +180,7 @@ function Header() {
       <div className="flex items-center gap-6 relative">
         {isLoggedIn ? (
           <>
+            {/* Notification */}
             <div className="group relative">
               <img
                 src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/noti-transformed.png?alt=media&token=47f07cdb-cb8b-4bba-a556-7151c4531c4a"
@@ -114,20 +188,53 @@ function Header() {
                 alt="Notification Icon"
               />
               <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-                10
+                {(systemNotifications?.length || 0) +
+                  (shopNotifications?.length || 0)}
               </p>
               <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-                <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded"></div>
+                <div className="flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded w-[250px]">
+                  <div className="text-center font-bold text-lg">
+                    Notification system
+                  </div>
+                  {systemNotifications.slice(0, 3).map((notification) => (
+                    <div key={notification.notificationId} className="text-sm">
+                      <p>{notification.content}</p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(notification.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+
+                  <div className="text-center font-bold text-lg">
+                    Notification shop
+                  </div>
+                  {shopNotifications.slice(0, 3).map((notification) => (
+                    <div key={notification.id} className="text-sm">
+                      <p>{notification.content}</p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(notification.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+
+                  <button className="text-blue-500 text-sm cursor-pointer hover:underline text-center" onClick={handleShowMoreNoti}>
+                    Show more
+                  </button>
+                </div>
               </div>
             </div>
             <div className="group relative">
               <img
-                src="https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
+                src={
+                  accountData?.picture ||
+                  "https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
+                }
                 className="w-8 cursor-pointer rounded-full"
                 alt="Profile Icon"
               />
               <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-                <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
+                <div className="flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded w-[150px]">
+                  <p>Hello {accountData?.name || "Guest"}</p>
                   <p
                     className="cursor-pointer hover:text-black"
                     onClick={handleProfile}
@@ -166,7 +273,7 @@ function Header() {
                   alt="Cart Icon"
                 />
                 <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-                  10
+                  {cartCount}
                 </p>
               </Link>
             )}

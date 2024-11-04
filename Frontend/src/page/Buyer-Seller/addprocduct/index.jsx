@@ -9,6 +9,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { toast } from "react-toastify";
 import uploadFile from "../../../utils/upload";
+import { useNavigate } from "react-router-dom";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -24,6 +25,7 @@ const AddProduct = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
   const [listImage, setListImage] = useState([]); // Mảng chứa các URL hình ảnh
+  const navigate = useNavigate();
 
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -70,6 +72,7 @@ const AddProduct = () => {
         form.resetFields(); // Reset form sau khi thêm thành công
         setFileList([]); // Reset file list
         setListImage([]); // Reset listImage
+        navigate("/post-seller");
       } else {
         toast.error("Add Product failed");
       }
@@ -139,7 +142,7 @@ const AddProduct = () => {
             <Form.Item
               label="Freshness Duration"
               name="freshness_duration"
-              className="w-[500px]"
+              className="w-[500px] "
               rules={[
                 {
                   required: true,
@@ -147,10 +150,16 @@ const AddProduct = () => {
                 },
               ]}
             >
-              <InputNumber
-                placeholder="Freshness Duration"
-                className="px-3 py-2 border border-gray-800 w-[900px] text-base"
-              />
+              <div className="flex ">
+                <div>
+                  <InputNumber
+                    placeholder="Freshness Duration"
+                    className=" py-2 border border-gray-800 w-[900px]  text-base"
+                  />
+                </div>
+
+                <div className="ml-[10px] mt-[10px] text-xl">DAY(S)</div>
+              </div>
             </Form.Item>
 
             <Form.Item
@@ -177,11 +186,17 @@ const AddProduct = () => {
                 { required: true, message: "Vui lòng nhập giá sản phẩm!" },
               ]}
             >
-              <InputNumber
-                placeholder="Price"
-                className="px-3 py-2 border border-gray-800 w-[900px] h-[50px] text-base"
-                min={1}
-              />
+              <div className="flex">
+                <div>
+                  <InputNumber
+                    placeholder="Price"
+                    className="px-3 py-2 border border-gray-800 w-[900px] h-[50px] text-base"
+                    min={0}
+                  />
+                </div>
+
+                <div className="ml-[10px] mt-[10px] text-xl">VNĐ</div>
+              </div>
             </Form.Item>
 
             <Form.Item

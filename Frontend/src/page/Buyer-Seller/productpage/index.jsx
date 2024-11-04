@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom"; // Import useParams
-import { Image } from "antd";
+import { Image, Rate } from "antd";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import api from "../../../config/axios";
@@ -15,22 +15,29 @@ const ProductPage = () => {
   const [seller, setSeller] = useState({}); // Updated state for seller
   const [relatedProducts, setRelatedProducts] = useState([]); // State for related products
   const descriptionRef = useRef(null); // Reference for the description section
-
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [countFollow, setCountFollow] = useState(0);
   const navigate = useNavigate();
-
+  const userRole = sessionStorage.getItem("role"); // Lấy vai trò người dùng
+  const [ordersAndRating, setOrdersAndRating] = useState([]);
+  const [rating, setRating] = useState([]);
+  const [buyerRating, setBuyerRating] = useState([]);
+  const [cartData, setCartData] = useState([]);
+  const email = sessionStorage.getItem("email");
   // Function to fetch product details from API
   const fetchProductDetails = async () => {
     try {
       const response = await api.get(`Product/SearchProduct/${id}`);
       setProductDetails(response.data);
       setMainImage(response.data.productImage[0] || "");
-      console.log(response.data);
+      console.log("product", response.data);
 
       // Fetch seller details using sellerId
       const sellerResponse = await api.get(
         `Account/GetAccountById/${response.data.sellerId}`
       );
       setSeller(sellerResponse.data); // Set seller object
+      console.log(sellerResponse.data);
 
       // Fetch related products based on category
       fetchRelatedProducts(response.data.category);
@@ -79,6 +86,12 @@ const ProductPage = () => {
     }
 
     console.log("Adding product with ID:", id);
+
+    setCartData((prevCartData) => [
+      ...prevCartData,
+      { productId }, // Assuming productId is enough to identify the product
+    ]);
+
     try {
       const response = await api.post("Cart/CreateCartItem", {
         productId: id,
@@ -95,8 +108,196 @@ const ProductPage = () => {
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Add product failed");
+
+      setCartData((prevCartData) =>
+        prevCartData.filter((item) => item.productId !== productId)
+      );
     }
   };
+
+  useEffect(() => {
+    const handleCheckFollow = async () => {
+      const email = sessionStorage.getItem("email");
+      const response = await api.get(`Follow/CheckFollowByUserEmail`, {
+        params: {
+          sellerEmail: seller.email,
+          followerEmail: email,
+        },
+      });
+      setIsFollowed(response.data);
+    };
+    handleCheckFollow();
+  }, [seller.email]);
+
+  const handleGetCountFollowByUserEmail = async () => {
+    try {
+      const response = await api.get("Follow/GetCountFollowByUserEmail", {
+        params: {
+          email: seller.email,
+        },
+      });
+      setCountFollow(response.data);
+      console.log("countFollow", response.data);
+    } catch (error) {
+      console.error("Error fetching follow count:", error);
+    }
+  };
+
+  // Call handleGetCountFollowByUserEmail in useEffect to ensure it runs on component mount
+  useEffect(() => {
+    handleGetCountFollowByUserEmail();
+  }, [seller.email]);
+
+  const handleFollow = async () => {
+    const token = sessionStorage.getItem("token");
+    const email = sessionStorage.getItem("email");
+    if (!token) {
+      toast.error("You need to log in to follow seller.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await api.post("Follow/CreateFollow", {
+        sellerEmail: seller.email,
+        followerEmail: email,
+      });
+      console.log(response.data);
+      if (response.data === true) {
+        toast.success("Follow seller successfully");
+        setIsFollowed(true);
+        handleGetCountFollowByUserEmail(); // Refresh follow count
+      } else {
+        toast.error("Follow seller failed");
+      }
+    } catch (error) {
+      console.error("Error following seller:", error);
+      toast.error("Follow seller failed");
+    }
+  };
+
+  const handleUnFollow = async () => {
+    const token = sessionStorage.getItem("token");
+    const email = sessionStorage.getItem("email");
+    if (!token) {
+      toast.error("You need to log in to unfollow seller.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await api.delete(`Follow/RemoveFollower`, {
+        params: {
+          sellerEmail: seller.email,
+          followerEmail: email,
+        },
+      });
+      console.log(response.data);
+      if (response.data === true) {
+        toast.success("Unfollow seller successfully");
+        setIsFollowed(false);
+        handleGetCountFollowByUserEmail(); // Refresh follow count
+      } else {
+        toast.error("Unfollow seller failed");
+      }
+    } catch (error) {
+      console.error("Error unfollowing seller:", error);
+      toast.error("Unfollow seller failed");
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  const formatCurrency = (amount) => {
+    if (amount === 0) {
+      return "For Deal";
+    }
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
+  const handleGetOrdersAndRatingBySellerEmail = async () => {
+    try {
+      const response = await api.get(
+        "Product/GetOrdersAndRatingBySellerEmail",
+        {
+          params: {
+            email: seller.email,
+          },
+        }
+      );
+      setOrdersAndRating(response.data);
+    } catch (error) {
+      console.error("Error fetching orders and rating:", error);
+    }
+  };
+
+  // Call handleGetOrdersAndRatingBySellerEmail in useEffect to ensure it runs on component mount
+  useEffect(() => {
+    if (seller.email) {
+      handleGetOrdersAndRatingBySellerEmail();
+    }
+  }, [seller.email]);
+
+  const handleViewRatingByProductId = async () => {
+    const response = await api.get(`Rating/ViewRatingByProductId`, {
+      params: {
+        productId: id,
+      },
+    });
+    setRating(response.data);
+    console.log(response.data);
+  };
+
+  useEffect(() => {
+    handleViewRatingByProductId();
+  }, [id]);
+
+  const handleGetAccountRatingById = async () => {
+    try {
+      const response = await api.get(
+        `Account/GetAccountById/${rating.buyerId}`
+      );
+      setBuyerRating(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching account by ID:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (rating.buyerId) {
+      handleGetAccountRatingById();
+    }
+  }, [rating.buyerId]);
+
+  const handleChat = () => {
+    navigate(`/chat/${seller.id}`); // Navigate to the chat page with the seller's ID
+  };
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      if (email) {
+        try {
+          const response = await api.get(`Cart/ViewCartByUserEmail`, {
+            params: { email: email },
+          });
+          setCartData(response.data);
+        } catch (error) {
+          console.error("Error fetching cart data:", error);
+        }
+      } else {
+        console.error("Email is not set in sessionStorage.");
+      }
+    };
+
+    fetchCartData();
+  }, [email]);
 
   return (
     <>
@@ -134,7 +335,7 @@ const ProductPage = () => {
             </h2>
             <div className="mb-6">
               <span className="text-2xl font-bold mr-2 text-red-500">
-                ${productDetails?.price || "0.00"}
+                {formatCurrency(productDetails?.price) || "0"}
               </span>
             </div>
 
@@ -162,6 +363,13 @@ const ProductPage = () => {
             </div>
 
             <div className="mb-6">
+              <span className="text-2xl font-bold mr-2">Post Date:</span>
+              <span className="text-2xl mr-2 ">
+                {formatDate(productDetails?.createdAt) || "0"}
+              </span>
+            </div>
+
+            <div className="mb-6">
               <span className="text-2xl font-bold mr-2">Description:</span>
               <span>
                 {productDetails?.description
@@ -179,14 +387,22 @@ const ProductPage = () => {
               </button>
             </div>
 
-            <div className="flex items-center gap-4 mb-6">
-              <button
-                className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition"
-                onClick={handleAddToCart}
-              >
-                Add to Cart
-              </button>
-            </div>
+            {/* Chỉ hiển thị nút "Add to Cart" nếu người dùng không phải là seller */}
+            {userRole !== "Seller" &&
+              !cartData.some(
+                (item) => item.productId === productDetails.productId
+              ) && (
+                <div className="flex items-center gap-4 mb-6">
+                  <button
+                    className="px-20 py-3 text-black bg-white border border-black rounded-lg hover:bg-orange-300 transition ml-[200px] mt-[20px]"
+                    onClick={(event) =>
+                      handleAddToCart(event, productDetails.productId)
+                    }
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -205,14 +421,19 @@ const ProductPage = () => {
                 {seller.name || "Loading..."}
               </h2>
               <div className="flex gap-4 mt-4">
-                <button className="px-4 py-2 bg-white text-gray-800 border border-gray-800 font-bold rounded-md hover:bg-blue-200 transition flex items-center gap-2">
-                  <img
-                    src="https://cdn-icons-png.freepik.com/512/5962/5962463.png"
-                    alt="Chat Icon"
-                    className="w-5 h-5"
-                  />
-                  Chat
-                </button>
+                {userRole !== "Seller" && (
+                  <button
+                    className="px-4 py-2 bg-white text-gray-800 border border-gray-800 font-bold rounded-md hover:bg-blue-200 transition flex items-center gap-2"
+                    onClick={handleChat}
+                  >
+                    <img
+                      src="https://cdn-icons-png.freepik.com/512/5962/5962463.png"
+                      alt="Chat Icon"
+                      className="w-5 h-5"
+                    />
+                    Chat
+                  </button>
+                )}
                 <button
                   className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-orange-300 transition flex items-center gap-2"
                   onClick={() => navigate(`/seller/${seller.id}`)}
@@ -224,33 +445,54 @@ const ProductPage = () => {
                   />
                   Visit Shop
                 </button>
-                <button className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-green-400 transition flex items-center gap-2">
-                  <img
-                    src="https://icons.veryicon.com/png/o/miscellaneous/3vjia-icon-line/follow-42.png"
-                    alt="Shop Icon"
-                    className="w-5 h-5"
-                  />
-                  Follow
-                </button>
-                <button className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-red-400 transition flex items-center gap-2">
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/png-transparent-error-icon-thumbnail-removebg-preview.png?alt=media&token=0519d1a5-51eb-4243-863d-7fc860a4c522"
-                    alt="Shop Icon"
-                    className="w-5 h-5"
-                  />
-                  Report
-                </button>
+                {/* Chỉ hiển thị nút "Follow" hoặc "Unfollow" nếu người dùng không phải là seller */}
+                {userRole !== "Seller" &&
+                  (isFollowed ? (
+                    <button
+                      className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-red-400 transition flex items-center gap-2"
+                      onClick={handleUnFollow}
+                    >
+                      <img
+                        src="https://cdn2.iconfinder.com/data/icons/pinpoint-interface/48/unfollow-512.png"
+                        alt="Unfollow Icon"
+                        className="w-5 h-5"
+                      />
+                      Unfollow
+                    </button>
+                  ) : (
+                    <button
+                      className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-green-400 transition flex items-center gap-2"
+                      onClick={handleFollow}
+                    >
+                      <img
+                        src="https://icons.veryicon.com/png/o/miscellaneous/3vjia-icon-line/follow-42.png"
+                        alt="Follow Icon"
+                        className="w-5 h-5"
+                      />
+                      Follow
+                    </button>
+                  ))}
+                {userRole !== "Seller" && (
+                  <button className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-red-400 transition flex items-center gap-2">
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/png-transparent-error-icon-thumbnail-removebg-preview.png?alt=media&token=0519d1a5-51eb-4243-863d-7fc860a4c522"
+                      alt="Report Icon"
+                      className="w-5 h-5"
+                    />
+                    Report
+                  </button>
+                )}
               </div>
             </div>
           </div>
           <div className="flex gap-4 text-gray-600">
             <div>
               <p>Products</p>
-              <p className="font-bold">138</p>
+              <p className="font-bold">{ordersAndRating.enableProducts || 0}</p>
             </div>
             <div>
               <p>Joined</p>
-              <p className="font-bold">7 months ago</p>
+              <p className="font-bold">{formatDate(seller.createdAt)}</p>
             </div>
             <div>
               <p>Response Time</p>
@@ -258,7 +500,7 @@ const ProductPage = () => {
             </div>
             <div>
               <p>Followers</p>
-              <p className="font-bold">39.9k</p>
+              <p className="font-bold">{countFollow}</p>
             </div>
           </div>
         </div>
@@ -294,37 +536,33 @@ const ProductPage = () => {
             <p>{productDetails?.description || "No description available"}</p>
           ) : (
             <>
-              {/* Review 1 */}
+              {/* Review  */}
               <div className="flex items-start gap-4">
                 <img
-                  src="https://www.w3schools.com/howto/img_avatar.png"
+                  src={buyerRating?.picture}
                   alt="Avatar"
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <p className="font-bold text-gray-800">John Doe</p>
-                  <div className="flex items-center gap-2 text-yellow-500">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="text-sm text-gray-400">2 days ago</span>
-                  </div>
-                  <p>This product is amazing! I love the quality.</p>
-                </div>
-              </div>
+                  <p className="font-bold text-gray-800">
+                    {buyerRating?.name || "No name available"}
+                  </p>
 
-              {/* Review 2 */}
-              <div className="flex items-start gap-4">
-                <img
-                  src="https://www.w3schools.com/howto/img_avatar2.png"
-                  alt="Avatar"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div>
-                  <p className="font-bold text-gray-800">Jane Doe</p>
-                  <div className="flex items-center gap-2 text-yellow-500">
-                    <span>⭐⭐⭐⭐</span>
-                    <span className="text-sm text-gray-400">1 day ago</span>
+                  <Rate
+                    className="mt-2"
+                    disabled
+                    defaultValue={rating.rating}
+                  />
+
+                  <div className="text-sm text-gray-400 mt-2">
+                    {rating?.createdAt
+                      ? formatDate(rating.createdAt)
+                      : "No date available"}
                   </div>
-                  <p>I found this product very useful.</p>
+
+                  <p className="mt-2 text-lg text-gray-950 ">
+                    {rating?.comment || "No comment available"}
+                  </p>
                 </div>
               </div>
             </>

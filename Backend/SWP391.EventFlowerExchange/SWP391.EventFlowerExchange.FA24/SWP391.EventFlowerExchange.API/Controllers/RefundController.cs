@@ -161,7 +161,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         [HttpPost("StaffApproveRefundRequest")]
         //[Authorize(Roles = ApplicationRoles.Staff)]
-        public async Task<ActionResult<bool>> StaffApproveRefundRequest(string staffEmail,int orderId)
+        public async Task<ActionResult<bool>> StaffApproveRefundRequest(string staffEmail, int orderId)
         {
             var getOrder = new Order { OrderId = orderId };
             var order = await orderService.SearchOrderByOrderIdFromAPIAsync(getOrder);
@@ -199,6 +199,5 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
-
     }
 }

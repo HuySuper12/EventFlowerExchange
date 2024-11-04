@@ -43,6 +43,26 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
+        [HttpGet("CheckRatingByUserEmail")]
+        //[Authorize]
+        public async Task<bool> CheckRatingByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc);     // ĐÃ SỬA 
+            if (check != null)
+            {
+                var result = await _service.ViewAllRatingByUserIdFromApiAsync(check);
+                if (result != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         [HttpGet("ViewRatingByProductId")]
         public async Task<IActionResult> ViewRatingByProductId(int productId)
         {
@@ -80,5 +100,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return false;
         }
+
     }
 }

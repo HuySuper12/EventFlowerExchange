@@ -21,7 +21,7 @@ const Requests = () => {
     setLoading(true);
     try {
       const response = await api.get(`Request/GetRequestList/${type}`);
-      setter(response.data);
+      setter(response.data.reverse());
     } catch (error) {
       message.error(`Failed to fetch ${type} requests`);
     } finally {
