@@ -16,15 +16,16 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         private IRequestRepository _request;
         private IFollowRepository _follow;
         private INotificationRepository _notification;
+        private ICartRepository _cart;
 
 
 
-        public ProductRepository(IRequestRepository request, IFollowRepository follow, INotificationRepository notification)
+        public ProductRepository(IRequestRepository request, IFollowRepository follow, INotificationRepository notification, ICartRepository cart)
         {
             _request = request;
             _follow = follow;
             _notification = notification;
-
+            _cart = cart;
         }
 
         private GetProduct ConvertProductToGetProduct(Product value)
@@ -83,14 +84,20 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                     list[i].Status = "Expired";
                     _context.Products.Update(list[i]);
                     _context.SaveChanges();
+
+                    _cart.RemoveCartItemToCreateOrderAsync(new CartItem()
+                    {
+                        ProductId = list[i].ProductId
+                    });
                 }
             }
+
         }
 
         public async Task<List<GetProduct?>> GetEnableProductListAsync()
         {
-            CheckExpiredDateProduct();
             string status = "Enable";
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
 
@@ -209,6 +216,11 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Products.Update(newProduct);
             await _context.SaveChangesAsync();
+
+            await _cart.RemoveCartItemToCreateOrderAsync(new CartItem()
+            {
+                ProductId = product.ProductId
+            });
             return true;
         }
 
@@ -373,6 +385,9 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 st.AllProduct = st.EnableProducts + st.SoldOut;
             }
             return st;
+
         }
+
+        
     }
 }
