@@ -181,5 +181,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpPost("UpdateSellerRefundConfirmationStatus")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> UpdateSellerRefundConfirmationStatus(int orderId)
+        {
+            var getOrder = new Order { OrderId = orderId };
+            var order = await orderService.SearchOrderByOrderIdFromAPIAsync(getOrder);
+
+            if (order != null)
+            {
+                var result = await refundService.UpdateSellerRefundConfirmationStatusFromApiAsync(order);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
     }
 }
