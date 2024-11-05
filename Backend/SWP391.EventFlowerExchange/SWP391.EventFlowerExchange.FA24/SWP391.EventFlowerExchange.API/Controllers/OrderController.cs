@@ -53,6 +53,23 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
+        [HttpGet("ViewAllOrder")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        public async Task<IActionResult> ViewAllOrderAsync()
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            var list = await _service.ViewAllOrderFromAPIAsync();
+            return Ok(list);
+        }
+
+        [HttpGet("ViewOrderDetail")]
+        //[Authorize]
+        public async Task<IActionResult> ViewOrderDetailFromAPIAsync(int id)
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            return Ok(await _service.ViewOrderDetailFromAPIAsync(new Order { OrderId = id }));
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
