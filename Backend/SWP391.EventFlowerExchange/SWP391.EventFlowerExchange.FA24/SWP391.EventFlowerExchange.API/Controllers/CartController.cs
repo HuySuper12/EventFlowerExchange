@@ -40,6 +40,47 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
-        
+        [HttpPost("CreateCartItem")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateCartItem(CreateCartItem cartItem)
+        {
+            Account acc = new Account();
+            acc.Email = cartItem.BuyerEmail;
+            var account = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            if (account != null)
+            {
+                var result = await _service.CreateCartItemFromApiAsync(cartItem);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return false;
+        }
+
+        [HttpPost("CreateCartByUserEmail")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> CreateCartByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+            var account = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            if (account != null)
+            {
+                var result = await _service.CreateCartFromApiAsync(account);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return false;
+        }
+
     }
 }
