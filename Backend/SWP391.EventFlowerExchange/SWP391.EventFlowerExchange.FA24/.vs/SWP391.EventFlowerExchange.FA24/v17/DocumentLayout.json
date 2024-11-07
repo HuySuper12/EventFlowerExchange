@@ -160,7 +160,7 @@
               "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
               "ToolTip": "C:\\Users\\ASUS\\Documents\\SWP\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
               "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\CartController.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAmwD8AAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHcAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T07:21:15.904Z",
               "EditorCaption": ""
@@ -199,8 +199,7 @@
               "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\ProductRepository.cs",
               "ViewState": "AgIAALcAAAAAAAAAAAAAANUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-04T15:56:05.717Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-04T15:56:05.717Z"
             },
             {
               "$type": "Document",

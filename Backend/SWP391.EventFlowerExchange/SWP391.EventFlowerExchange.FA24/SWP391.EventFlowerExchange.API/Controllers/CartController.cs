@@ -82,5 +82,42 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpDelete("RemoveCartItem")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> RemoveCartItem(string email, int productid)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+            var deleteAccount = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            if (deleteAccount != null)
+            {
+                CartItem cartItem = new CartItem() { BuyerId = deleteAccount.Id, ProductId = productid };
+                var result = await _service.RemoveItemFromCartFromApiAsync(cartItem);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        [HttpGet("GetCountCartItemByUserEmail")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<int>> GetCountCartItemByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+            var account = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            if (account != null)
+            {
+                var result = await _service.GetCountCartItemByUserIdFromApiAsync(account);
+                return Ok(result);
+            }
+
+            return Ok("Not found!");
+        }
     }
 }
