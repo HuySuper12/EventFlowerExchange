@@ -143,6 +143,50 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
         }
 
+
+        [HttpPost("CheckOutOrder")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
+        {
+            var list = new List<CheckOutBefore>();
+            string[] s = value.Split(',');
+
+            CheckOutAfter checkOutAfter = new CheckOutAfter()
+            {
+                SubTotal = 0,
+                Discount = 0,
+                Ship = 0,
+                Total = 0
+            };
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                var listProduct = new List<int>();
+                string[] productIdList = s[i].Split('-');
+                for (int j = 0; j < productIdList.Length; j++)
+                {
+                    listProduct.Add(int.Parse(productIdList[j]));
+                }
+
+                var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
+                var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, listProduct, voucher);
+                if (voucher != null)
+                {
+                    if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                    {
+                        return BadRequest("Voucher is invalid.");
+                    }
+                }
+
+                checkOutAfter.SubTotal += result.SubTotal;
+                checkOutAfter.Ship += result.Ship;
+                checkOutAfter.Discount += result.Discount;
+                checkOutAfter.Total += result.Total;
+
+            }
+            return Ok(checkOutAfter);
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
