@@ -123,6 +123,26 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return BadRequest("Not found!!!");
         }
 
+        [HttpGet("SearchOrderByOrderId")]
+        //[Authorize]
+        public async Task<IActionResult> SearchOrderByOrderId(int orderId)
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                return Ok(order);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpPost("DivideProductHasSameSeller")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
+        public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
+        {
+            return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
