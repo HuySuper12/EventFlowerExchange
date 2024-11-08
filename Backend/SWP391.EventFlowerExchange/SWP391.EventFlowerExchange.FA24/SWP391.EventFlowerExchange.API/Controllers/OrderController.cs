@@ -70,6 +70,32 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.ViewOrderDetailFromAPIAsync(new Order { OrderId = id }));
         }
 
+        [HttpGet("ViewOrderByBuyerEmail")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<IActionResult> ViewOrderByBuyerIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(await _service.ViewOrderByBuyerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderBySellerEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> ViewOrderBySellerIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(await _service.ViewOrderBySellerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
