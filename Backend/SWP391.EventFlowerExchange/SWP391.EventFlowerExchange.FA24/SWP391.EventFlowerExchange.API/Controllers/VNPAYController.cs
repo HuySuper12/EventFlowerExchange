@@ -92,5 +92,12 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
             }
         }
+
+        [HttpGet("GetPayementByTypeAndEmail")]
+        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
+        }
     }
 }
