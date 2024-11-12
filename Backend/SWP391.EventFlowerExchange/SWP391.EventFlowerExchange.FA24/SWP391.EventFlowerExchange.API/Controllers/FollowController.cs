@@ -41,6 +41,33 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok("Not found!");
         }
 
-        
+        [HttpPost("CreateFollow")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateFollow(CreateFollower follower)
+        {
+            Account acc = new Account();
+            acc.Email = follower.FollowerEmail;// ĐÃ SỬA
+            var check1 = await _accountService.GetUserByEmailFromAPIAsync(acc);// ĐÃ SỬA
+
+            Account acc2 = new Account();
+            acc2.Email = follower.SellerEmail;// ĐÃ SỬA
+            var check2 = await _accountService.GetUserByEmailFromAPIAsync(acc2);// ĐÃ SỬA
+
+            if (check1 != null && check2 != null)
+            {
+                //đổi lại để phù hợp với hàm add, email bây giờ sẽ chứa giá trị Id
+                follower.FollowerEmail = check1.Id;
+                follower.SellerEmail = check2.Id;
+
+                var result = await _service.AddNewFollowerFromApiAsync(follower);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return false;
+        }
     }
 }
