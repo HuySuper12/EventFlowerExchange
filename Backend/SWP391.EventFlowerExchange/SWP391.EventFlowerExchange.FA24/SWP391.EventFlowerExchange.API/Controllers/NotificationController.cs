@@ -34,6 +34,24 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
         }
 
-        
+        [HttpGet("ViewNotificationByUserEmail/{email}")]
+        //[Authorize(Roles = ApplicationRoles.Seller + " , " + ApplicationRoles.Buyer)]
+        public async Task<IActionResult> ViewNotificationByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc); // ĐÃ SỬA
+            if (check != null)
+            {
+                var result = await _service.ViewAllNotificationByUserIdFromApiAsync(check);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return Ok("Not found!");
+        }
     } 
 }
