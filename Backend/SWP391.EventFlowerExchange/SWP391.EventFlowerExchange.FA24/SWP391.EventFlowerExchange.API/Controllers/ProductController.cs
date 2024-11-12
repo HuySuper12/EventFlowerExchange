@@ -152,5 +152,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return await _service.UpdateProductFromAPIAsync(product);
 
         }
+        [HttpDelete("DeleteProduct")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            GetProduct product = new GetProduct() { ProductId = id };
+            var checkProduct = await _service.SearchProductByIdFromAPIAsync(product);
+            if (checkProduct == null)
+            {
+                return BadRequest();
+            }
+            bool status = await _service.RemoveProductFromAPIAsync(checkProduct);
+            return Ok(status);
+        }
     }
 }

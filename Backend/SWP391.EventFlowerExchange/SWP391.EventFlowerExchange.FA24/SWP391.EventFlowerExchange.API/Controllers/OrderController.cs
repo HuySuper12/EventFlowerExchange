@@ -53,6 +53,140 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
+        [HttpGet("ViewAllOrder")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        public async Task<IActionResult> ViewAllOrderAsync()
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            var list = await _service.ViewAllOrderFromAPIAsync();
+            return Ok(list);
+        }
+
+        [HttpGet("ViewOrderDetail")]
+        //[Authorize]
+        public async Task<IActionResult> ViewOrderDetailFromAPIAsync(int id)
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            return Ok(await _service.ViewOrderDetailFromAPIAsync(new Order { OrderId = id }));
+        }
+
+        [HttpGet("ViewOrderByBuyerEmail")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<IActionResult> ViewOrderByBuyerIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(await _service.ViewOrderByBuyerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderBySellerEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> ViewOrderBySellerIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(await _service.ViewOrderBySellerIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderByShipperEmail")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<IActionResult> ViewOrderByShipperIdAsync(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
+            if (account != null)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(await _service.ViewOrderByShipperIdFromAPIAsync(account));
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("ViewOrderByStatusAndBuyerEmail")]
+        //[Authorize]
+        public async Task<IActionResult> ViewOrderByStatus(string status, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            var orderList = await _service.ViewOrderByStatusFromAPIAsync(new Order() { Status = status, BuyerId = account.Id });
+            if (orderList.Count != 0)
+            {
+                await UpdateOrderStatusAutomaticAsync();
+                return Ok(orderList);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpGet("SearchOrderByOrderId")]
+        //[Authorize]
+        public async Task<IActionResult> SearchOrderByOrderId(int orderId)
+        {
+            await UpdateOrderStatusAutomaticAsync();
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                return Ok(order);
+            }
+            return BadRequest("Not found!!!");
+        }
+
+        [HttpPost("DivideProductHasSameSeller")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
+        public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
+        {
+            return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
+        }
+
+
+        [HttpPost("CheckOutOrder")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
+        {
+            var list = new List<CheckOutBefore>();
+            string[] s = value.Split(',');
+
+            CheckOutAfter checkOutAfter = new CheckOutAfter()
+            {
+                SubTotal = 0,
+                Discount = 0,
+                Ship = 0,
+                Total = 0
+            };
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                var listProduct = new List<int>();
+                string[] productIdList = s[i].Split('-');
+                for (int j = 0; j < productIdList.Length; j++)
+                {
+                    listProduct.Add(int.Parse(productIdList[j]));
+                }
+
+                var voucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(checkOutBefore.VoucherCode);
+                var result = await _service.CheckOutOrderFromAPIAsync(checkOutBefore.Address, listProduct, voucher);
+                if (voucher != null)
+                {
+                    if (result.SubTotal < voucher.MinOrderValue && DateTime.Now < voucher.ExpiryDate)
+                    {
+                        return BadRequest("Voucher is invalid.");
+                    }
+                }
+
+                checkOutAfter.SubTotal += result.SubTotal;
+                checkOutAfter.Ship += result.Ship;
+                checkOutAfter.Discount += result.Discount;
+                checkOutAfter.Total += result.Total;
+
+            }
+            return Ok(checkOutAfter);
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();

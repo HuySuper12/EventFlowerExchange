@@ -33,6 +33,49 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.GetListRequestsFromAPIAsync(type));
         }
 
-        
+        [HttpPost("CreateRequest_Withdraw")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateNewRequest(RequestPayment value)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = value.UserEmail });
+            var convert = new CreateRequest()
+            {
+                Amount = value.Amount,
+                CreatedAt = DateTime.Now,
+                RequestType = value.RequestType,
+                UserId = account.Id,
+                Status = "Pending"
+            };
+            var request = await _service.CreateRequestFromAPIAsync(convert);
+            return Ok(request);
+        }
+
+        [HttpPost("CreateRequest")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateRequest(CreateRequest value)
+        {
+            bool request = false;
+            switch (value.RequestType)
+            {
+                case "Report":
+                    {
+                        value.RequestId = null;
+                        value.Amount = null;
+                        value.PaymentId = null;
+                        request = await _service.CreateRequestFromAPIAsync(value);
+                        break;
+                    }
+                case "Refund":
+                    {
+                        value.RequestId = null;
+                        value.Amount = null;
+                        value.PaymentId = null;
+                        request = await _service.CreateRequestFromAPIAsync(value);
+                        break;
+                    }
+            }
+
+            return Ok(request);
+        }
     }
 }
