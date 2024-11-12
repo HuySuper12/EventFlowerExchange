@@ -114,5 +114,29 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return Ok("Not found!");
         }
+
+        [HttpGet("CheckFollowByUserEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CheckFollowByUserEmail(string followerEmail, string sellerEmail)
+        {
+            Account acc = new Account();
+            acc.Email = followerEmail;
+            var check1 = await _accountService.GetUserByEmailFromAPIAsync(acc);
+
+            Account acc2 = new Account();
+            acc2.Email = sellerEmail;
+            var check2 = await _accountService.GetUserByEmailFromAPIAsync(acc2);
+
+            if (check1 != null && check2 != null)
+            {
+                var result = await _service.CheckFollowByUserEmailFromApiAsync(check1, check2);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
