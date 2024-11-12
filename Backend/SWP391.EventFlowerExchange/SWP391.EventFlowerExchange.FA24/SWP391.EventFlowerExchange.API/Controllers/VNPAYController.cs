@@ -99,5 +99,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
         }
+
+        [HttpGet("GetPaymentListBy/{type}")]
+        public async Task<IActionResult> GetPaymentListByType(int type)
+        {
+            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
+        }
     }
 }
