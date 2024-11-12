@@ -94,5 +94,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return false;
         }
+
+        [HttpGet("GetCountFollowByUserEmail")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> GetCountFollowByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc);
+            if (check != null)
+            {
+                var result = await _service.GetCountFollowByUserEmailFromApiAsync(check);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return Ok("Not found!");
+        }
     }
 }
