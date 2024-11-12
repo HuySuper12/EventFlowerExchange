@@ -69,5 +69,30 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return false;
         }
+
+        [HttpDelete("RemoveFollower")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> RemoveAccount(string followerEmail, string sellerEmail)// ĐÃ SỬA
+        {
+            Account acc = new Account();
+            acc.Email = followerEmail; // ĐÃ SỬA
+            var check1 = await _accountService.GetUserByEmailFromAPIAsync(acc);// ĐÃ SỬA
+
+            Account acc2 = new Account();
+            acc2.Email = sellerEmail;// ĐÃ SỬA
+            var check2 = await _accountService.GetUserByEmailFromAPIAsync(acc2);// ĐÃ SỬA
+
+            if (check1 != null && check2 != null)
+            {
+                ShopNotification cartItem = new ShopNotification() { FollowerId = check1.Id, SellerId = check2.Id };// ĐÃ SỬA
+                var result = await _service.RemoveFollowerFromApiAsync(cartItem);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
