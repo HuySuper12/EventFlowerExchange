@@ -40,6 +40,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return list;
         }
 
+
         [HttpGet("ViewAllTransaction")]
         //[Authorize(Roles = ApplicationRoles.Manager)]
         public async Task<IActionResult> ViewAllTransactionAsync()
@@ -87,6 +88,5 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             await _service.CreateTransactionFromAPIAsync(transaction);
             return true;
         }
-
     }
 }

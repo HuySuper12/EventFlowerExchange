@@ -53,7 +53,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             acc2.Email = follower.SellerEmail;// ĐÃ SỬA
             var check2 = await _accountService.GetUserByEmailFromAPIAsync(acc2);// ĐÃ SỬA
 
-            if (check1 != null && check2 != null)
+            if (check1 != null && check2 !=null)
             {
                 //đổi lại để phù hợp với hàm add, email bây giờ sẽ chứa giá trị Id
                 follower.FollowerEmail = check1.Id;

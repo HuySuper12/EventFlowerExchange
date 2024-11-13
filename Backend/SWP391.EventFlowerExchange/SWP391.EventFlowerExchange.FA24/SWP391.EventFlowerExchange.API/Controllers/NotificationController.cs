@@ -34,7 +34,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
         }
 
-        [HttpGet("ViewNotificationByUserEmail/{email}")]
+        [HttpGet("ViewNotificationByUserEmail")]
         //[Authorize(Roles = ApplicationRoles.Seller + " , " + ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewNotificationByUserEmail(string email)
         {
@@ -169,6 +169,26 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             if (check != null)
             {
                 var result = await _service.CountNotificationsByEmailFromApiAsync(check);
+                if (result != 0)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return Ok("Not found!");
+        }
+
+        [HttpGet("CountShopNotificationsByEmail")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<IActionResult> CountShopNotificationsByEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc);
+            if (check != null)
+            {
+                var result = await _service.CountShopNotificationByEmailFromApiAsync(check);
                 if (result != 0)
                 {
                     return Ok(result);

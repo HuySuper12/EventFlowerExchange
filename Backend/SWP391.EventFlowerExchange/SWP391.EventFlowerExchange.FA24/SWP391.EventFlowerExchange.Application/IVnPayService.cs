@@ -22,6 +22,9 @@ namespace SWP391.EventFlowerExchange.Application
 
         public Task<List<Payment>> GetPayementByTypeAndEmailFromAPIAsync(int type, Account account);
 
+        public Task<bool> PaymentSalaryFromAPIAsync();
+
+        public Task<bool> IsSalaryPaid(int year, int month);
 
     }
 }

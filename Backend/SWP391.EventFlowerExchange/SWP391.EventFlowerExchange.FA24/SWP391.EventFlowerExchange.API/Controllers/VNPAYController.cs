@@ -38,6 +38,31 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(paymentURL);
         }
 
+        [HttpGet("GetPaymentListBy/{type}")]
+        public async Task<IActionResult> GetPaymentListByType(int type)
+        {
+            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
+        }
+
+        [HttpGet("GetPaymentListBy")]
+        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
+        }
+
+        [HttpGet("PaymentSalaryForStaffAndShipper")]
+        public async Task<IActionResult> PaymentSalary()
+        {
+            return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
+        }
+
+        [HttpGet("CheckSalary")]
+        public async Task<bool> IsSalaryPaid(int year, int month)
+        {
+            return await _vnPayservice.IsSalaryPaid(year, month);
+        }
+
         [HttpGet("payment-callback")]
         public async Task<IActionResult> PaymentCallback()
         {
@@ -49,9 +74,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
                 if (response.PaymentType == 1)
                 {
-                    return Redirect("https://event-flower-exchange.vercel.app/");
+                    return Redirect("http://localhost:5173/failed-transaction");
                 }
-                return Redirect("https://event-flower-exchange.vercel.app/");
+                return Redirect("http://localhost:5173/admin/request-pending");
             }
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = response.UserId });
 
@@ -64,7 +89,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 // Here you can save the order to the database if needed
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
                 await _accountService.UpdateAccountFromAPIAsync(account);
-                return Redirect("https://event-flower-exchange.vercel.app/");
+                return Redirect("http://localhost:5173/success-transaction");
+
             }
             else //RUT TIEN
             {
@@ -88,22 +114,12 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                         Content = $"Your withdrawal request has been accepted."
                     };
                     await _notification.CreateNotificationFromApiAsync(withdrawalNotification);
+
                 }
-                return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
+                return Redirect("http://localhost:5173/admin/request-pending");
+
             }
         }
 
-        [HttpGet("GetPayementByTypeAndEmail")]
-        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
-        {
-            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
-        }
-
-        [HttpGet("GetPaymentListBy/{type}")]
-        public async Task<IActionResult> GetPaymentListByType(int type)
-        {
-            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
-        }
     }
 }

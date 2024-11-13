@@ -30,6 +30,8 @@ namespace SWP391.EventFlowerExchange.Application
 
         public Task<List<GetProduct?>> GetOldestProductsFromAPIAsync();
 
+        public Task<List<GetProduct?>> GetBannedProductListBySellerEmailFromAPIAsync(Account value);
+
         //BỔ SUNG HÀM 
 
         public Task<List<GetProduct?>> GetEnableProductListBySellerEmailFromAPIAsync(Account value);
