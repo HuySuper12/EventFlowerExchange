@@ -41,6 +41,13 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.GetListRequestsByEmailAndTypeAsync(type, account));
         }
 
+        [HttpGet("GetRequestById")]
+        //[Authorize]
+        public async Task<IActionResult> GetRequestById(int id)
+        {
+            return Ok(await _service.GetRequestByIdFromAPIAsync(id));
+        }
+
         [HttpPost("CreateRequest_Withdraw")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewRequest(RequestPayment value)

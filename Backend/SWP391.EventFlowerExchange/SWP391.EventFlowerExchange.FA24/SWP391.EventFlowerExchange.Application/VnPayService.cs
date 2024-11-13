@@ -143,5 +143,45 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return _repo.GetAllPaymentListByType(type);
         }
+
+        public async Task<bool> PaymentSalaryFromAPIAsync()
+        {
+            var staffList = await _accountService.ViewAllAccountByRoleFromAPIAsync("Staff");
+            var shipperList = await _accountService.ViewAllAccountByRoleFromAPIAsync("Shipper");
+            double? salaryAllStaff = 0.0;
+            double? salaryAllShipper = 0.0;
+            foreach (var staff in staffList)
+            {
+                salaryAllStaff += staff.Salary;
+            }
+            foreach (var shipper in shipperList)
+            {
+                salaryAllShipper += shipper.Salary;
+            }
+
+            var manager = await _accountService.ViewAllAccountByRoleFromAPIAsync("Manager");
+            if (manager[0].Salary > (salaryAllStaff + salaryAllShipper))
+                manager[0].Salary -= salaryAllStaff + salaryAllShipper;
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> IsSalaryPaid(int year, int month)
+        {
+            var manager = await _accountService.ViewAllAccountByRoleFromAPIAsync("Manager");
+
+
+            // Tìm bản ghi thanh toántương ứng với năm và tháng được chỉ định
+            var list = await GetPayementByTypeAndEmailFromAPIAsync(3, manager[0]);
+            var payment = list.FirstOrDefault(x => x.CreatedAt.HasValue &&
+                                     x.CreatedAt.Value.Year == year &&
+                                     x.CreatedAt.Value.Month == month);
+
+            // Kiểm tra nếu tìm thấy bản ghi và lương đã được trả
+            return payment != null ? true : false;
+        }
     }
 }
