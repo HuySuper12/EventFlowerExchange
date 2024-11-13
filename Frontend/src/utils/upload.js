@@ -1,8 +1,10 @@
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../config/firebase"; // Import the storage instance
+import { storage } from "../config/firebaseStorage"; // Import the storage instance
 
 const uploadFile = async (file) => {
     const storageRef = ref(storage, `uploads/${file.name}`); // Specify a path
+
+    console.log("Current Storage Bucket:", storage.app.options.storageBucket);
 
     try {
         await uploadBytes(storageRef, file); // Upload the file

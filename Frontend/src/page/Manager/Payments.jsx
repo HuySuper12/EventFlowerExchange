@@ -7,7 +7,7 @@ const PaymentsManager = () => {
   const [payments, setPayments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 10;
+  const pageSize = 8;
 
   // Fetch payments from API
   useEffect(() => {
@@ -15,7 +15,7 @@ const PaymentsManager = () => {
       setLoading(true);
       try {
         const response = await api.get("Transaction/ViewAllTransaction");
-        setPayments(response.data); // Assuming the response data is an array of payments
+        setPayments(response.data);
       } catch (error) {
         message.error("Failed to fetch payments");
       } finally {
@@ -50,7 +50,7 @@ const PaymentsManager = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (value) => `$${value.toFixed(2)}`,
+      render: (value) => formatCurrency(value),
     },
     {
       title: "Status",
@@ -76,6 +76,7 @@ const PaymentsManager = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
     },
     {
       title: "Actions",
@@ -95,7 +96,7 @@ const PaymentsManager = () => {
         <div>
           <p>User ID: {payment.userId}</p>
           <p>Payment Type: {payment.paymentType}</p>
-          <p>Amount: ${payment.amount.toFixed(2)}</p>
+          <p>Amount: {formatCurrency(payment.amount.toFixed(2))}</p>
           <p>Status: {payment.status}</p>
           <p>Date/Time: {new Date(payment.createdAt).toLocaleString()}</p>
         </div>
@@ -105,6 +106,29 @@ const PaymentsManager = () => {
   };
 
   const totalPayments = payments.length;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
 
   return (
     <div>

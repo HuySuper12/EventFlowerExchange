@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./index.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
+import { authChat } from "../../config/firebasechat";
+import { Avatar } from "antd";
+import { MessageSquareText } from "lucide-react";
 
 function Header() {
   const [visible, setVisible] = useState(false);
@@ -29,10 +32,16 @@ function Header() {
     navigate("/add-product");
   };
 
+  const handleChat = () => {
+    navigate("/chat/hello");
+  };
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("email");
+    sessionStorage.removeItem("UIDFireBase");
+    authChat.signOut();
     setIsLoggedIn(false);
     setRole(null);
     navigate("/");
@@ -109,17 +118,22 @@ function Header() {
   }, [email]);
 
   const fetchShopNotifications = async (email) => {
+    const encodedEmail = encodeURIComponent(email);
     try {
-      const encodedEmail = encodeURIComponent(email);
       const response = await api.get(
         `Notification/ViewShopNotificationByUserEmail/${encodedEmail}`
       );
       setShopNotifications(response.data.reverse());
+      console.log("shop noti", response.data);
     } catch (error) {
       console.error("Error fetching shop notifications:", error);
       return [];
     }
   };
+
+  useEffect(() => {
+    fetchShopNotifications(email);
+  }, [email]);
 
   useEffect(() => {
     const loadNotifications = async () => {
@@ -217,19 +231,22 @@ function Header() {
                     </div>
                   ))}
 
-                  <button className="text-blue-500 text-sm cursor-pointer hover:underline text-center" onClick={handleShowMoreNoti}>
+                  <button
+                    className="text-blue-500 text-sm cursor-pointer hover:underline text-center"
+                    onClick={handleShowMoreNoti}
+                  >
                     Show more
                   </button>
                 </div>
               </div>
             </div>
             <div className="group relative">
-              <img
+              <Avatar
                 src={
                   accountData?.picture ||
                   "https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
                 }
-                className="w-8 cursor-pointer rounded-full"
+                className="w-10 h-10 cursor-pointer rounded-full"
                 alt="Profile Icon"
               />
               <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
@@ -277,6 +294,14 @@ function Header() {
                 </p>
               </Link>
             )}
+
+            <div className="group relative">
+              <MessageSquareText
+                size={35}
+                className="cursor-pointer"
+                onClick={handleChat}
+              />
+            </div>
           </>
         ) : (
           <div className="flex items-center gap-4">

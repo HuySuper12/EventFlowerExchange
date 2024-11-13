@@ -18,7 +18,7 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); // Loading state
-  const pageSize = 8;
+  const pageSize = 6;
 
   const fetchCustomer = async () => {
     const role = "Buyer";

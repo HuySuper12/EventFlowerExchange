@@ -170,7 +170,7 @@ function Product() {
         <div>
           <div className="border border-gray-300 ml-[120px] rounded-[10px] w-[200px] h-[150px] mt-[30px]">
             <p className="text-center mb-3 text-xl font-medium mt-[10px]">
-              Phân loại sản phẩm
+              Categories
             </p>
             <div className="flex flex-col gap-3 text-base font-light text-gray-700">
               <p className="flex items-center text-lg ml-[20px]">
@@ -181,7 +181,7 @@ function Product() {
                   checked={filters.batch}
                   onChange={handleFilterChange}
                 />
-                Hoa theo lô
+                Batch
               </p>
               <p className="flex items-center text-lg ml-[20px]">
                 <input
@@ -191,14 +191,14 @@ function Product() {
                   checked={filters.event}
                   onChange={handleFilterChange}
                 />
-                Hoa sự kiện
+                Event
               </p>
             </div>
           </div>
 
           <div className="border border-gray-300 ml-[120px] rounded-[10px] w-[200px] h-[190px] mt-[30px]">
             <p className="text-center mb-3 text-xl font-medium mt-[10px]">
-              Phân loại hoa
+              Flower Type
             </p>
             <div className="flex flex-col gap-3 text-base font-light text-gray-700">
               <p className="flex items-center text-lg ml-[20px]">
@@ -209,7 +209,7 @@ function Product() {
                   checked={filters.wedding}
                   onChange={handleFilterChange}
                 />
-                Hoa tiệc cưới
+                Wedding
               </p>
               <p className="flex items-center text-lg ml-[20px]">
                 <input
@@ -219,7 +219,7 @@ function Product() {
                   checked={filters.birthday}
                   onChange={handleFilterChange}
                 />
-                Hoa sinh nhật
+                Birthday
               </p>
               <p className="flex items-center text-lg ml-[20px]">
                 <input
@@ -229,7 +229,7 @@ function Product() {
                   checked={filters.conference}
                   onChange={handleFilterChange}
                 />
-                Hoa hội nghị
+                Conference
               </p>
             </div>
           </div>

@@ -9,7 +9,7 @@ const RequestPending = () => {
   const [withdrawRequests, setWithdrawRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 10;
+  const pageSize = 6;
 
   useEffect(() => {
     fetchWithdrawRequests();

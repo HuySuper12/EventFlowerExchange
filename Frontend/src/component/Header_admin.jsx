@@ -1,52 +1,37 @@
-import React, { useState } from "react";
-import { Layout, Input, Switch, Select, Avatar, Popover, message } from "antd";
-import { SearchOutlined, UserOutlined } from "@ant-design/icons";
-import AdminProfileEdit from "./AdminProfileEdit";
+import React, { useEffect, useState } from "react";
+import { Layout, Avatar } from "antd";
+import api from "../config/axios";
 
 const { Header: AntHeader } = Layout;
-const { Option } = Select;
 
-const Header = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
-  const [adminInfo, setAdminInfo] = useState({
-    name: "Admin Name",
-    email: "admin@example.com",
-    phone: "123-456-7890",
-    avatar: null,
-  });
+const Header = () => {
+  const [adminInfo, setAdminInfo] = useState({});
 
-  const handleAdminInfoUpdate = (newInfo) => {
-    setAdminInfo({ ...adminInfo, ...newInfo });
-    message.success("Admin information updated successfully");
-  };
+  useEffect(() => {
+    const fetchAdminInfo = async () => {
+      const email = sessionStorage.getItem("email");
+      const encodedEmail = encodeURIComponent(email);
+      try {
+        const response = await api.get(
+          `Account/GetAccountByEmail/${encodedEmail}`
+        );
+        setAdminInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching admin profile:", error);
+      }
+    };
 
-  const content = (
-    <div>
-      <AdminProfileEdit
-        adminInfo={adminInfo}
-        onUpdate={handleAdminInfoUpdate}
-      />
-    </div>
-  );
+    fetchAdminInfo();
+  }, []);
 
   return (
     <AntHeader className="bg-white dark:bg-gray-900 flex items-center justify-between px-6">
-      <div className="flex items-center">
-        
-      </div>
+      <div className="flex items-center"></div>
       <div className="flex items-center space-x-4">
-        <Switch
-          checked={darkMode}
-          onChange={toggleDarkMode}
-          checkedChildren="🌙"
-          unCheckedChildren="☀️"
-        />
-
-        <Popover content={content} title="Admin Profile" trigger="click">
-          <div className="flex items-center cursor-pointer">
-            <Avatar src={adminInfo.avatar} icon={<UserOutlined />} />
-            <span className="ml-2 text-sm font-medium">{adminInfo.name}</span>
-          </div>
-        </Popover>
+        <div className="flex items-center cursor-pointer">
+          <Avatar src={adminInfo.picture} />
+          <span className="ml-2 text-sm font-medium">{adminInfo.name}</span>
+        </div>
       </div>
     </AntHeader>
   );

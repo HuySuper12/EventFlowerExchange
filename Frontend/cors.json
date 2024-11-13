@@ -1,0 +1,9 @@
+[
+    {
+      "origin": ["http://localhost:5174"],
+      "method": ["GET", "POST", "PUT"],
+      "responseHeader": ["Content-Type", "Authorization"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  

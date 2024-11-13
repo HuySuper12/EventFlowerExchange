@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom"; // Import useParams
-import { Image, Rate } from "antd";
+import { Button, Form, Image, Input, Modal, Rate } from "antd";
 import Header from "../../../component/header";
 import Footer from "../../../component/footer";
 import api from "../../../config/axios";
@@ -24,10 +24,42 @@ const ProductPage = () => {
   const [buyerRating, setBuyerRating] = useState([]);
   const [cartData, setCartData] = useState([]);
   const email = sessionStorage.getItem("email");
+  const [user, setUser] = useState(null);
+  const [reportVisible, setReportVisible] = useState(false);
+  const [reason, setReason] = useState("");
+
   // Function to fetch product details from API
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  }, []);
+
+  const handleGetUser = async () => {
+    const email = sessionStorage.getItem("email");
+    const EncodeEmail = encodeURIComponent(email);
+    if (email) {
+      const response = await api.get(
+        `Account/GetAccountByEmail/${EncodeEmail}`
+      );
+      setUser(response.data);
+      console.log("buyer:", response.data);
+    }
+  };
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  }, []);
+
   const fetchProductDetails = async () => {
     try {
-      const response = await api.get(`Product/SearchProduct/${id}`);
+      const response = await api.get(`Product/SearchProduct/`, {
+        params: {
+          id: id,
+        },
+      });
       setProductDetails(response.data);
       setMainImage(response.data.productImage[0] || "");
       console.log("product", response.data);
@@ -251,7 +283,7 @@ const ProductPage = () => {
       },
     });
     setRating(response.data);
-    console.log(response.data);
+    console.log("rating:", response.data);
   };
 
   useEffect(() => {
@@ -276,10 +308,6 @@ const ProductPage = () => {
     }
   }, [rating.buyerId]);
 
-  const handleChat = () => {
-    navigate(`/chat/${seller.id}`); // Navigate to the chat page with the seller's ID
-  };
-
   useEffect(() => {
     const fetchCartData = async () => {
       if (email) {
@@ -298,6 +326,35 @@ const ProductPage = () => {
 
     fetchCartData();
   }, [email]);
+
+  const handleChatWithSeller = async () => {
+    navigate(`/chat/${seller.email}`);
+  };
+
+  const handleReport = async () => {
+    setReportVisible(true);
+  };
+
+  const handleSubmitReport = async () => {
+    try {
+      const response = await api.post(`Request/CreateRequest`, {
+        userId: user.id,
+        productId: id,
+        reason: reason,
+        requestType: "Report",
+        status: "Pending",
+      });
+      console.log(reason);
+      console.log(response.data);
+      if (response.data === true) {
+        toast.success("Request report is sent successfully!");
+        setReportVisible(false);
+      }
+    } catch (error) {
+      console.error("Error reporting this product:", error);
+      toast.error("Failed to report this product.");
+    }
+  };
 
   return (
     <>
@@ -389,6 +446,7 @@ const ProductPage = () => {
 
             {/* Chỉ hiển thị nút "Add to Cart" nếu người dùng không phải là seller */}
             {userRole !== "Seller" &&
+              productDetails?.status === "Enable" &&
               !cartData.some(
                 (item) => item.productId === productDetails.productId
               ) && (
@@ -412,7 +470,7 @@ const ProductPage = () => {
         <div className="flex gap-20 items-center p-4 rounded-lg shadow-md">
           <div className="flex items-center gap-4">
             <img
-              src="https://via.placeholder.com/80"
+              src={seller.picture}
               alt="Profile"
               className="w-16 h-16 rounded-full"
             />
@@ -424,7 +482,7 @@ const ProductPage = () => {
                 {userRole !== "Seller" && (
                   <button
                     className="px-4 py-2 bg-white text-gray-800 border border-gray-800 font-bold rounded-md hover:bg-blue-200 transition flex items-center gap-2"
-                    onClick={handleChat}
+                    onClick={handleChatWithSeller}
                   >
                     <img
                       src="https://cdn-icons-png.freepik.com/512/5962/5962463.png"
@@ -473,7 +531,10 @@ const ProductPage = () => {
                     </button>
                   ))}
                 {userRole !== "Seller" && (
-                  <button className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-red-400 transition flex items-center gap-2">
+                  <button
+                    className="px-4 py-2 bg-gray-200 text-black font-bold rounded-md hover:bg-red-400 transition flex items-center gap-2"
+                    onClick={handleReport}
+                  >
                     <img
                       src="https://firebasestorage.googleapis.com/v0/b/event-flower-exchange.appspot.com/o/png-transparent-error-icon-thumbnail-removebg-preview.png?alt=media&token=0519d1a5-51eb-4243-863d-7fc860a4c522"
                       alt="Report Icon"
@@ -578,6 +639,32 @@ const ProductPage = () => {
       </div>
 
       <Footer />
+
+      <Modal
+        title="Report Product"
+        open={reportVisible}
+        onOk={handleSubmitReport}
+        onCancel={() => setReportVisible(false)}
+        footer={[
+          <Button key="back" onClick={() => setReportVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" danger onClick={handleSubmitReport}>
+            Report
+          </Button>,
+        ]}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Reason for Report This Product" required>
+            <Input.TextArea
+              rows={4}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Please provide a reason for report this product"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };

@@ -1,19 +1,18 @@
-// src/page/Admin/Posts.jsx
 import React, { useState, useEffect } from "react";
 import {
   Table,
   Tag,
   Space,
+  Modal,
   Button,
   message,
   Pagination,
   Spin,
-  Modal,
-  Input,
   Image,
+  Form,
+  Input,
 } from "antd";
 import api from "../../config/axios";
-import { Form } from "antd";
 
 const PostsManager = () => {
   const [posts, setPosts] = useState([]);
@@ -21,6 +20,9 @@ const PostsManager = () => {
   const [loading, setLoading] = useState(true);
   const [productDetails, setProductDetails] = useState(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
+  const [rejectVisible, setRejectVisible] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
   const pageSize = 8;
 
   const fetchPosts = async () => {
@@ -40,7 +42,12 @@ const PostsManager = () => {
   const fetchProductDetails = async (productId) => {
     setLoading(true);
     try {
-      const response = await api.get(`Product/SearchProduct/${productId}`);
+      const response = await api.get(`Product/SearchProduct`, {
+        params: {
+          id: productId,
+        },
+      });
+      console.log("Product details:", response.data);
       setProductDetails(response.data);
       setDetailsVisible(true);
     } catch (error) {
@@ -63,6 +70,87 @@ const PostsManager = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const handleAccept = async (post) => {
+    setLoading(true);
+    try {
+      const payload = {
+        requestId: post.requestId,
+        userId: post.userId,
+        requestType: "Post",
+        productId: post.productId,
+        status: "Accepted",
+      };
+      console.log("Payload being sent:", payload);
+
+      const response = await api.put("Request/UpdateRequest", payload);
+
+      if (response.data === true) {
+        setPosts(
+          posts.map((p) =>
+            p.productId === post.productId ? { ...p, status: "Accepted" } : p
+          )
+        );
+        message.success(`Post ${post.productId} has been accepted.`);
+      } else {
+        throw new Error("Failed to update post status");
+      }
+    } catch (error) {
+      console.error("Error accepting post: ", error);
+      message.error(
+        "Failed to accept post. Please check server logs for details."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReject = async (post, reason) => {
+    setLoading(true);
+    try {
+      const response = await api.put("Request/UpdateRequest", {
+        userId: post.userId,
+        requestType: "Post",
+        productId: post.productId,
+        status: "Rejected",
+        reason: reason,
+      });
+
+      if (response.data === true) {
+        setPosts(
+          posts.map((p) =>
+            p.productId === post.productId ? { ...p, status: "Rejected" } : p
+          )
+        );
+        message.success(`Post ${post.productId} has been rejected.`);
+      } else {
+        throw new Error("Failed to update post status");
+      }
+    } catch (error) {
+      console.error("Error rejecting post: ", error);
+      message.error("Failed to reject post.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showRejectModal = (post) => {
+    setSelectedPost(post);
+    setRejectVisible(true);
+  };
+
+  const handleRejectOk = () => {
+    if (selectedPost) {
+      handleReject(selectedPost, rejectReason);
+    }
+    setRejectVisible(false);
+    setRejectReason("");
+  };
+
+  const handleRejectCancel = () => {
+    setRejectVisible(false);
+    setRejectReason("");
+  };
 
   const renderList = () => {
     const paginatedPosts = posts.slice(
@@ -96,6 +184,7 @@ const PostsManager = () => {
                 title: "Posted At",
                 dataIndex: "createdAt",
                 key: "createdAt",
+                render: (value) => formatDate(value),
               },
               {
                 title: "Status",
@@ -120,6 +209,19 @@ const PostsManager = () => {
                 key: "actions",
                 render: (_, record) => (
                   <Space size="middle">
+                    {record.status === "Pending" && (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={() => handleAccept(record)}
+                        >
+                          Accept
+                        </Button>
+                        <Button danger onClick={() => showRejectModal(record)}>
+                          Reject
+                        </Button>
+                      </>
+                    )}
                     <Button onClick={() => handleViewDetails(record.productId)}>
                       View Details
                     </Button>
@@ -144,6 +246,22 @@ const PostsManager = () => {
         </div>
       </>
     );
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
   };
 
   return (
@@ -266,24 +384,40 @@ const PostsManager = () => {
                 flexWrap: "wrap",
               }}
             >
-              {productDetails.productImage.map((url, index) => (
-                <Image
-                  key={index}
-                  src={url}
-                  alt="Product"
-                  style={{
-                    width: 150,
-                    height: 150,
-                    margin: 5,
-                    objectFit: "cover",
-                  }}
-                />
-              ))}
+              {Array.isArray(productDetails.productImage) ? (
+                productDetails.productImage.map((url, index) => (
+                  <Image
+                    key={index}
+                    src={url}
+                    alt="Product"
+                    style={{
+                      width: 150,
+                      height: 150,
+                      margin: 5,
+                      objectFit: "cover",
+                    }}
+                  />
+                ))
+              ) : (
+                <p>No images available</p>
+              )}
             </div>
           </Form>
         ) : (
           <p>No details available</p>
         )}
+      </Modal>
+      <Modal
+        title="Reject Reason"
+        visible={rejectVisible}
+        onOk={handleRejectOk}
+        onCancel={handleRejectCancel}
+      >
+        <Input.TextArea
+          value={rejectReason}
+          onChange={(e) => setRejectReason(e.target.value)}
+          placeholder="Enter reason for rejection"
+        />
       </Modal>
     </div>
   );

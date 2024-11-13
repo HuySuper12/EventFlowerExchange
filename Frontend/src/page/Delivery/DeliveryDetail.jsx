@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import {
   Card,
   Table,
@@ -30,8 +29,6 @@ const getBase64 = (file) =>
   });
 
 const DeliveryDetail = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCancel, setIsCancel] = useState(false);
   const [reason, setReason] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const [deliveryLog, setDeliveryLog] = useState(null);
@@ -47,6 +44,8 @@ const DeliveryDetail = () => {
   const [buyerAccount, setBuyerAccount] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
   const [deliveryStatus, setDeliveryStatus] = useState(null);
+  const [sellerDetail, setSellerDetail] = useState(null);
+  const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false);
   const fetchDeliveryLog = async () => {
     try {
       const response = await api.get(
@@ -79,6 +78,7 @@ const DeliveryDetail = () => {
         params: { id: deliveryLog.orderId },
       });
       setProductData(response.data);
+      console.log("Product Data:", response.data);
     } catch (error) {
       console.error("Error fetching order details:", error);
     }
@@ -166,6 +166,9 @@ const DeliveryDetail = () => {
         fetchAccountData();
         fetchOrderDetails();
         setDeliveryStatus("success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
       } else {
         console.log("Response error:", response); // Check if API response is correct
       }
@@ -213,10 +216,35 @@ const DeliveryDetail = () => {
         fetchAccountData();
         fetchOrderDetails();
         setDeliveryStatus("fail");
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
       }
     } catch (error) {
       console.error("Error updating delivery log:", error);
       message.error("Failed to update delivery status.");
+    }
+  };
+
+  //Handle cancel order
+  const handleCancelOrder = async () => {
+    const role = sessionStorage.getItem("role");
+    try {
+      const response = await api.put(`Order/CancelOrderByBuyer`, null, {
+        params: {
+          orderId: deliveryLog?.orderId,
+          reason: reason,
+          role: role,
+        },
+      });
+      console.log(response.data);
+      if (response.data === true) {
+        message.success("Order canceled successfully!");
+        setIsCancelOrderModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error canceling order:", error);
+      message.error("Failed to cancel order.");
     }
   };
 
@@ -367,6 +395,30 @@ const DeliveryDetail = () => {
     }
   };
 
+  const viewSellerDetail = async () => {
+    if (!productData || productData.length === 0) return; // Check if productData is available
+    const sellerId = productData[0]?.sellerId; // Access the first product's sellerId
+    console.log("Seller ID:", sellerId);
+    try {
+      const response = await api.get(`Account/GetAccountById/${sellerId}`);
+      setSellerDetail(response.data);
+      console.log("Seller Detail:", response.data);
+    } catch (error) {
+      console.error("Error fetching seller details:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (productData.length > 0) {
+      viewSellerDetail();
+    }
+  }, [productData]);
+
+  console.log("Delivery Log:", deliveryLog);
+  console.log("Delivery Time:", deliveryTime);
+  console.log("Current Step:", currentStep);
+  console.log("Delivery Status:", deliveryStatus);
+
   return (
     <div>
       <Header title="" />
@@ -424,7 +476,12 @@ const DeliveryDetail = () => {
                     icon={
                       <div
                         style={{
-                          backgroundColor: deliveryStatus ? "#52c41a" : "#d9d9d9",
+                          backgroundColor:
+                            deliveryStatus === "success" ||
+                            deliveryLog?.status === null ||
+                            deliveryLog?.status === "Delivering"
+                              ? "#52c41a"
+                              : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",
@@ -441,12 +498,20 @@ const DeliveryDetail = () => {
                   />
                   <Step
                     title="Take Order"
-                    description={deliveryTime?.deliveringTime ? formatDate(deliveryTime.deliveringTime) : ""}
+                    description={
+                      deliveryTime?.deliveringTime
+                        ? formatDate(deliveryTime.deliveringTime)
+                        : ""
+                    }
                     status={deliveryStatus ? "finish" : "wait"}
                     icon={
                       <div
                         style={{
-                          backgroundColor: deliveryStatus ? "#52c41a" : "#d9d9d9",
+                          backgroundColor:
+                            deliveryStatus === "success" ||
+                            deliveryLog?.status === "Delivering"
+                              ? "#52c41a"
+                              : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",
@@ -468,7 +533,12 @@ const DeliveryDetail = () => {
                     icon={
                       <div
                         style={{
-                          backgroundColor: deliveryStatus === "success" ? "#52c41a" : deliveryStatus === "fail" ? "#f5222d" : "#d9d9d9",
+                          backgroundColor:
+                            deliveryStatus === "success"
+                              ? "#52c41a"
+                              : deliveryStatus === "fail"
+                              ? "#f5222d"
+                              : "#d9d9d9",
                           borderRadius: "50%",
                           width: "32px",
                           height: "32px",
@@ -489,6 +559,28 @@ const DeliveryDetail = () => {
                   <div className="flex items-center">
                     <User className="mr-2" style={{ color: "#13c2c2" }} />
                     <span>Courier: {accountData?.name}</span>
+                  </div>
+
+                  <div className="text-lg font-semibold justify-center ml-[220px]">
+                    {" "}
+                    Information of Seller
+                  </div>
+                  <div className="flex items-center">
+                    <Phone className="mr-2" style={{ color: "#52c41a" }} />
+                    <span>Phone: {sellerDetail?.phoneNumber}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <User className="mr-2" style={{ color: "#f5222d" }} />
+                    <span>Customer: {sellerDetail?.name}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Home className="mr-2" style={{ color: "#722ed1" }} />
+                    <span>Take Order at: {sellerDetail?.address}</span>
+                  </div>
+
+                  <div className="text-lg font-semibold justify-center ml-[200px]">
+                    {" "}
+                    Information of Customer
                   </div>
                   <div className="flex items-center">
                     <Phone className="mr-2" style={{ color: "#52c41a" }} />
@@ -513,19 +605,30 @@ const DeliveryDetail = () => {
                 {/* Buttons based on deliveryLog.status */}
                 <div className="mt-6 flex justify-between">
                   {deliveryLog?.status === null && (
-                    <Button
-                      type="default"
-                      className="mr-2"
-                      size="large"
-                      onClick={handleUpdateDelivering}
-                      style={{
-                        backgroundColor: "white",
-                        borderColor: "#1890ff",
-                        color: "#1890ff",
-                      }}
-                    >
-                      Update Status to Delivering
-                    </Button>
+                    <Space>
+                      <Button
+                        type="default"
+                        className="mr-2"
+                        size="large"
+                        onClick={handleUpdateDelivering}
+                        style={{
+                          backgroundColor: "white",
+                          borderColor: "#1890ff",
+                          color: "#1890ff",
+                        }}
+                      >
+                        Update Status to Delivering
+                      </Button>
+                      <Button
+                        type="default"
+                        className="mr-2"
+                        size="large"
+                        onClick={() => setIsCancelOrderModalOpen(true)}
+                        danger
+                      >
+                        Cancel Order
+                      </Button>
+                    </Space>
                   )}
 
                   {deliveryLog?.status === "Delivering" && (
@@ -620,6 +723,27 @@ const DeliveryDetail = () => {
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="Please provide a reason for failure"
+                />
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          {/* Modal for cancel order */}
+          <Modal
+            title="Cancel Order"
+            open={isCancelOrderModalOpen}
+            onOk={handleCancelOrder}
+            onCancel={() => setIsCancelOrderModalOpen(false)}
+            okText="Confirm"
+            cancelText="Cancel"
+          >
+            <Form layout="vertical">
+              <Form.Item label="Reason for Failure" required>
+                <Input.TextArea
+                  rows={4}
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="Please provide a reason for cancel"
                 />
               </Form.Item>
             </Form>

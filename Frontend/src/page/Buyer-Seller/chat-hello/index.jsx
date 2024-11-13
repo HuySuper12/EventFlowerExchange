@@ -5,8 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../../config/axios";
 import dayjs from "dayjs";
 
-function Chat_Page() {
-  const [message, setMessage] = useState("");
+function Chat_Hello() {
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const { emailReceiver } = useParams();
@@ -162,32 +161,6 @@ function Chat_Page() {
     }
   }, [emailSender, emailReceiver, accountDataSender, accountDataReceiver]);
 
-  // Hàm gửi tin nhắn
-  const handleSendMessage = async () => {
-    if (message.trim() !== "") {
-      const newMessage = {
-        senderEmail: emailSender,
-        reveiverEmail: emailReceiver,
-        contents: message,
-        createdAt: new Date().toISOString(),
-      };
-
-      try {
-        await api.post("Message/CreateMessage", newMessage);
-        setMessage(""); // Reset ô input
-        fetchMessages();
-        scrollToBottom(); // Cuộn xuống cuối sau khi gửi tin nhắn
-      } catch (error) {
-        console.error("Error sending message:", error);
-      }
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (
@@ -196,7 +169,6 @@ function Chat_Page() {
         accountDataSender &&
         accountDataReceiver
       ) {
-        fetchMessages();
         handleGetListChat();
       }
     }, 1000);
@@ -368,15 +340,17 @@ function Chat_Page() {
 
           <div className="h-12 w-12 p-2  rounded-full text-white font-semibold flex items-center justify-center"></div>
         </div>
+        {/* Chat list */}
 
         <div className="flex flex-row justify-between bg-white">
-          {/* Chat list */}
-          <div className="flex flex-col w-2/5 border-r-2 overflow-y-auto ">
+          <div className="flex flex-col w-2/5 border-r-2 overflow-y-auto">
             <Link to={"/chat"}>
               <div className="flex flex-row py-4 px-2 justify-center items-center hover:bg-gray-100 cursor-pointer">
                 <Avatar
                   className="w-[60px] h-12"
-                  src={"https://i.etsystatic.com/29488153/r/il/e0f22b/3860244894/il_fullxfull.3860244894_p9az.jpg"}
+                  src={
+                    "https://i.etsystatic.com/29488153/r/il/e0f22b/3860244894/il_fullxfull.3860244894_p9az.jpg"
+                  }
                 />
                 <div className="w-full ml-[20px]">
                   <div className="text-lg font-semibold">Hello</div>
@@ -387,12 +361,10 @@ function Chat_Page() {
                 </div>
               </div>
             </Link>
+
             {chatList.map((chat) => (
               <Link to={`/chat/${chat.email}`} key={chat.id}>
-                <div
-                  className="flex flex-row py-4 px-2 justify-center items-center  hover:bg-gray-100 cursor-pointer"
-                  key={chat.id}
-                >
+                <div className="flex flex-row py-4 px-2 justify-center items-center hover:bg-gray-100 cursor-pointer">
                   <Avatar
                     className="w-[60px] h-12"
                     src={
@@ -433,85 +405,13 @@ function Chat_Page() {
                   dark:[&::-webkit-scrollbar-track]:bg-neutral-100
                   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-300"
             >
-              {messages.map((msg, index) => {
-                const isHighlighted =
-                  matchedIndexes.includes(index) &&
-                  index === matchedIndexes[highlightedIndex];
-
-                const parts = msg.contents.split(
-                  new RegExp(`(${searchTerm})`, "gi")
-                );
-
-                return (
-                  <div
-                    key={index}
-                    id={`message-${index}`}
-                    className={`flex mt-[20px] ${
-                      msg.senderId === idSender
-                        ? "justify-end"
-                        : "justify-start"
-                    } mb-4`}
-                  >
-                    {msg.senderId !== idSender && (
-                      <Avatar
-                        className="w-[35px] h-8"
-                        src={
-                          accountDataReceiver?.picture ||
-                          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                        }
-                      />
-                    )}
-                    <div
-                      className={`ml-2 py-3 px-4 ${
-                        msg.senderId === idSender
-                          ? "bg-blue-400 text-white"
-                          : "bg-gray-200 text-black"
-                      } rounded-br-3xl rounded-tl-3xl rounded-tr-xl`}
-                    >
-                      {parts.map((part, i) =>
-                        part.toLowerCase() === searchTerm.toLowerCase() &&
-                        isHighlighted ? (
-                          <mark key={i}>{part}</mark>
-                        ) : (
-                          <span key={i}>{part}</span>
-                        )
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              <div ref={messagesEndRef} />
+              <div className="text-5xl font- mt-10 ml-[300px]">Hello !!!</div>
             </div>
 
-            <div className="flex items-center py-5">
-              <input
-                className="w-full bg-gray-300 py-3 px-3 rounded-xl mr-2"
-                type="text"
-                placeholder="Type your message here..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <button
-                className="bg-blue-500 text-white py-3 px-5 rounded-xl"
-                onClick={handleSendMessage}
-              >
-                Send
-              </button>
-            </div>
+            <div className="flex items-center py-5"></div>
           </div>
           <div className="w-2/5 border-l-2 px-5">
-            <div className="flex flex-col">
-              <div className="font-semibold text-xl py-4">
-                {accountDataReceiver?.name}
-              </div>
-
-              <div className="font-semibold py-4">
-                Join: {formatDate(accountDataReceiver?.createdAt)}
-              </div>
-              <div className="font-light">
-                Address: {accountDataReceiver?.address}
-              </div>
-            </div>
+            <div className="flex flex-col"></div>
           </div>
         </div>
       </div>
@@ -519,4 +419,4 @@ function Chat_Page() {
   );
 }
 
-export default Chat_Page;
+export default Chat_Hello;

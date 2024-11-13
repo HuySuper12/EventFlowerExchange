@@ -187,7 +187,7 @@ const Shippers = () => {
           </Form.Item>
           <Form.Item
             name="address"
-            label="Address"
+            label="Location"
             rules={[
               { required: true, message: "Please input the address!" },
               {
@@ -245,7 +245,7 @@ const Shippers = () => {
           </Form.Item>
           <Form.Item
             name="address"
-            label="Address"
+            label="Location"
             rules={[
               { required: true, message: "Please input the address!" },
               {

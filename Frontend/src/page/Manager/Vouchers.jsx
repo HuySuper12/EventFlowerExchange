@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, Form, Input, InputNumber, message } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+} from "antd";
 import api from "../../config/axios";
 
 const VouchersManager = () => {
@@ -47,7 +56,7 @@ const VouchersManager = () => {
       title: "Min Order Value",
       dataIndex: "minOrderValue",
       key: "minOrderValue",
-      render: (value) => `$${value}`,
+      render: (value) => formatCurrency(value),
     },
     {
       title: "Expiry Date",
@@ -55,7 +64,28 @@ const VouchersManager = () => {
       key: "expiryDate",
       render: (text) => new Date(text).toLocaleDateString(),
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <span>
+          <Popconfirm
+            title="Are you sure you want to delete this voucher?"
+            onConfirm={() => handleDeleteVoucher(record.voucherId)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
+        </span>
+      ),
+    },
   ];
+
+  const showModal = () => {
+    setIsModalVisible(true);
+    form.resetFields();
+  };
 
   const handleOk = async () => {
     try {
@@ -90,10 +120,36 @@ const VouchersManager = () => {
     setIsModalVisible(false);
   };
 
+  const handleDeleteVoucher = async (id) => {
+    try {
+      const response = await api.delete(`Voucher/RemoveVoucher/${id}`);
+      if (response.data === true) {
+        message.success("Voucher deleted successfully");
+        fetchVouchers();
+      } else {
+        message.error(
+          "Failed to delete voucher. API response was not successful."
+        );
+      }
+    } catch (error) {
+      message.error("Failed to delete voucher");
+      console.error("API error:", error);
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Vouchers</h1>
-
+      <Button onClick={showModal} type="primary" className="mb-4">
+        Create New Voucher
+      </Button>
       <Table columns={columns} dataSource={vouchers} rowKey="voucherId" />
 
       <Modal

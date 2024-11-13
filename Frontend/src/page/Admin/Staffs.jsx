@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, message, Popconfirm } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Table, Button, Modal, Form, Input, message, Popconfirm } from "antd";
 import api from "../../config/axios";
 
 const Staffs = () => {
@@ -11,48 +11,50 @@ const Staffs = () => {
 
   // Fetch staff list from API
   const fetchStaffs = async () => {
-    const role = "staff"; 
+    const role = "staff";
     try {
       const response = await api.get(`Account/ViewAllAccount/${role}`);
       setStaffs(response.data);
     } catch (error) {
-      message.error('Failed to fetch staff list');
-      console.error('API error:', error);
+      message.error("Failed to fetch staff list");
+      console.error("API error:", error);
     }
   };
 
   useEffect(() => {
-    fetchStaffs(); 
+    fetchStaffs();
   }, []);
 
   // Table columns
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Phone',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
+      title: "Phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <span>
-          <Button onClick={() => showEditModal(record)} className="mr-2">Edit</Button>
+          <Button onClick={() => showEditModal(record)} className="mr-2">
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure you want to delete this staff?"
             onConfirm={() => handleDeleteStaff(record.id)}
@@ -69,48 +71,57 @@ const Staffs = () => {
   // Show modal for creating a new staff
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
-    form.resetFields(); 
+    form.resetFields();
   };
 
   // Show modal for editing an existing staff
   const showEditModal = (staff) => {
     setIsEditModalVisible(true);
     setEditingStaff(staff);
-    form.setFieldsValue(staff); 
+    form.setFieldsValue(staff);
   };
 
   // Handle creating a new staff
   const handleCreateStaff = async () => {
-    form.validateFields().then(async (values) => {
-      try {
-        await api.post(`Account/CreateAccount/Staff`, values);
-        message.success('New staff added successfully');
-        setIsCreateModalVisible(false);
-        fetchStaffs();
-      } catch (error) {
-        message.error('Failed to add new staff');
-        console.error('API error:', error);
-      }
-    }).catch((info) => {
-      console.log('Validate Failed:', info);
-    });
+    form
+      .validateFields()
+      .then(async (values) => {
+        try {
+          await api.post(`Account/CreateAccount/Staff`, values);
+          message.success("New staff added successfully");
+          setIsCreateModalVisible(false);
+          fetchStaffs();
+        } catch (error) {
+          message.error("Failed to add new staff");
+          console.error("API error:", error);
+        }
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
   };
 
   // Handle editing an existing staff
   const handleEditStaff = async () => {
-    form.validateFields().then(async (values) => {
-      try {
-        await api.put(`Account/UpdateAccount`, { ...values, id: editingStaff.id });
-        message.success('Staff updated successfully');
-        setIsEditModalVisible(false);
-        fetchStaffs(); 
-      } catch (error) {
-        message.error('Failed to update staff');
-        console.error('API error:', error);
-      }
-    }).catch((info) => {
-      console.log('Validate Failed:', info);
-    });
+    form
+      .validateFields()
+      .then(async (values) => {
+        try {
+          await api.put(`Account/UpdateAccount`, {
+            ...values,
+            id: editingStaff.id,
+          });
+          message.success("Staff updated successfully");
+          setIsEditModalVisible(false);
+          fetchStaffs();
+        } catch (error) {
+          message.error("Failed to update staff");
+          console.error("API error:", error);
+        }
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
   };
 
   // Handle deleting a staff
@@ -118,14 +129,14 @@ const Staffs = () => {
     try {
       const response = await api.delete(`Account/RemoveAccount/${id}`);
       if (response.data === true) {
-        message.success('Staff deleted successfully');
-        setStaffs(staffs.filter(staff => staff.id !== id));
+        message.success("Staff deleted successfully");
+        setStaffs(staffs.filter((staff) => staff.id !== id));
       } else {
-        message.error('Failed to delete staff');
+        message.error("Failed to delete staff");
       }
     } catch (error) {
-      message.error('Failed to delete staff');
-      console.error('API error:', error);
+      message.error("Failed to delete staff");
+      console.error("API error:", error);
     }
   };
 
@@ -148,42 +159,44 @@ const Staffs = () => {
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: 'Please input the name!' }]}
+            rules={[{ required: true, message: "Please input the name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="salary"
             label="Salary"
-            rules={[{ required: true, message: 'Please input the salary!' }]}
+            rules={[{ required: true, message: "Please input the salary!" }]}
           >
             <Input type="number" />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[{ required: true, message: "Please input the email!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="phoneNumber"
             label="Phone"
-            rules={[{ required: true, message: 'Please input the phone number!' }]}
+            rules={[
+              { required: true, message: "Please input the phone number!" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="address"
             label="Address"
-            rules={[{ required: true, message: 'Please input the address!' }]}
+            rules={[{ required: true, message: "Please input the address!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: 'Please input the password!' }]}
+            rules={[{ required: true, message: "Please input the password!" }]}
           >
             <Input.Password />
           </Form.Item>
@@ -201,35 +214,29 @@ const Staffs = () => {
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: 'Please input the name!' }]}
+            rules={[{ required: true, message: "Please input the name!" }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="salary"
-            label="Salary"
-            rules={[{ message: 'Please input the salary!' }]}
-          >
+          <Form.Item name="salary" label="Salary">
             <Input disabled value={editingStaff?.salary} />
           </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ message: 'Please input the email!' }]}
-          >
+          <Form.Item name="email" label="Email">
             <Input disabled value={editingStaff?.email} />
           </Form.Item>
           <Form.Item
             name="phone"
             label="Phone"
-            rules={[{ required: true, message: 'Please input the phone number!' }]}
+            rules={[
+              { required: true, message: "Please input the phone number!" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="address"
             label="Address"
-            rules={[{ required: true, message: 'Please input the address!' }]}
+            rules={[{ required: true, message: "Please input the address!" }]}
           >
             <Input />
           </Form.Item>

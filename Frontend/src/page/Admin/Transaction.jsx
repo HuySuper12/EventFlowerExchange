@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Table, message, Pagination, Tabs } from "antd";
 import api from "../../config/axios";
 import "antd/dist/reset.css";
-import TabPane from "antd/es/tabs/TabPane";
 
-const TransactionsManager = () => {
+const { TabPane } = Tabs;
+
+const Transaction = () => {
   const [deposit, setDeposit] = useState([]);
   const [withdraw, setWithdraw] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -183,4 +184,5 @@ const TransactionsManager = () => {
     </div>
   );
 };
-export default TransactionsManager;
+
+export default Transaction;

@@ -42,7 +42,7 @@ const TransactionCustomer = () => {
           params: { email: email, type: 1 }, // Corrected the params syntax
         });
         console.log(response);
-        setVNPAY(response.data); // Set the response data to transactions state
+        setVNPAY(response.data.reverse()); // Set the response data to transactions state
       } catch (error) {
         console.error("Error fetching transaction data:", error);
       }

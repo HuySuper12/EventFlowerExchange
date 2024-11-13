@@ -15,23 +15,25 @@ import api from "../../config/axios";
 
 const OrdersManager = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [shippers, setShippers] = useState([]);
   const [address, setAddress] = useState(""); // State for address input
   const [assignedShippers, setAssignedShippers] = useState([]); // Track assigned shippers
-  const pageSize = 12;
-  const totalOrders = orders.length;
+
+  const pageSize = 8;
 
   // Modal state for checking
   const [isCheckModalVisible, setIsCheckModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
   // Fetch data from API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await api.get("Order/ViewAllOrder");
-        setOrders(response.data.reverse());
+        setOrders(response.data);
+        setFilteredOrders(response.data);
         // Set assigned shippers based on orders
         const assigned = response.data
           .filter((order) => order.status === "Take Over")
@@ -46,6 +48,56 @@ const OrdersManager = () => {
 
     fetchOrders();
   }, []);
+
+  const handleFilter = (status) => {
+    const updatedStatuses = selectedStatuses.includes(status)
+      ? selectedStatuses.filter((s) => s !== status)
+      : [...selectedStatuses, status];
+
+    setSelectedStatuses(updatedStatuses);
+
+    if (updatedStatuses.length === 0) {
+      setFilteredOrders(orders);
+    } else {
+      setFilteredOrders(
+        orders.filter((order) => updatedStatuses.includes(order.status))
+      );
+    }
+  };
+
+  const getButtonClasses = (status) => {
+    const baseClasses = "px-4 py-2 border rounded";
+    const isSelected = selectedStatuses.includes(status);
+
+    switch (status) {
+      case "Pending":
+        return `${baseClasses} ${
+          isSelected
+            ? "border-yellow-400 text-yellow-400 hover:border-yellow-500 hover:text-yellow-500"
+            : "border-gray-300 text-gray-700"
+        }`;
+      case "Success":
+        return `${baseClasses} ${
+          isSelected
+            ? "border-green-400 text-green-400 hover:border-green-500 hover:text-green-500"
+            : "border-gray-300 text-gray-700"
+        }`;
+      case "Take Over":
+        return `${baseClasses} ${
+          isSelected
+            ? "border-blue-400 text-blue-400 hover:border-blue-500 hover:text-blue-500"
+            : "border-gray-300 text-gray-700"
+        }`;
+      case "Delivering":
+        return `${baseClasses} ${
+          isSelected
+            ? "border-purple-400 text-purple-400 hover:border-purple-500 hover:text-purple-500"
+            : "border-gray-300 text-gray-700"
+        }`;
+      default:
+        return baseClasses;
+    }
+  };
 
   const columns = [
     {
@@ -67,7 +119,7 @@ const OrdersManager = () => {
       title: "Total Price",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (price) => `$${(price / 1000).toFixed(2)}k`,
+      render: (price) => formatCurrency(price),
       sorter: (a, b) => a.totalPrice - b.totalPrice,
     },
     {
@@ -75,6 +127,7 @@ const OrdersManager = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
     },
     {
       title: "Status",
@@ -104,35 +157,134 @@ const OrdersManager = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => showOrderDetails(record)}>View Details</Button>
+          {record.status === "Pending" && (
+            <Button onClick={() => handleCheck(record)}>Check</Button>
+          )}
+          {record.status === "Pending" && (
+            <Button danger onClick={() => showOrderDetails(record)}>
+              Reject
+            </Button>
+          )}
         </Space>
       ),
     },
   ];
 
-  const showOrderDetails = (order) => {
-    Modal.info({
-      title: `Order Details - ${order.orderId}`,
-      content: (
-        <div>
-          <p>
-            <strong>Status:</strong> {order.status}
-          </p>
-          <p>
-            <strong>Delivery Address:</strong> {order.deliveredAt}
-          </p>
-          <p>
-            <strong>Total Price:</strong> ${order.totalPrice}
-          </p>
-          <p>
-            <strong>Phone Number:</strong> {order.phoneNumber}
-          </p>
-          <p>
-            <strong>Created At:</strong> {order.createdAt}
-          </p>
-        </div>
-      ),
-      onOk() {},
-    });
+  const getProgressStepClass = (step) => {
+    if (status === "Pending" && step === 1) return "bg-blue-600";
+    if (status === "Delivering" && (step === 1 || step === 2))
+      return "bg-blue-600";
+    if (status === "Success" && step <= 3) return "bg-blue-600";
+    return "bg-gray-400";
+  };
+
+  const showOrderDetails = async (order) => {
+    try {
+      const response = await api.get(
+        `Order/ViewOrderDetail?id=${order.orderId}`
+      );
+      const orderDetails = response.data;
+
+      Modal.info({
+        title: "Order Details",
+        content: (
+          <div className="p-5">
+            <div className="mt-5">
+              <p className="text-md font-medium">Buyer Name: {order.name}</p>
+              <p className="text-md font-medium">
+                Phone Number: {order.phoneNumber}
+              </p>
+              <p className="text-md font-medium">
+                Delivered At: {order.deliveredAt}
+              </p>
+            </div>
+
+            <div className="mt-5">
+              <ul className="flex items-center justify-between relative">
+                <div
+                  className={`absolute top-3 left-0 ${
+                    order.status === "Success"
+                      ? "w-full"
+                      : order.status === "Delivering"
+                      ? "w-2/3"
+                      : "w-1/3"
+                  } h-1 bg-blue-600`}
+                ></div>
+
+                <li className="relative w-1/3 flex flex-col items-start text-blue-600">
+                  <div
+                    className={`flex items-center justify-center w-7 h-7 text-white rounded-full ${getProgressStepClass(
+                      1
+                    )}`}
+                  >
+                    1
+                  </div>
+                  <span className="mt-3 ml-[-5px]">Pending</span>
+                </li>
+
+                <li className="relative w-1/3 flex flex-col items-center text-blue-600">
+                  <div
+                    className={`flex items-center justify-center w-7 h-7 text-white rounded-full ${getProgressStepClass(
+                      2
+                    )}`}
+                  >
+                    2
+                  </div>
+                  <span className="mt-3">Delivering</span>
+                </li>
+
+                <li className="relative w-1/3 flex flex-col items-end text-gray-500">
+                  <div
+                    className={`flex items-center justify-center w-7 h-7 text-white rounded-full ${getProgressStepClass(
+                      3
+                    )}`}
+                  >
+                    3
+                  </div>
+                  <span className="mt-3">Success</span>
+                </li>
+              </ul>
+            </div>
+
+            {orderDetails.map((product, index) => (
+              <div
+                key={index}
+                className="py-4 border-t border-b text-gray-700 mt-6"
+              >
+                <div className="flex items-start gap-6 text-sm">
+                  <img
+                    src={product.productImage[0]}
+                    alt={product.productName}
+                    className="w-16 sm:w-20"
+                  />
+                  <div>
+                    <p className="sm:text-base font-medium">
+                      {product.productName}
+                    </p>
+                    <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
+                      <p className="text-lg">{formatCurrency(product.price)}</p>
+                    </div>
+                    <p>
+                      Date:{" "}
+                      <span className="text-gray-500">
+                        {formatDate(product.createdAt)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <p className="text-lg ml-[20px] mt-[10px] mb-[30px] font-bold">
+              Total Price: {formatCurrency(order.totalPrice)}
+            </p>
+          </div>
+        ),
+        onOk() {},
+      });
+    } catch (error) {
+      message.error("Failed to load order details.");
+      console.error("API error:", error);
+    }
   };
 
   const handleCheck = (order) => {
@@ -245,43 +397,60 @@ const OrdersManager = () => {
     );
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount != null ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h1 className="text-3xl font-bold mb-4">Orders</h1>
-        <Button type="primary" icon={<ExportOutlined />}>
-          Export
-        </Button>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Orders</h1>
+        <div className="space-x-2">
+          {["Pending", "Success", "Take Over", "Delivering"].map((status) => (
+            <button
+              key={status}
+              onClick={() => handleFilter(status)}
+              className={getButtonClasses(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
       </div>
       <Table
         columns={columns}
-        dataSource={orders.slice(
+        dataSource={filteredOrders.slice(
           (currentPage - 1) * pageSize,
           currentPage * pageSize
         )}
         rowKey="orderId"
         pagination={false}
       />
-      <div
-        style={{
-          marginTop: "16px",
-          marginLeft: "10px",
-          opacity: 0.5,
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <span>{totalOrders} orders in total</span>
+      <div className="flex justify-between mt-4">
+        <span>{filteredOrders.length} orders in total</span>
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={totalOrders}
+          total={filteredOrders.length}
           onChange={(page) => setCurrentPage(page)}
           showSizeChanger={false}
         />

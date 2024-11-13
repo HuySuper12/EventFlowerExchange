@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../../component/footer";
 import { toast } from "react-toastify";
 
+
 const SellerRegister = () => {
   const navigate = useNavigate();
 
@@ -16,7 +17,9 @@ const SellerRegister = () => {
     console.log(values);
 
     try {
+      
       const response = await api.post("Account/SignUp/Seller", values);
+
       toast.success("Register Successfully. Please login to countinue");
       navigate("/login");
     } catch (err) {
