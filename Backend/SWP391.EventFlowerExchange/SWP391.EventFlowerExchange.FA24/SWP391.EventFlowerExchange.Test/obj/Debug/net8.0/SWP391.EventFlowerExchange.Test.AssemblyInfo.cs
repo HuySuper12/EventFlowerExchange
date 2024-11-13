@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SWP391.EventFlowerExchange.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65a80ba94faf2dd688318044a034456508a51e45")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a65b33f9aecda6d84ca144a727c6dadffc5c2692")]
 [assembly: System.Reflection.AssemblyProductAttribute("SWP391.EventFlowerExchange.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SWP391.EventFlowerExchange.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
