@@ -81,5 +81,44 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return BadRequest("Not found!!!");
         }
+
+        [HttpPost("CreateDeliveryLog")]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        public async Task<ActionResult<bool>> CreateDeliveryLogAsync(CreateDeliveryLog createDeliveryLog)
+        {
+            var deliveryLogResult = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
+
+            if (deliveryLogResult == null)
+            {
+                var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createDeliveryLog.DeliveryPersonEmail });
+                DeliveryLog deliveryLog = new DeliveryLog()
+                {
+                    OrderId = createDeliveryLog.OrderId,
+                    DeliveryPersonId = account.Id,
+                    CreatedAt = DateTime.Now
+                };
+                await _service.CreateDeliveryLogFromAsync(deliveryLog);
+
+                //Gan shipper vao don hang, thay doi trang thai don hang thanh giao hang
+                var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
+                order.Status = "Take over";
+                deliveryLog.TakeOverAt = DateTime.Now;
+                order.DeliveryPersonId = account.Id;
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+                //Gui thong bao don hang dang giao
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = accountBuyer.Email,
+                    Content = "Shipper is coming to pick up your order"
+                };
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
     }
 }
