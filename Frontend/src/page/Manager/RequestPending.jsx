@@ -27,6 +27,84 @@ const RequestPendingManager = () => {
     }
   };
 
+  const handleAcceptRequest = async (requestId) => {
+    const requestToAccept = withdrawRequests.find(
+      (req) => req.requestId === requestId
+    );
+
+    if (!requestToAccept) {
+      message.error("Request not found.");
+      return;
+    }
+
+    // Extract necessary fields
+    const { userId, amount, requestType, createDate } = requestToAccept;
+
+    const paymentLinkBody = {
+      requestId: requestId,
+      userId: userId,
+      amount: amount,
+      type: requestType,
+      createDate: new Date().toISOString(),
+    };
+
+    console.log("Payment Link Request Body:", paymentLinkBody);
+
+    try {
+      const response = await api.post(
+        "VNPAY/create-payment-link",
+        paymentLinkBody
+      );
+
+      console.log("Payment Link Response:", response.data); // Log the response
+
+      if (response.data) {
+        message.success("Payment link created successfully");
+        window.location.href = response.data;
+      } else {
+        message.error("Failed to create payment link.");
+      }
+      fetchWithdrawRequests(); // Refresh the list
+    } catch (error) {
+      console.error("Error creating payment link:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data); // Log the response data
+        message.error(
+          `Failed to create payment link: ${
+            error.response.data.message || "Unknown error"
+          }`
+        );
+      } else {
+        message.error(
+          "Failed to create payment link. Please check your input and API connection."
+        );
+      }
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
+
   const columns = [
     {
       title: "Request ID",
@@ -50,7 +128,7 @@ const RequestPendingManager = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (value) => (value != null ? `$${value.toFixed(2)}` : "N/A"),
+      render: (value) => formatCurrency(value),
     },
     {
       title: "Status",
@@ -76,6 +154,24 @@ const RequestPendingManager = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <>
+          <Button
+            type="primary"
+            onClick={() => handleAcceptRequest(record.requestId)}
+          >
+            Accept
+          </Button>
+          {/* <Button type="danger" onClick={() => handleRejectRequest(record.requestId)} style={{ marginLeft: 8 }}>
+            Reject
+          </Button> */}
+        </>
+      ),
     },
   ];
 

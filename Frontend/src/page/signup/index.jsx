@@ -17,11 +17,16 @@ const Register = () => {
 
     try {
       const response = await api.post("Account/SignUp/Buyer", values);
+
+      console.log("API response:", response.data);
+
       navigate("/login");
       toast.success("Register was successfully. To continue, please log in");
-    } catch (err) {
-      console.log(err);
-      toast.error(err.response.data);
+    } catch (error) {
+      console.error("Error creating user:", error.code, error.message);
+      const errorMessage =
+        error.response?.data || "An error occurred during registration.";
+      toast.error(errorMessage);
     }
   };
 

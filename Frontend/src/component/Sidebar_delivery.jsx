@@ -1,34 +1,48 @@
-import React from "react";
-import { Layout, Menu } from "antd";
+import React, { useState } from "react";
+import { Layout, Menu, Modal } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Package, List, LogOut } from "lucide-react";
+import { Package, List, LogOut, User, Lock } from "lucide-react";
+import Password from "antd/es/input/Password";
 
 const { Sider } = Layout;
 
 function SidebarDelivery() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [logoutVisible, setLogoutVisible] = useState(false);
 
   const handleLogout = () => {
     sessionStorage.clear();
+    setLogoutVisible(false);
+    navigate("/login");
   };
 
   const menuItems = [
     {
-      key: "/delivery-detail",
+      key: "/shipper/profile",
+      icon: <User size={20} />,
+      label: "Profile",
+    },
+    {
+      key: "/shipper/delivery-detail",
       icon: <Package size={20} />,
       label: "Delivery Detail",
     },
     {
-      key: "/all-delivery",
+      key: "/shipper/all-delivery",
       icon: <List size={20} />,
       label: "All Deliveries",
     },
     {
-      key: "/login",
+      key: "/shipper/reset-password",
+      icon: <Lock size={20} />,
+      label: "Reset Password",
+    },
+    {
+      key: "logout",
       icon: <LogOut size={20} />,
       label: "Logout",
-      onClick: handleLogout,
+      onClick: () => setLogoutVisible(true),
     },
   ];
 
@@ -39,8 +53,21 @@ function SidebarDelivery() {
         mode="inline"
         selectedKeys={[location.pathname]}
         items={menuItems}
-        onClick={({ key }) => navigate(key)}
+        onClick={({ key }) => {
+          if (key !== "logout") navigate(key);
+        }}
       />
+
+      <Modal
+        title="Confirm Logout"
+        visible={logoutVisible}
+        onOk={handleLogout}
+        onCancel={() => setLogoutVisible(false)}
+        okText="Yes"
+        cancelText="No"
+      >
+        <p>Are you sure you want to log out?</p>
+      </Modal>
     </Sider>
   );
 }

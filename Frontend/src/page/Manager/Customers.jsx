@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Table, Avatar, Button, message, Tabs, Pagination, Spin } from "antd";
+import {
+  Table,
+  Tag,
+  Avatar,
+  Button,
+  message,
+  Tabs,
+  Pagination,
+  Spin,
+} from "antd";
 import { UserOutlined, ExportOutlined } from "@ant-design/icons";
 import api from "../../config/axios";
 import { Modal } from "antd";
@@ -153,22 +162,60 @@ const CustomersManager = () => {
       title: "Phone",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
-      sorter: (a, b) => a.phone.localeCompare(b.phone),
     },
     {
       title: "Balance",
       dataIndex: "balance",
       key: "balance",
       sorter: (a, b) => a.balance - b.balance,
-      render: (balance) => `$${balance.toFixed(2)}`, // Formats balance as currency
+      render: (balance) => formatCurrency(balance), // Formats balance as currency
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (value) => formatDate(value),
+    },
+
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) =>
+        record.status ? (
+          <Button
+            type="danger"
+            onClick={() => toggleStatus(record.id, false)}
+            className="bg-red-600 text-white"
+          >
+            Disable
+          </Button>
+        ) : null,
     },
   ];
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
 
   return (
     <div className="p-4">

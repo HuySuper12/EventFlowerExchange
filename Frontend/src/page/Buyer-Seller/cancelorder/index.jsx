@@ -64,12 +64,15 @@ function CancelOrder_Page() {
   }, [id]);
 
   const handleSubmit = (values) => {
+    const role = sessionStorage.getItem("role");
     const params = {
       orderId: id, // Replace with actual order ID
       reason: values.reason,
+      role: role,
     };
 
-    api.put("Order/CancelOrderByBuyer", null, { params })
+    api
+      .put("Order/CancelOrderByBuyer", null, { params })
       .then((response) => {
         console.log("Response:", response.data);
         if (response.data === true) {

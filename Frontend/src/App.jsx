@@ -10,9 +10,7 @@ import Orders from "./page/Admin/Orders";
 import Customers from "./page/Admin/Customers";
 import Staffs from "./page/Admin/Staffs";
 import Shippers from "./page/Admin/Shippers";
-import Transactions from "./page/Admin/Transactions";
 import Payments from "./page/Admin/Payments";
-import Requests from "./page/Admin/Request";
 import Vouchers from "./page/Admin/Vouchers";
 import "./styles/main.scss";
 
@@ -27,7 +25,7 @@ import SellerRegister from "./page/seller-register";
 import Cart from "./page/Buyer-Seller/cart-page";
 import Checkout from "./page/Buyer-Seller/checkout";
 import Order_Page from "./page/Buyer-Seller/order";
-import Page_OTP from "./page/Buyer-Seller/otp";
+import OTP from "./page/Buyer-Seller/OTP";
 import TransactionCustomer from "./page/Buyer-Seller/transaction-customer";
 import Profile from "./page/Buyer-Seller/profile";
 import WalletCustomer from "./page/Buyer-Seller/wallet-customer";
@@ -70,15 +68,17 @@ import About from "./page/Buyer-Seller/about";
 import CancelOrder_Page from "./page/Buyer-Seller/cancelorder";
 import ProfileStaff from "./page/Admin/ProfileStaff";
 import ProfileManager from "./page/Manager/ProfileManager";
-
+import Transaction from "./page/Admin/Transaction";
+import ProfileShipper from "./page/Delivery/Profile";
+import ResetPasswordShipper from "./page/Delivery/ResetPassword";
+import Report from "./page/Admin/Report";
+import Chat_Hello from "./page/Buyer-Seller/chat-hello";
 const { Content } = Layout;
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState("en");
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
-  const toggleLanguage = () => setLanguage(language === "en" ? "vi" : "en");
 
   const router = createBrowserRouter([
     // Buyer-Seller Routes
@@ -124,7 +124,7 @@ function App() {
     },
     {
       path: "otp",
-      element: <Page_OTP />,
+      element: <OTP />,
     },
     {
       path: "transaction-customer",
@@ -190,14 +190,7 @@ function App() {
       path: "post-seller",
       element: <PostSeller />,
     },
-    {
-      path: "delivery-detail",
-      element: <DeliveryDetail />,
-    },
-    {
-      path: "all-delivery",
-      element: <DeliveryList />,
-    },
+
     {
       path: "product-seller",
       element: <ProductSeller />,
@@ -219,8 +212,12 @@ function App() {
       element: <Rating_Page />,
     },
     {
-      path: "chat/:id",
+      path: "chat/:emailReceiver",
       element: <Chat_Page />,
+    },
+    {
+      path: "chat",
+      element: <Chat_Hello />,
     },
     {
       path: "transaction-seller",
@@ -237,6 +234,28 @@ function App() {
     {
       path: "cancelorder/:id",
       element: <CancelOrder_Page />,
+    },
+
+    {
+      path: "shipper",
+      children: [
+        {
+          path: "delivery-detail",
+          element: <DeliveryDetail />,
+        },
+        {
+          path: "all-delivery",
+          element: <DeliveryList />,
+        },
+        {
+          path: "profile",
+          element: <ProfileShipper />,
+        },
+        {
+          path: "reset-password",
+          element: <ResetPasswordShipper />,
+        },
+      ],
     },
 
     // Admin Routes wrapped in PrivateRoute
@@ -267,7 +286,7 @@ function App() {
         { path: "orders", element: <Orders darkMode={darkMode} /> },
         { path: "customers", element: <Customers darkMode={darkMode} /> },
         { path: "staffs", element: <Staffs darkMode={darkMode} /> },
-        { path: "transactions", element: <Transactions darkMode={darkMode} /> },
+        { path: "transactions", element: <Transaction darkMode={darkMode} /> },
         { path: "vouchers", element: <Vouchers darkMode={darkMode} /> },
 
         {
@@ -276,8 +295,9 @@ function App() {
         },
         { path: "shippers", element: <Shippers darkMode={darkMode} /> },
         { path: "payments", element: <Payments darkMode={darkMode} /> },
-        { path: "requests", element: <Requests darkMode={darkMode} /> },
+
         { path: "profile", element: <ProfileStaff darkMode={darkMode} /> },
+        { path: "report", element: <Report darkMode={darkMode} /> },
       ],
     },
 

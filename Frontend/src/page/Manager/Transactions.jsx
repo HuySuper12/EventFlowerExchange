@@ -1,37 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, message, Pagination } from "antd";
+import { Table, message, Pagination, Tabs } from "antd";
 import api from "../../config/axios";
 import "antd/dist/reset.css";
+import TabPane from "antd/es/tabs/TabPane";
 
 const TransactionsManager = () => {
-  const [transactions, setTransactions] = useState([]);
+  const [deposit, setDeposit] = useState([]);
+  const [withdraw, setWithdraw] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 10;
+  const pageSize = 8;
 
-  // Fetch transactions from API
   useEffect(() => {
-    const fetchTransactions = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("Transaction/ViewAllTransaction");
-        setTransactions(response.data); // Assuming the response data is an array of transactions
-      } catch (error) {
-        message.error("Failed to fetch transactions");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
+    fetchDeposit();
+    fetchWithdraw();
   }, []);
+
+  const fetchDeposit = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(`VNPAY/GetPaymentListBy/1`);
+      setDeposit(response.data.reverse());
+    } catch (error) {
+      message.error(`Failed to fetch deposit requests`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchWithdraw = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(`VNPAY/GetPaymentListBy/2`);
+      setWithdraw(response.data.reverse());
+    } catch (error) {
+      message.error(`Failed to fetch withdraw requests`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns = [
     {
-      title: "Transaction ID",
-      dataIndex: "transactionId",
-      key: "transactionId",
-      sorter: (a, b) => a.id.localeCompare(b.id),
+      title: "Payment ID",
+      dataIndex: "paymentId",
+      key: "paymentId",
+      sorter: (a, b) => a.paymentId - b.paymentId,
+    },
+
+    {
+      title: "Payment Code",
+      dataIndex: "paymentCode",
+      key: "paymentCode",
+      sorter: (a, b) => a.paymentCode - b.paymentCode,
     },
     {
       title: "User ID",
@@ -40,115 +61,125 @@ const TransactionsManager = () => {
       sorter: (a, b) => a.userId.localeCompare(b.userId),
     },
     {
-      title: "Product ID",
-      dataIndex: "productId",
-      key: "productId",
-      sorter: (a, b) => a.productId.localeCompare(b.productId),
+      title: "Payment Type",
+      dataIndex: "paymentType",
+      key: "paymentType",
+      render: (type) => (
+        <span style={{ fontWeight: "bold" }}>
+          {type === 1 ? "Deposit" : type === 2 ? "Withdraw" : "Unknown"}
+        </span>
+      ),
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      sorter: (a, b) => a.amount - b.amount,
+      render: (amount) => formatCurrency(amount),
+    },
+    {
+      title: "Payment Content",
+      dataIndex: "paymentContent",
+      key: "paymentContent",
+    },
+
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span
+          style={{
+            color:
+              status === true ? "green" : status === false ? "orange" : "red",
+          }}
+        >
+          {status === true
+            ? "Successful"
+            : status === false
+            ? "Failed"
+            : "Unknown"}
+        </span>
+      ),
     },
     {
       title: "Date/Time",
       dataIndex: "createdAt",
       key: "createdAt",
-      sorter: (a, b) => new Date(a.dateTime) - new Date(b.dateTime),
-    },
-
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      render: (value) => `$${value.toFixed(2)}`,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status, record) => {
-        const isCompleted = status === true;
-
-        return (
-          <span
-            style={{
-              color: isCompleted ? "green" : "red",
-            }}
-          >
-            {isCompleted ? "Completed" : "Failed"}
-            {!isCompleted && record.note && <span>(Note: {record.note})</span>}
-          </span>
-        );
-      },
-    },
-
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Button type="link" onClick={() => handleViewDetail(record)}>
-          View Detail
-        </Button>
-      ),
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (date) => formatDate(date),
     },
   ];
 
-  const handleViewDetail = (transaction) => {
-    Modal.info({
-      title: `Transaction ID: ${transaction.transactionId}`,
-      content: (
-        <div>
-          <p>User ID: {transaction.userId}</p>
-          <p>Order ID: {transaction.orderId}</p>
-          <p>Date/Time: {transaction.createdAt}</p>
-          <p>
-            Transaction Type:{" "}
-            {transaction.transactionType === 1
-              ? "Deposit"
-              : transaction.transactionType === 2
-              ? "Withdraw"
-              : transaction.transactionType === 3
-              ? "Order Payment"
-              : "Unknown"}
-          </p>
-          <p>Amount: ${transaction.amount.toFixed(2)}</p>
-          <p>Status: {transaction.status === true ? "Completed" : "Failed"}</p>
-          {transaction.note && <p>Note: {transaction.note}</p>}
+  const renderTable = (data) => {
+    return (
+      <>
+        <Table
+          columns={columns}
+          dataSource={data.slice(
+            (currentPage - 1) * pageSize,
+            currentPage * pageSize
+          )}
+          rowKey="requestId"
+          loading={loading}
+          pagination={false}
+        />
+        <div
+          style={{
+            marginTop: "16px",
+            marginLeft: "10px",
+            opacity: 0.5,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <span>{data.length} requests in total</span>
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={data.length}
+            onChange={(page) => setCurrentPage(page)}
+            showSizeChanger={false}
+          />
         </div>
-      ),
-      onOk() {},
-    });
+      </>
+    );
   };
 
-  const totalTransactions = transactions.length;
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "Invalid Date";
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatCurrency = (amount) => {
+    const validAmount = amount !== undefined ? amount : 0;
+    return (
+      validAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+    );
+  };
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">Transactions</h1>
-      <Table
-        columns={columns}
-        dataSource={transactions.slice(
-          (currentPage - 1) * pageSize,
-          currentPage * pageSize
-        )} // Apply pagination
-        rowKey="id"
-        loading={loading}
-        pagination={false} // Disable default pagination
-      />
-      <div
-        style={{
-          marginTop: "16px",
-          marginLeft: "10px",
-          opacity: 0.5,
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <span>{totalTransactions} transactions in total</span>
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={totalTransactions}
-          onChange={(page) => setCurrentPage(page)}
-          showSizeChanger={false}
-        />
-      </div>
+      <h1 className="text-3xl font-bold mb-4">Transaction</h1>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Deposit" key="1">
+          {renderTable(deposit)}
+        </TabPane>
+        <TabPane tab="Withdraw" key="2">
+          {renderTable(withdraw)}
+        </TabPane>
+      </Tabs>
     </div>
   );
 };

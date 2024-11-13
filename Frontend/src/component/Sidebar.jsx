@@ -11,13 +11,13 @@ import {
   TruckOutlined,
   LogoutOutlined,
   DollarOutlined,
-  ExceptionOutlined,
   EditOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
 
-const Sidebar = ({ darkMode }) => {
+const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [logoutVisible, setLogoutVisible] = useState(false);
   const location = useLocation();
@@ -38,6 +38,7 @@ const Sidebar = ({ darkMode }) => {
       icon: <EditOutlined />,
       label: "Request Pending",
     },
+    { key: "report", icon: <WarningOutlined />, label: "Report" },
     { key: "orders", icon: <ShoppingCartOutlined />, label: "Orders" },
     { key: "customers", icon: <UserOutlined />, label: "Customers" },
     { key: "staffs", icon: <TeamOutlined />, label: "Staffs" },
@@ -48,7 +49,6 @@ const Sidebar = ({ darkMode }) => {
       label: "Transactions",
     },
     { key: "payments", icon: <DollarOutlined />, label: "Payments" },
-    { key: "requests", icon: <ExceptionOutlined />, label: "Request" },
     { key: "vouchers", icon: <TagOutlined />, label: "Vouchers" },
   ];
 
@@ -63,7 +63,7 @@ const Sidebar = ({ darkMode }) => {
     sessionStorage.removeItem("email");
 
     // Navigate to home page
-    navigate("/");
+    navigate("/login");
 
     // Close the logout modal
     setLogoutVisible(false);
@@ -71,7 +71,6 @@ const Sidebar = ({ darkMode }) => {
 
   return (
     <Sider
-      theme={darkMode ? "dark" : "light"}
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
@@ -81,7 +80,7 @@ const Sidebar = ({ darkMode }) => {
         <div className="logo p-4 text-center ">
           <Link to="dashboard">
             <img
-              src=""
+              src="https://i.postimg.cc/sf9KmBz1/logo.png"
               alt="Logo"
               className={`w-24 ${collapsed ? "hidden" : "block"}`}
             />
@@ -89,7 +88,6 @@ const Sidebar = ({ darkMode }) => {
         </div>
 
         <Menu
-          theme={darkMode ? "dark" : "light"}
           mode="inline"
           selectedKeys={[location.pathname]}
           style={{ marginTop: collapsed ? "20px" : "10px" }}

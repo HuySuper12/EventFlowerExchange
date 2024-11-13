@@ -1,4 +1,3 @@
-// src/page/Admin/Posts.jsx
 import React, { useState, useEffect } from "react";
 import {
   Table,

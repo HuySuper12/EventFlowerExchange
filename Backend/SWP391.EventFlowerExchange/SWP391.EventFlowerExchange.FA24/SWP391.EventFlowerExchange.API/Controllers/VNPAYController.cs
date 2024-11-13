@@ -38,6 +38,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(paymentURL);
         }
 
+        [HttpGet("GetPaymentListBy/{type}")]
+        public async Task<IActionResult> GetPaymentListByType(int type)
+        {
+            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
+        }
+
+        [HttpGet("GetPaymentListBy/{type},{email}")]
+        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
+        }
+
         [HttpGet("payment-callback")]
         public async Task<IActionResult> PaymentCallback()
         {
@@ -47,10 +60,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 response.Status = false;
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
-                if (response.PaymentType == 1)
-                {
-                    return Redirect("https://event-flower-exchange.vercel.app/");
-                }
                 return Redirect("https://event-flower-exchange.vercel.app/");
             }
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = response.UserId });
@@ -64,7 +73,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 // Here you can save the order to the database if needed
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
                 await _accountService.UpdateAccountFromAPIAsync(account);
-                return Redirect("https://event-flower-exchange.vercel.app/");
             }
             else //RUT TIEN
             {
@@ -89,21 +97,21 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                     };
                     await _notification.CreateNotificationFromApiAsync(withdrawalNotification);
                 }
-                return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
             }
+            return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
         }
 
-        [HttpGet("GetPayementByTypeAndEmail")]
-        public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
+        [HttpGet("PaymentSalaryForStaffAndShipper")]
+        public async Task<IActionResult> PaymentSalary()
         {
-            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
-            return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
+            return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
         }
 
-        [HttpGet("GetPaymentListBy/{type}")]
-        public async Task<IActionResult> GetPaymentListByType(int type)
+        [HttpGet("CheckSalary")]
+        public async Task<bool> IsSalaryPaid(int year, int month)
         {
-            return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
+            return await _vnPayservice.IsSalaryPaid(year, month);
         }
+
     }
 }

@@ -25,6 +25,8 @@ const Profile = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [imageToPreview, setImageToPreview] = useState("");
 
   const fetchAccountData = async () => {
     if (email) {
@@ -136,7 +138,7 @@ const Profile = () => {
         <div className="w-full ml-[30px] bg-white shadow-2xl rounded-xl p-4">
           <h2 className="text-2xl font-bold mb-6">My Profile</h2>
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 ">
               <img
                 src={
                   accountData
@@ -144,8 +146,17 @@ const Profile = () => {
                     : "https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
                 }
                 alt="Profile"
-                className="w-16 h-16 rounded-full"
+                className="w-16 h-16 rounded-full cursor-pointer"
+                onClick={() => {
+                  setImageToPreview(
+                    accountData
+                      ? accountData.picture
+                      : "https://static.vecteezy.com/system/resources/previews/006/017/592/non_2x/ui-profile-icon-vector.jpg"
+                  );
+                  setIsImagePreviewOpen(true);
+                }}
               />
+
               <div>
                 <h3 className="text-xl font-bold">
                   {accountData ? accountData.name : "Loading..."}
@@ -267,6 +278,27 @@ const Profile = () => {
           src={previewImage}
         />
       )}
+
+      <Modal
+        visible={isImagePreviewOpen}
+        footer={
+          <button
+            onClick={() => setIsImagePreviewOpen(false)}
+            className="text-blue-500 border border-blue-500 rounded-lg px-3 py-1 hover:bg-blue-100"
+          >
+            Cancel
+          </button>
+        }
+        onCancel={() => setIsImagePreviewOpen(false)}
+        className="custom-modal"
+        closable={false}
+      >
+        <img
+          alt="Profile Preview"
+          style={{ width: "100%" }}
+          src={imageToPreview}
+        />
+      </Modal>
 
       <Footer />
     </>

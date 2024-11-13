@@ -7,7 +7,7 @@ const Payments = () => {
   const [payments, setPayments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 10;
+  const pageSize = 8;
 
   // Fetch payments from API
   useEffect(() => {
@@ -15,7 +15,7 @@ const Payments = () => {
       setLoading(true);
       try {
         const response = await api.get('Transaction/ViewAllTransaction');
-        setPayments(response.data); // Assuming the response data is an array of payments
+        setPayments(response.data);
       } catch (error) {
         message.error('Failed to fetch payments');
       } finally {

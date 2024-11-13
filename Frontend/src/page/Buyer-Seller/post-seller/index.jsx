@@ -22,39 +22,53 @@ const PostSeller = () => {
   const [productDetails, setProductDetails] = useState(null);
   const requestsPerPage = 8;
   const email = sessionStorage.getItem("email");
+  const [rejectedReasonVisible, setRejectedReasonVisible] = useState(null);
 
   const fetchRequestsAndProducts = async () => {
     if (email) {
       try {
-        const encodedEmail = encodeURIComponent(email);
         const requestResponse = await api.get(`Request/GetRequestListBy`, {
           params: {
             email: email,
             type: "Post",
           },
         });
-        console.log("Requests response:", requestResponse.data.reverse());
 
-        const dataWithProducts = await Promise.all(
-          requestResponse.data.map(async (request) => {
-            const product = await fetchProduct(request.productId);
-            return { ...request, product };
-          })
-        );
+        console.log("Requests response:", requestResponse.data);
 
-        console.log("Combined data with products:", dataWithProducts);
-        setCombinedData(
-          dataWithProducts.filter((item) => item.product !== null)
-        );
+        if (requestResponse.data && Array.isArray(requestResponse.data)) {
+          const dataWithProducts = await Promise.all(
+            requestResponse.data.map(async (request) => {
+              const product = await fetchProduct(request.productId);
+              return { ...request, product };
+            })
+          );
+
+          console.log("Combined data with products:", dataWithProducts);
+          setCombinedData(
+            dataWithProducts.reverse().filter((item) => item.product !== null)
+          );
+        } else {
+          console.error(
+            "Unexpected data format or no data:",
+            requestResponse.data
+          );
+          setCombinedData([]);
+        }
       } catch (error) {
         console.error("Error fetching requests and products:", error);
+        setCombinedData([]);
       }
     }
   };
 
   const fetchProduct = async (id) => {
     try {
-      const response = await api.get(`Product/SearchProduct/${id}`);
+      const response = await api.get(`Product/SearchProduct`, {
+        params: {
+          id: id,
+        },
+      });
       console.log("Product response for ID", id, ":", response.data);
       return response.data;
     } catch (error) {
@@ -89,6 +103,18 @@ const PostSeller = () => {
   const handleDetailsCancel = () => {
     setDetailsVisible(false);
     setProductDetails(null);
+  };
+
+  const handleViewRejectedReason = (productId) => {
+    const product = combinedData.find(
+      (item) => item.product && item.product.productId === productId
+    );
+    if (product) {
+      setProductDetails(product);
+      setRejectedReasonVisible(true);
+    } else {
+      console.error("Product not found for ID:", productId);
+    }
   };
 
   const columns = [
@@ -136,9 +162,19 @@ const PostSeller = () => {
       title: "Action",
       key: "action",
       render: (record) => (
-        <Button onClick={() => handleViewDetails(record.product.productId)}>
-          Detail
-        </Button>
+        <>
+          <Button onClick={() => handleViewDetails(record.product.productId)}>
+            Detail
+          </Button>
+          {record.status === "Rejected" && (
+            <Button
+              className="ml-[10px]"
+              onClick={() => handleViewRejectedReason(record.product.productId)}
+            >
+              View Reason
+            </Button>
+          )}
+        </>
       ),
     },
   ];
@@ -285,7 +321,7 @@ const PostSeller = () => {
                 flexWrap: "wrap",
               }}
             >
-              {productDetails.productImage.map((url, index) => (
+              {(productDetails?.productImage || []).map((url, index) => (
                 <Image
                   key={index}
                   src={url}
@@ -303,6 +339,31 @@ const PostSeller = () => {
         ) : (
           <p>No details available</p>
         )}
+      </Modal>
+
+      <Modal
+        title="Rejected Reason"
+        visible={rejectedReasonVisible}
+        onCancel={() => setRejectedReasonVisible(false)}
+        footer={null}
+        width={800}
+      >
+        <Form layout="vertical">
+          <Form.Item label={<strong>Reason</strong>}>
+            <Input.TextArea
+              value={
+                productDetails
+                  ? productDetails.reason || "No reason provided"
+                  : "No reason provided"
+              }
+              disabled
+              style={{
+                backgroundColor: "#fff",
+                color: "#000",
+              }}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
 
       <Footer />
