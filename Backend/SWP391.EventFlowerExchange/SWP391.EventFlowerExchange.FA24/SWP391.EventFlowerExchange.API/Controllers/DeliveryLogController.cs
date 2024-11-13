@@ -149,5 +149,39 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
+
+        [HttpPut("UpdateDeliveryLogSuccessStatus")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogSuccessStatusAsync(int orderId, string url)
+        {
+            var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
+            deliveryLog.Status = "Delivery Success";
+            deliveryLog.PhotoUrl = url;
+            deliveryLog.DeliveryAt = DateTime.Now;
+            await _service.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+            //Cap nhat thoi gian chuyen tien cho seller
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+
+            if (order.UpdateAt == null)
+            {
+                order.Status = "Success";
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "Your order has been delivered successfully."
+                };
+
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
     }
 }
