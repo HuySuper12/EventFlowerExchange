@@ -103,6 +103,24 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
         }
 
+        [HttpGet("ViewShopNotificationByUserEmail/{email}")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<IActionResult> ViewShopNotificationByUserEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
 
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc); // ĐÃ SỬA
+            if (check != null)
+            {
+                var result = await _service.ViewAllShopNotificationByUserIdFromApiAsync(check);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return Ok("Not found!");
+        }
     } 
 }
