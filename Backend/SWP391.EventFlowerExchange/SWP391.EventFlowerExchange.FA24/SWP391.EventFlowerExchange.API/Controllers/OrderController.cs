@@ -232,6 +232,37 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpPost("CreateOrderBySeller")]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller)
+        {
+            var accountBuyer = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.BuyerEmail });
+            var accountSeller = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.SellerEmail });
+            if (accountBuyer != null)
+            {
+                var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = createOrderBySeller.ProductId });
+                if (product.SellerId == accountSeller.Id)
+                {
+                    //Tao don hang neu cung chu ko tao
+                    var order = await _service.ViewOrderByBuyerIdFromAPIAsync(new Account() { Id = accountBuyer.Id });
+                    for (int i = 0; i < order.Count; i++)
+                    {
+                        //Lay thong tin don hang 
+                        var orderDetail = await _service.ViewOrderDetailFromAPIAsync(new Order() { OrderId = order[i].OrderId });
+                        if (orderDetail.Count != 0)
+                        {
+                            if (order[i].BuyerId == accountBuyer.Id && product.ProductId == orderDetail[0].ProductId)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return await _service.CreateOrderBySellerFromAPIAsync(createOrderBySeller);
+                }
+            }
+            return false;
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
