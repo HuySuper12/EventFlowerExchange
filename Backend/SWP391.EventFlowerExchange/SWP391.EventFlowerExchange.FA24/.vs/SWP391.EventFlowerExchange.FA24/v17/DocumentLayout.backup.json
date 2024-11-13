@@ -202,7 +202,23 @@
               "RelativeToolTip": "SWP391.EventFlowerExchange.Infrastructure\\TransactionRepository.cs",
               "ViewState": "AgIAAEkAAAAAAAAAAAAowFQAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+<<<<<<< HEAD
+              "WhenOpened": "2024-11-12T16:37:54.168Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FollowController.cs",
+              "DocumentMoniker": "D:\\EventFlowerExchange\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "ToolTip": "D:\\EventFlowerExchange\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\FollowController.cs",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAUwHUAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T16:33:11.617Z"
+=======
               "WhenOpened": "2024-11-13T09:34:35.54Z"
+>>>>>>> 6b6c4b8f0b8cc0da1efc849e5a3339fce8280d76
             },
             {
               "$type": "Document",
@@ -219,12 +235,21 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+<<<<<<< HEAD
+              "Title": "RequestController.cs",
+              "DocumentMoniker": "D:\\EventFlowerExchange\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\RequestController.cs",
+              "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\RequestController.cs",
+              "ToolTip": "D:\\EventFlowerExchange\\EventFlowerExchange\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\RequestController.cs",
+              "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\RequestController.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAACkAAAAJAAAAAAAAAA==",
+=======
               "Title": "VNPAYController.cs",
               "DocumentMoniker": "C:\\Users\\Lenovo\\Downloads\\Backend (2)\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\VNPAYController.cs",
               "RelativeDocumentMoniker": "SWP391.EventFlowerExchange.API\\Controllers\\VNPAYController.cs",
               "ToolTip": "C:\\Users\\Lenovo\\Downloads\\Backend (2)\\Backend\\SWP391.EventFlowerExchange\\SWP391.EventFlowerExchange.FA24\\SWP391.EventFlowerExchange.API\\Controllers\\VNPAYController.cs",
               "RelativeToolTip": "SWP391.EventFlowerExchange.API\\Controllers\\VNPAYController.cs",
               "ViewState": "AgIAACoAAAAAAAAAAAAcwDEAAABfAAAAAAAAAA==",
+>>>>>>> 6b6c4b8f0b8cc0da1efc849e5a3339fce8280d76
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T10:54:43.389Z",
               "EditorCaption": ""
