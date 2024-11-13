@@ -120,5 +120,34 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
+
+        [HttpPut("UpdateDeliveryLogDeliveringStatus")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogDeliveringStatusAsync(int orderId)
+        {
+            var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+            if (deliveryLog.Status == null)
+            {
+                deliveryLog.Status = "Delivering";
+                deliveryLog.TakeOverAt = DateTime.Now;
+                await _service.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+                order.Status = "Delivering";
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = accountBuyer.Email,
+                    Content = "Your order is on its way"
+                };
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
     }
 }
