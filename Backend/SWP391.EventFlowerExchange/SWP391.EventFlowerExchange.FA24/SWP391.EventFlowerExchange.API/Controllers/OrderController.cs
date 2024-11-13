@@ -276,6 +276,91 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+
+        //Hoan tien
+        [HttpPut("CancelOrderByBuyer")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CancelOrderByBuyerAsync(int orderId, string reason, string role)
+        {
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                if (order.Status == "Pending")
+                {
+                    order.Status = "Cancel";
+                    order.IssueReport = reason;
+                    await _service.UpdateOrderStatusFromAPIAsync(order);
+
+                    var orderItem = await _service.ViewOrderDetailFromAPIAsync(order);
+                    for (int i = 0; i < orderItem.Count; i++)
+                    {
+                        var product = await _productService.SearchProductByIdFromAPIAsync(orderItem[i]);
+                        product.Status = "Enable";
+                        await _productService.UpdateProductFromAPIAsync(product);
+                    }
+
+                    if (role.ToLower() == "buyer")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel successfully"
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+                    else if (role.ToLower() == "seller")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled successfully"
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+                    else if (role.ToLower() == "shipper")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+
+                    await SendOrderPriceToBuyer(order);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
