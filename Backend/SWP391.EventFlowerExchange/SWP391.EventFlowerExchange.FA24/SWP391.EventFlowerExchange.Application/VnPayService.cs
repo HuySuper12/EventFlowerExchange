@@ -168,5 +168,20 @@ namespace SWP391.EventFlowerExchange.Application
             }
             return true;
         }
+
+        public async Task<bool> IsSalaryPaid(int year, int month)
+        {
+            var manager = await _accountService.ViewAllAccountByRoleFromAPIAsync("Manager");
+
+
+            // Tìm bản ghi thanh toántương ứng với năm và tháng được chỉ định
+            var list = await GetPayementByTypeAndEmailFromAPIAsync(3, manager[0]);
+            var payment = list.FirstOrDefault(x => x.CreatedAt.HasValue &&
+                                     x.CreatedAt.Value.Year == year &&
+                                     x.CreatedAt.Value.Month == month);
+
+            // Kiểm tra nếu tìm thấy bản ghi và lương đã được trả
+            return payment != null ? true : false;
+        }
     }
 }

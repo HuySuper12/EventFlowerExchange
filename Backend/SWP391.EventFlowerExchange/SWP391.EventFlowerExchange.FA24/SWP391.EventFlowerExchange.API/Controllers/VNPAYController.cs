@@ -107,5 +107,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
         }
 
+        [HttpGet("CheckSalary")]
+        public async Task<bool> IsSalaryPaid(int year, int month)
+        {
+            return await _vnPayservice.IsSalaryPaid(year, month);
+        }
+
     }
 }
