@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [orders, setOrders] = useState([]);
   const [ordersData, setOrdersData] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
+  const [monthlyCustomersData, setMonthlyCustomersData] = useState([]);
   const [recentProducts, setRecentProducts] = useState([]);
 
   useEffect(() => {
@@ -42,6 +43,20 @@ const Dashboard = () => {
         );
       } catch (error) {
         console.error("Error fetching revenue data:", error);
+      }
+    };
+
+    const fetchMonthlyCustomersData = async () => {
+      try {
+        const response = await api.get("Account/GetMonthlyRegisterCustomerStatistics");
+        setMonthlyCustomersData(
+          response.data.map((item) => ({
+            name: item.createTime,
+            customers: item.totalRegisterCustomer,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching monthly customers data:", error);
       }
     };
 
@@ -84,6 +99,7 @@ const Dashboard = () => {
 
     fetchOrdersData();
     fetchRevenueData();
+    fetchMonthlyCustomersData();
     fetchRecentOrders();
     fetchRecentProducts();
   }, []);
@@ -133,8 +149,12 @@ const Dashboard = () => {
           }
         }
         return (
-          <div className={`border ${borderClass} p-2 rounded-md flex justify-center items-center w-[100px]`}>
-            <Typography.Text className={colorClass}>{text || "Unknown"}</Typography.Text>
+          <div
+            className={`border ${borderClass} p-2 rounded-md flex justify-center items-center w-[100px]`}
+          >
+            <Typography.Text className={colorClass}>
+              {text || "Unknown"}
+            </Typography.Text>
           </div>
         );
       },
@@ -151,12 +171,6 @@ const Dashboard = () => {
     },
   ];
 
-  const monthlyCustomersData = [
-    { name: "Week 1", customers: 40 },
-    { name: "Week 2", customers: 60 },
-    { name: "Week 3", customers: 80 },
-    { name: "Week 4", customers: 100 },
-  ];
 
   return (
     <div>

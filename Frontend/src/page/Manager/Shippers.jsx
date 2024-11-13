@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form, Input, message, Popconfirm } from "antd";
 import api from "../../config/axios";
+import { ExportOutlined } from "@ant-design/icons";
 
 const ShippersManager = () => {
   const [shippers, setShippers] = useState([]);
@@ -139,11 +140,48 @@ const ShippersManager = () => {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Shipper ID",
+      "Name",
+      "Email",
+      "Phone Number",
+      "Address",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...shippers.map(shipper => [
+        shipper.id,
+        shipper.name,
+        shipper.email,
+        shipper.phoneNumber,
+        shipper.address,
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "shippers.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Shippers</h1>
-      <Button onClick={showCreateModal} type="primary" className="mb-4">
-        Create New Shipper
+      <Button
+        icon={<ExportOutlined />}
+        onClick={exportToCSV}
+        type="primary"
+        className="mb-4"
+      >
+        Export CSV
       </Button>
       <Table columns={columns} dataSource={shippers} rowKey="id" />
 

@@ -136,6 +136,11 @@ const Checkout = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate("/cart");
+    localStorage.clear();
+  };
+
   return (
     <>
       <Header />
@@ -149,37 +154,43 @@ const Checkout = () => {
 
       <section className="bg-white py-8 antialiased md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-800 dark:text-gray-400 sm:text-base">
-            <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-              <span className="flex items-center after:mx-2 text-gray-800">
-                <img
-                  src="https://png.pngtree.com/png-vector/20190228/ourmid/pngtree-check-mark-icon-design-template-vector-isolated-png-image_711429.jpg"
-                  alt="Cart"
-                  className="w-[40px]"
-                />
-                Cart
-              </span>
-            </li>
-            <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-              <span className="flex items-center after:mx-2 text-gray-800">
-                <img
-                  src="https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg"
-                  alt="Checkout"
-                  className="w-[40px]"
-                />
-                Checkout
-              </span>
-            </li>
-            <li className="flex shrink-0 items-center text-gray-800">
+          <div className="flex items-center">
+            <div className="flex">
               <img
-                src="https://thumbs.dreamstime.com/b/check-icon-vector-mark-perfect-black-pictogram-illustration-white-background-148914823.jpg"
-                alt="Order summary"
-                className="w-[40px]"
+                src="https://cdn-icons-png.flaticon.com/512/3114/3114883.png"
+                className="w-[15px] h-[15px] mt-[5px] mr-[10px]"
               />
-              Order summary
-            </li>
-          </ol>
+              <div
+                className="mr-[100px] cursor-pointer hover:underline"
+                onClick={handleBack}
+              >
+                Back
+              </div>
+            </div>
 
+            <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-800 dark:text-gray-400 sm:text-base">
+              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+                <span className="flex items-center after:mx-2 text-gray-800">
+                  <img
+                    src="https://png.pngtree.com/png-vector/20190228/ourmid/pngtree-check-mark-icon-design-template-vector-isolated-png-image_711429.jpg"
+                    alt="Cart"
+                    className="w-[40px]"
+                  />
+                  Cart
+                </span>
+              </li>
+              <li className=" flex items-center text-primary-700 after:mx-6 after:hidden  after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+                <span className="flex items-center after:mx-2 text-gray-800">
+                  <img
+                    src="https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg"
+                    alt="Checkout"
+                    className="w-[40px]"
+                  />
+                  Checkout
+                </span>
+              </li>
+            </ol>
+          </div>
           <Form
             form={form}
             layout="vertical"
@@ -301,13 +312,22 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="mt-3 w-full rounded-lg border border-gray-200 bg-gray-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-900 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
-              >
-                Proceed to Payment
-              </Button>
+              <div className="flex justify-center">
+                <Button
+                  danger
+                  onClick={handleBack}
+                  className="mt-3 w-[300px] rounded-lg border mr-2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="mt-3 w-full rounded-lg border border-gray-200 bg-gray-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-900 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
+                >
+                  Proceed to Payment
+                </Button>
+              </div>
             </div>
           </Form>
         </div>

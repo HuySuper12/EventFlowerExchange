@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, message, Pagination } from "antd";
 import api from "../../config/axios";
 import "antd/dist/reset.css";
+import { ExportOutlined } from "@ant-design/icons";
 
 const PaymentsManager = () => {
   const [payments, setPayments] = useState([]);
@@ -130,9 +131,50 @@ const PaymentsManager = () => {
     );
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Payment ID",
+      "User ID",
+      "Payment Type",
+      "Amount",
+      "Status",
+      "Date/Time",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...payments.map(payment => [
+        payment.transactionId,
+        payment.userId,
+        payment.transactionType,
+        payment.amount,
+        payment.status ? "Completed" : "Failed",
+        formatDate(payment.createdAt),
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "payments.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Payments</h1>
+      <Button
+        icon={<ExportOutlined />}
+        onClick={exportToCSV}
+        style={{ marginBottom: "16px" }}
+      >
+        Export CSV
+      </Button>
       <Table
         columns={columns}
         dataSource={payments.slice(

@@ -15,7 +15,7 @@ import {
 } from "antd";
 import api from "../../config/axios";
 
-const Report = () => {
+const ReportManager = () => {
   const [report, setReport] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -353,4 +353,4 @@ const Report = () => {
   );
 };
 
-export default Report;
+export default ReportManager;

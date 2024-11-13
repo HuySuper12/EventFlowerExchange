@@ -10,6 +10,7 @@ import {
   Popconfirm,
 } from "antd";
 import api from "../../config/axios";
+import { ExportOutlined } from "@ant-design/icons";
 
 const VouchersManager = () => {
   const [vouchers, setVouchers] = useState([]);
@@ -144,11 +145,52 @@ const VouchersManager = () => {
     );
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Voucher ID",
+      "Code",
+      "Description",
+      "Discount (%)",
+      "Min Order Value",
+      "Expiry Date",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...vouchers.map((voucher) =>
+        [
+          voucher.voucherId,
+          voucher.code,
+          voucher.description,
+          voucher.discountValue,
+          voucher.minOrderValue,
+          new Date(voucher.expiryDate).toLocaleDateString(),
+        ].join(",")
+      ),
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "vouchers.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Vouchers</h1>
-      <Button onClick={showModal} type="primary" className="mb-4">
-        Create New Voucher
+      <Button
+        icon={<ExportOutlined />}
+        onClick={exportToCSV}
+        type="primary"
+        className="mb-4"
+      >
+        Export CSV
       </Button>
       <Table columns={columns} dataSource={vouchers} rowKey="voucherId" />
 
