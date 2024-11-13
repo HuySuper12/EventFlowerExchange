@@ -27,7 +27,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Enable")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllEnableProductList()
         {
             return Ok(await _service.GetEnableProductListFromAPIAsync());
@@ -35,21 +35,21 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/Disable")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllDisableProductList()
         {
             return Ok(await _service.GetDisableProductListFromAPIAsync());
         }
 
         [HttpGet("GetProductList/InProgress")]
-        //[Authorize(Roles = ApplicationRoles.Admin)]
+        [Authorize(Roles = ApplicationRoles.Staff)]
         public async Task<IActionResult> GetAllInProgressProductList()
         {
             return Ok(await _service.GetInProgressProductListFromAPIAsync());
         }
 
         [HttpGet("GetProductList/Rejected")]
-        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> GetAllRejectedProductList()
         {
             return Ok(await _service.GetRejectedProductListFromAPIAsync());
@@ -78,7 +78,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/EnableAndDisable")]
-        //[Authorize]
         public async Task<IActionResult> GetEnableAndDisableProductList()
         {
             var disable = await _service.GetDisableProductListFromAPIAsync();
@@ -89,7 +88,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/Enable/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> GetEnableProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -101,7 +100,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Disable/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> GetDisableProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -114,7 +113,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/InProgress/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
+
         public async Task<IActionResult> GetInProgressProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -125,7 +125,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpGet("GetProductList/Rejected/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Admin)]
         public async Task<IActionResult> GetRejectedProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -135,7 +135,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetProductList/Banned/Seller")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> GetBannedProductListBySellerEmail(string email)
         {
             var acc = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -144,7 +144,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateProduct")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewProduct(CreateProduct product)
         {
             var account = await _account.GetUserByEmailFromAPIAsync(new Account() { Email = product.SellerEmail });
@@ -153,7 +153,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateProduct")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> UpdateProduct(int id, string status)
         {
             var product = await _service.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = id });
@@ -162,7 +162,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
         }
         [HttpDelete("DeleteProduct")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Staff)]
+
 
         public async Task<IActionResult> DeleteProduct(int id)
         {
