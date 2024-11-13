@@ -183,5 +183,39 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
+
+        [HttpPut("UpdateDeliveryLogFailStatus")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<bool>> UpdateDeliveryLogFailStatusAsync(int orderId, string url, string reason)
+        {
+            var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
+            deliveryLog.Status = "Delivery Fail";
+            deliveryLog.PhotoUrl = url;
+            deliveryLog.Reason = reason;
+            deliveryLog.DeliveryAt = DateTime.Now;
+            await _service.UpdateDeliveryLogStatusFromAsync(deliveryLog);
+
+            //thay doi trang thai don hang
+            var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order.UpdateAt == null)
+            {
+                order.IssueReport = reason;
+                order.UpdateAt = DateTime.Now.AddDays(2);
+                order.Status = "Fail";
+                await _orderService.UpdateOrderStatusFromAPIAsync(order);
+
+                var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+
+                CreateNotification notification = new CreateNotification()
+                {
+                    UserEmail = account.Email,
+                    Content = "There is a problem with your order."
+                };
+                await _notificationService.CreateNotificationFromApiAsync(notification);
+
+                return true;
+            }
+            return false;
+        }
     }
 }
