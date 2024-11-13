@@ -88,5 +88,21 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 return false;
             }
         }
+
+        [HttpGet("ViewAllShopNotification")]
+        //[Authorize(Roles = ApplicationRoles.Manager + " , " + ApplicationRoles.Staff)]
+        public async Task<IActionResult> ViewAllShopNotification()
+        {
+            try
+            {
+                return Ok(await _service.ViewAllShopNotificationFromApiAsync());
+            }
+            catch
+            {
+                return Ok("Not found!");
+            }
+        }
+
+
     } 
 }
