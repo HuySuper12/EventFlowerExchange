@@ -68,5 +68,18 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return BadRequest("Not found!!!");
         }
+
+        [HttpGet("ViewDeliveryLogDeliveringByShipperEmail")]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        public async Task<ActionResult<DeliveryLog>> ViewDeliveryLogDeliveringByShipperId(string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            if (account != null)
+            {
+                var deliveryLog = await _service.ViewDeliveryLogDeliveringByShipperIdFromAPIAsync(new DeliveryLog() { DeliveryPersonId = account.Id });
+                return deliveryLog;
+            }
+            return BadRequest("Not found!!!");
+        }
     }
 }
