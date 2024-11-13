@@ -157,5 +157,25 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 return false;
             }
         }
+
+        [HttpGet("CountNotificationsByEmail")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<IActionResult> CountNotificationsByEmail(string email)
+        {
+            Account acc = new Account();
+            acc.Email = email;
+
+            var check = await _accountService.GetUserByEmailFromAPIAsync(acc);
+            if (check != null)
+            {
+                var result = await _service.CountNotificationsByEmailFromApiAsync(check);
+                if (result != 0)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return Ok("Not found!");
+        }
     } 
 }
