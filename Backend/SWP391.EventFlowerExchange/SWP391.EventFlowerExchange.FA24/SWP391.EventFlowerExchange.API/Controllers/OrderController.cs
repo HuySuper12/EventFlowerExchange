@@ -263,6 +263,19 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
+        [HttpPut("UpdateOrderStatusCreatedBySeller")]
+        //[Authorize(Roles =ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId, string status)
+        {
+            //Cap nhat trang thai status
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                return await _service.UpdateOrderStatusByUserFromAPIAsync(order, status);
+            }
+            return false;
+        }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();
