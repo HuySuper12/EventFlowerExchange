@@ -445,7 +445,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             var result = new List<Account>();
             var accounts = await _context.Accounts
-                .Where(b => b.Address.ToLower().Contains(address.ToLower()) || address.ToLower().Contains(b.Address.ToLower()))
+                .Where(b => b.Address.ToLower().Contains(address.ToLower()))
                 .ToListAsync();
 
             if (accounts != null)

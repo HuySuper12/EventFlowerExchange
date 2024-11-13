@@ -25,7 +25,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 RequestType = value.RequestType,
                 Status = "Pending",
                 CreatedAt = value.CreatedAt,
-
             };
             return request;
         }
@@ -41,8 +40,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 RequestType = value.RequestType,
                 Status = value.Status,
                 CreatedAt = value.CreatedAt,
-                Reason = value.Reason
-                
 
             };
             _context = new Swp391eventFlowerExchangePlatformContext();

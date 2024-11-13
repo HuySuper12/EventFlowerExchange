@@ -14,7 +14,5 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<List<Review>> ViewAllRatingByUserIdFromApiAsync(Account account);
         public Task<IdentityResult> PostRatingFromApiAsync(CreateRating rating);
         public Task<Review> ViewRatingByOrderIdFromAPIAsync(Order order);
-
-        public Task<bool> CheckRatingOrderByOrderIdFromAPIAsync(Account buyer, Order order);
     }
 }

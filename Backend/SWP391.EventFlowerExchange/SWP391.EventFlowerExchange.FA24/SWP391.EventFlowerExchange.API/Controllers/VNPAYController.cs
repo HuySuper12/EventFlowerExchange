@@ -44,23 +44,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
         }
 
-        [HttpGet("GetPaymentListBy")]
+        [HttpGet("GetPaymentListBy/{type},{email}")]
         public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
-        }
-
-        [HttpGet("PaymentSalaryForStaffAndShipper")]
-        public async Task<IActionResult> PaymentSalary()
-        {
-            return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
-        }
-
-        [HttpGet("CheckSalary")]
-        public async Task<bool> IsSalaryPaid(int year, int month)
-        {
-            return await _vnPayservice.IsSalaryPaid(year, month);
         }
 
         [HttpGet("payment-callback")]
@@ -72,11 +60,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 response.Status = false;
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
-                if (response.PaymentType == 1)
-                {
-                    return Redirect("http://localhost:5173/failed-transaction");
-                }
-                return Redirect("http://localhost:5173/admin/request-pending");
+                return Redirect("https://event-flower-exchange.vercel.app/");
             }
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = response.UserId });
 
@@ -89,8 +73,6 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 // Here you can save the order to the database if needed
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
                 await _accountService.UpdateAccountFromAPIAsync(account);
-                return Redirect("http://localhost:5173/success-transaction");
-
             }
             else //RUT TIEN
             {
@@ -114,11 +96,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                         Content = $"Your withdrawal request has been accepted."
                     };
                     await _notification.CreateNotificationFromApiAsync(withdrawalNotification);
-
                 }
-                return Redirect("http://localhost:5173/admin/request-pending");
-
             }
+            return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
         }
 
     }

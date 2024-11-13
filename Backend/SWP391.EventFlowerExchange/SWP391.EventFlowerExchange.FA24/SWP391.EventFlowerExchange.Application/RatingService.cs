@@ -19,11 +19,6 @@ namespace SWP391.EventFlowerExchange.Application
             _repo = repo;
         }
 
-        public async Task<bool> CheckRatingOrderByOrderIdFromAPIAsync(Account buyer, Order order)
-        {
-            return await _repo.CheckRatingOrderByOrderIdAsync(buyer, order);
-        }
-
         public async Task<IdentityResult> PostRatingFromApiAsync(CreateRating rating)
         {
             return await _repo.PostRatingAsync(rating);
@@ -38,7 +33,5 @@ namespace SWP391.EventFlowerExchange.Application
         {
             return await _repo.ViewRatingByOrderIdAsync(order);
         }
-
-
     }
 }

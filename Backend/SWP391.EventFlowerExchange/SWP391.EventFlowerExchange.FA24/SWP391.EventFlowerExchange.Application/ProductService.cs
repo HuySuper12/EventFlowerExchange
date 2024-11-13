@@ -85,6 +85,11 @@ namespace SWP391.EventFlowerExchange.Application
             return _repo.GetDisableProductListBySellerEmailAsync(value);
         }
 
+        public Task<List<GetProduct?>> GetInProgressProductListBySellerEmailFromAPIAsync(Account value)
+        {
+            return GetInProgressProductListBySellerEmailFromAPIAsync(value);
+        }
+
         public Task<bool> UpdateProductFromAPIAsync(GetProduct product)
         {
             return _repo.UpdateProductAsync(product);
@@ -98,11 +103,6 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<List<GetProduct?>> GetExpiredProductListBySellerEmailFromAPIAsync(Account value)
         {
             return _repo.GetExpiredProductListBySellerEmailAsync(value);
-        }
-
-        public Task<List<GetProduct?>> GetBannedProductListBySellerEmailFromAPIAsync(Account value)
-        {
-            return _repo.GetBannedProductListBySellerEmailAsync(value);
         }
     }
 }

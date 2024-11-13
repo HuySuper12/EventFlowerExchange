@@ -53,12 +53,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         {
             _context = new Swp391eventFlowerExchangePlatformContext();
             var deliveryLog = await _context.DeliveryLogs.FirstOrDefaultAsync(x => (int)x.OrderId == order.OrderId);
-
-            if(deliveryLog == null)
-            {
-                return null;
-            }
-
             DeliveryTime deliveryTime = new DeliveryTime()
             {
                 TakeOverTime = deliveryLog.CreatedAt,

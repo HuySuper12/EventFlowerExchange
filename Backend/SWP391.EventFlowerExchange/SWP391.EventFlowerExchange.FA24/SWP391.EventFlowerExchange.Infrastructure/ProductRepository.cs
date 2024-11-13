@@ -24,7 +24,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _request = request;
             _follow = follow;
             _notification = notification;
-
         }
 
         private GetProduct ConvertProductToGetProduct(Product value)
@@ -83,14 +82,17 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                     list[i].Status = "Expired";
                     _context.Products.Update(list[i]);
                     _context.SaveChanges();
+
+                    
                 }
             }
+
         }
 
         public async Task<List<GetProduct?>> GetEnableProductListAsync()
         {
-            CheckExpiredDateProduct();
             string status = "Enable";
+            CheckExpiredDateProduct();
             _context = new Swp391eventFlowerExchangePlatformContext();
             var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
 
@@ -209,6 +211,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             _context = new Swp391eventFlowerExchangePlatformContext();
             _context.Products.Update(newProduct);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -373,23 +376,9 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 st.AllProduct = st.EnableProducts + st.SoldOut;
             }
             return st;
+
         }
 
-        public async Task<List<GetProduct?>> GetBannedProductListBySellerEmailAsync(Account value)
-        {
-            string status = "Banned";
-            _context = new Swp391eventFlowerExchangePlatformContext();
-            var productList = await _context.Products.Where(p => p.Status != null && p.Status.ToLower().Contains(status.ToLower())).ToListAsync();
-            var getProductList = new List<GetProduct?>();
-            foreach (var product in productList)
-            {
-                var newValue = ConvertProductToGetProduct(product);
-                if (newValue.SellerId == value.Id)
-                {
-                    getProductList.Add(newValue);
-                }
-            }
-            return getProductList;
-        }
+        
     }
 }
