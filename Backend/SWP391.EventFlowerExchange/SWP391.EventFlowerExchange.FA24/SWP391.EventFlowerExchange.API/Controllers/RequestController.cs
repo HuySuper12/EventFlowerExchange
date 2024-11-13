@@ -33,6 +33,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(await _service.GetListRequestsFromAPIAsync(type));
         }
 
+        [HttpGet("GetRequestListBy")]
+        //[Authorize]
+        public async Task<IActionResult> GetListRequestsByEmailAndType(string type, string email)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
+            return Ok(await _service.GetListRequestsByEmailAndTypeAsync(type, account));
+        }
+
         [HttpPost("CreateRequest_Withdraw")]
         //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewRequest(RequestPayment value)
