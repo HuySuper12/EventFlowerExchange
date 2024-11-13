@@ -44,6 +44,17 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return BadRequest("Not found!!!");
         }
-        
+
+        [HttpGet("ViewDeliveryLogByOrderId")]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<IActionResult> ViewDeliveryLogByOrderIdAsync(int orderId)
+        {
+            var result = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Not found!!!");
+        }
     }
 }
