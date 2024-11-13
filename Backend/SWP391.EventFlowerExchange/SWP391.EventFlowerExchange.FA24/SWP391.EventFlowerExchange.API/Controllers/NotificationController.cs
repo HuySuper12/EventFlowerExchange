@@ -69,5 +69,24 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             return Ok("Not found!");
         }
+
+        [HttpPost("CreateNotification")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> CreateNotification(CreateNotification createNotificationDto)
+        {
+            try
+            {
+                var result = await _service.CreateNotificationFromApiAsync(createNotificationDto);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     } 
 }
