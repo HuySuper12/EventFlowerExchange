@@ -19,17 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <ProjectReference Include="..\SWP391.EventFlowerExchange.Domain\SWP391.EventFlowerExchange.Domain.csproj" />
     <ProjectReference Include="..\SWP391.EventFlowerExchange.Infrastructure\SWP391.EventFlowerExchange.Infrastructure.csproj" />
-=======
-    <ProjectReference Include="..\SWP391.EventFlowerExchange.Domain\SWP391.EventFlowerExchange.Domain.csproj">
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SWP391.EventFlowerExchange.Infrastructure\SWP391.EventFlowerExchange.Infrastructure.csproj">
-      <Private>True</Private>
-    </ProjectReference>
->>>>>>> 29e10bcc6af0c3507a1d5c4b2d7daeea039273d9
   </ItemGroup>
 
   <ItemGroup>

@@ -93,6 +93,17 @@ namespace SWP391.EventFlowerExchange.Test
             Assert.AreEqual(_testReview.ReviewId, result.ReviewId);
         }
 
-        
+        /*[Test]
+        public async Task CheckRatingOrderByOrderIdAsync_ShouldReturnTrue()
+        {
+            // Arrange
+            _ratingRepositoryMock.Setup(repo => repo.CheckRatingOrderByOrderIdAsync(_testAccount, _testOrder)).ReturnsAsync(true);
+
+            // Act
+            var result = await _ratingRepositoryMock.Object.CheckRatingOrderByOrderIdAsync(_testAccount, _testOrder);
+
+            // Assert
+            Assert.IsTrue(result);
+        }*/
     }
 }

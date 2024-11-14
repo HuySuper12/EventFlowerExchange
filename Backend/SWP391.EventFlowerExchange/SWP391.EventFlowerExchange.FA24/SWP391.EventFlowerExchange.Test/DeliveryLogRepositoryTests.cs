@@ -137,18 +137,18 @@ namespace SWP391.EventFlowerExchange.Tests
             Assert.IsTrue(result);
         }
 
-        //[Test]
-        //public async Task ViewDeliveryLogDeliveringByOrderIdAsync_ShouldReturnDeliveryLog()
-        //{
-        //    // Arrange
-        //    _deliveryLogRepositoryMock.Setup(repo => repo.ViewDeliveryLogDeliveringByOrderIdAsync(_testOrder)).ReturnsAsync(_testDeliveryLog);
+        [Test]
+        public async Task ViewDeliveryLogDeliveringByOrderIdAsync_ShouldReturnDeliveryLog()
+        {
+            // Arrange
+            _deliveryLogRepositoryMock.Setup(repo => repo.ViewDeliveryLogDeliveringByOrderIdAsync(_testOrder)).ReturnsAsync(_testDeliveryLog);
 
-        //    // Act
-        //    var result = await _deliveryLogRepositoryMock.Object.ViewDeliveryLogDeliveringByOrderIdAsync(_testOrder);
+            // Act
+            var result = await _deliveryLogRepositoryMock.Object.ViewDeliveryLogDeliveringByOrderIdAsync(_testOrder);
 
-        //    // Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.AreEqual(_testDeliveryLog.LogId, result.LogId);
-        //}
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(_testDeliveryLog.LogId, result.LogId);
+        }
     }
 }
