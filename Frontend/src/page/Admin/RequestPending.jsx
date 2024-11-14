@@ -161,15 +161,14 @@ const RequestPending = () => {
       key: "actions",
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            onClick={() => handleAcceptRequest(record.requestId)}
-          >
-            Accept
-          </Button>
-          {/* <Button type="danger" onClick={() => handleRejectRequest(record.requestId)} style={{ marginLeft: 8 }}>
-            Reject
-          </Button> */}
+          {record.status === "Pending" && (
+            <Button
+              type="primary"
+              onClick={() => handleAcceptRequest(record.requestId)}
+            >
+              Accept
+            </Button>
+          )}
         </>
       ),
     },

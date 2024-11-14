@@ -162,6 +162,7 @@ D:\tamthoi\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerEx
 D:\tamthoi\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\refint\SWP391.EventFlowerExchange.Test.dll
 D:\tamthoi\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.pdb
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\CoverletSourceRootsMapping_SWP391.EventFlowerExchange.Test
+<<<<<<< HEAD
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.csproj.AssemblyReference.cache
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.GeneratedMSBuildEditorConfig.editorconfig
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.AssemblyInfoInputs.cache
@@ -171,6 +172,8 @@ D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SW
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.dll
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\refint\SWP391.EventFlowerExchange.Test.dll
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.pdb
+=======
+>>>>>>> 29e10bcc6af0c3507a1d5c4b2d7daeea039273d9
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\testhost.exe
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\testhost.dll
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\NUnit3.TestAdapter.dll
@@ -313,6 +316,19 @@ D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SW
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.dll
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\SWP391.EventFlowerExchange.Domain.pdb
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\bin\Debug\net8.0\SWP391.EventFlowerExchange.Infrastructure.pdb
+<<<<<<< HEAD
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.E.3FED48A3.Up2Date
+=======
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.csproj.AssemblyReference.cache
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.GeneratedMSBuildEditorConfig.editorconfig
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.AssemblyInfoInputs.cache
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.AssemblyInfo.cs
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.csproj.CoreCompileInputs.cache
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.sourcelink.json
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.E.3FED48A3.Up2Date
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.dll
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\refint\SWP391.EventFlowerExchange.Test.dll
+D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.pdb
+>>>>>>> 29e10bcc6af0c3507a1d5c4b2d7daeea039273d9
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\SWP391.EventFlowerExchange.Test.genruntimeconfig.cache
 D:\EventFlowerExchange\EventFlowerExchange\Backend\SWP391.EventFlowerExchange\SWP391.EventFlowerExchange.FA24\SWP391.EventFlowerExchange.Test\obj\Debug\net8.0\ref\SWP391.EventFlowerExchange.Test.dll

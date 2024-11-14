@@ -102,7 +102,12 @@ function Header() {
       try {
         const encodedEmail = encodeURIComponent(email);
         const response = await api.get(
-          `Notification/ViewNotificationByUserEmail/${encodedEmail}`
+          `Notification/ViewNotificationByUserEmail`,
+          {
+            params: {
+              email: email,
+            },
+          }
         );
         setSystemNotifications(response.data.reverse());
       } catch (error) {
@@ -118,10 +123,14 @@ function Header() {
   }, [email]);
 
   const fetchShopNotifications = async (email) => {
-    const encodedEmail = encodeURIComponent(email);
     try {
       const response = await api.get(
-        `Notification/ViewShopNotificationByUserEmail/${encodedEmail}`
+        `Notification/ViewShopNotificationByUserEmail`,
+        {
+          params: {
+            email: email,
+          },
+        }
       );
       setShopNotifications(response.data.reverse());
       console.log("shop noti", response.data);
@@ -219,17 +228,21 @@ function Header() {
                     </div>
                   ))}
 
-                  <div className="text-center font-bold text-lg">
-                    Notification shop
-                  </div>
-                  {shopNotifications.slice(0, 3).map((notification) => (
-                    <div key={notification.id} className="text-sm">
-                      <p>{notification.content}</p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(notification.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
+                  {role !== "Seller" && (
+                    <>
+                      <div className="text-center font-bold text-lg">
+                        Notification shop
+                      </div>
+                      {shopNotifications.slice(0, 3).map((notification) => (
+                        <div key={notification.id} className="text-sm">
+                          <p>{notification.content}</p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                  )}
 
                   <button
                     className="text-blue-500 text-sm cursor-pointer hover:underline text-center"

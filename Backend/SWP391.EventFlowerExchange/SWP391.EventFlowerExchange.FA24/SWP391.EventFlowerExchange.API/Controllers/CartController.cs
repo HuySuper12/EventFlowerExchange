@@ -21,7 +21,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewCartByUserEmail")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewCartByUserEmail(string email)
         {
             Account acc = new Account();
@@ -41,7 +41,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateCartItem")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CreateCartItem(CreateCartItem cartItem)
         {
             Account acc = new Account();
@@ -62,7 +62,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateCartByUserEmail")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<bool>> CreateCartByUserEmail(string email)
         {
             Account acc = new Account();
@@ -83,7 +83,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpDelete("RemoveCartItem")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> RemoveCartItem(string email, int productid)
         {
             Account acc = new Account();
@@ -104,7 +104,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetCountCartItemByUserEmail")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<int>> GetCountCartItemByUserEmail(string email)
         {
             Account acc = new Account();

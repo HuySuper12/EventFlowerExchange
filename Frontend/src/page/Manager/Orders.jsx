@@ -420,6 +420,40 @@ const OrdersManager = () => {
     );
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Order ID",
+      "Delivery Address",
+      "Phone Number",
+      "Total Price",
+      "Created At",
+      "Status",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...filteredOrders.map(order => [
+        order.orderId,
+        order.deliveredAt,
+        order.phoneNumber,
+        order.totalPrice,
+        formatDate(order.createdAt),
+        order.status,
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "orders.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -434,6 +468,12 @@ const OrdersManager = () => {
               {status}
             </button>
           ))}
+          <Button
+            icon={<ExportOutlined />}
+            onClick={exportToCSV}
+          >
+            Export CSV
+          </Button>
         </div>
       </div>
       <Table

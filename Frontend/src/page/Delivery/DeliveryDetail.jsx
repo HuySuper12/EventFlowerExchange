@@ -372,29 +372,6 @@ const DeliveryDetail = () => {
     fetchDeliveryTime();
   }, [deliveryLog?.orderId]);
 
-  const reportProblemWhileDelivery = async () => {
-    try {
-      const response = await api.put(
-        "Refund/UpdateDeliveryLogRefundDeliveringStatus",
-        null,
-        {
-          params: { orderId: deliveryLog?.orderId },
-        }
-      );
-
-      console.log(response.data);
-
-      if (response.data == true) {
-        toast.success("Problem reported successfully.");
-      } else {
-        toast.error("Failed to report problem.");
-      }
-    } catch (error) {
-      console.error("Error reporting problem", error);
-      toast.error("Error reporting problem");
-    }
-  };
-
   const viewSellerDetail = async () => {
     if (!productData || productData.length === 0) return; // Check if productData is available
     const sellerId = productData[0]?.sellerId; // Access the first product's sellerId
@@ -656,20 +633,6 @@ const DeliveryDetail = () => {
                         }}
                       >
                         Update Status to Fail
-                      </Button>
-                      <Button
-                        type="default"
-                        size="large"
-                        onClick={() =>
-                          reportProblemWhileDelivery(deliveryLog?.orderId)
-                        }
-                        style={{
-                          backgroundColor: "white",
-                          borderColor: "blueviolet",
-                          color: "blueviolet",
-                        }}
-                      >
-                        Report problem while delivery
                       </Button>
                     </Space>
                   )}

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
+using SWP391.EventFlowerExchange.Infrastructure;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -39,12 +41,15 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetPaymentListBy/{type}")]
+        [Authorize(Roles = ApplicationRoles.Staff)]
+
         public async Task<IActionResult> GetPaymentListByType(int type)
         {
             return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
         }
 
-        [HttpGet("GetPaymentListBy/{type},{email}")]
+        [HttpGet("GetPaymentListBy/")]
+        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -102,12 +107,16 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("PaymentSalaryForStaffAndShipper")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+
         public async Task<IActionResult> PaymentSalary()
         {
             return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
         }
 
         [HttpGet("CheckSalary")]
+        [Authorize(Roles = ApplicationRoles.Manager)]
+
         public async Task<bool> IsSalaryPaid(int year, int month)
         {
             return await _vnPayservice.IsSalaryPaid(year, month);
