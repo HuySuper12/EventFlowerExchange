@@ -21,7 +21,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewAllNotification")]
-        //[Authorize(Roles = ApplicationRoles.Manager + " , " + ApplicationRoles.Staff )]
+        [Authorize(Roles = ApplicationRoles.Manager + " , " + ApplicationRoles.Staff)]
         public async Task<IActionResult> ViewAllNotification()
         {
             try

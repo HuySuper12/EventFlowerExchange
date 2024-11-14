@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Table, message, Pagination, Tabs } from "antd";
+import { Table, message, Pagination, Tabs, Button } from "antd";
 import api from "../../config/axios";
 import "antd/dist/reset.css";
 import TabPane from "antd/es/tabs/TabPane";
+import { ExportOutlined } from "@ant-design/icons";
 
 const TransactionsManager = () => {
   const [deposit, setDeposit] = useState([]);
@@ -169,14 +170,66 @@ const TransactionsManager = () => {
     );
   };
 
+  const exportToCSV = (data, filename) => {
+    const headers = [
+      "Payment ID",
+      "Payment Code",
+      "User ID",
+      "Payment Type",
+      "Amount",
+      "Payment Content",
+      "Status",
+      "Date/Time",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...data.map(transaction => [
+        transaction.paymentId,
+        transaction.paymentCode,
+        transaction.userId,
+        transaction.paymentType === 1 ? "Deposit" : "Withdraw",
+        transaction.amount,
+        transaction.paymentContent,
+        transaction.status ? "Successful" : "Failed",
+        formatDate(transaction.createdAt),
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Transaction</h1>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Deposit" key="1">
+          <Button
+            icon={<ExportOutlined />}
+            onClick={() => exportToCSV(deposit, "deposit_transactions.csv")}
+            style={{ marginBottom: "16px" }}
+          >
+            Export CSV
+          </Button>
           {renderTable(deposit)}
         </TabPane>
         <TabPane tab="Withdraw" key="2">
+          <Button
+            icon={<ExportOutlined />}
+            onClick={() => exportToCSV(withdraw, "withdraw_transactions.csv")}
+            style={{ marginBottom: "16px" }}
+          >
+            Export CSV
+          </Button>
           {renderTable(withdraw)}
         </TabPane>
       </Tabs>

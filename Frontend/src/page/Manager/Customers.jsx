@@ -217,6 +217,40 @@ const CustomersManager = () => {
     );
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Customer ID",
+      "Name",
+      "Email",
+      "Phone Number",
+      "Address",
+      "Joined Date",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...customers.map(customer => [
+        customer.customerId,
+        customer.name,
+        customer.email,
+        customer.phoneNumber,
+        customer.address,
+        new Date(customer.joinedDate).toLocaleDateString(),
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "customers.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">

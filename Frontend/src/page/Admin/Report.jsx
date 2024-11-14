@@ -75,7 +75,7 @@ const Report = () => {
       const payload = {
         requestId: post.requestId,
         userId: post.userId,
-        requestType: "Post",
+        requestType: "Report",
         productId: post.productId,
         status: "Accepted",
       };
@@ -84,14 +84,14 @@ const Report = () => {
       const response = await api.put("Request/UpdateRequest", payload);
 
       if (response.data === true) {
-        message.success(`Post ${post.productId} has been accepted.`);
+        message.success(`Post ${post.productId} has been banned.`);
       } else {
         throw new Error("Failed to update post status");
       }
     } catch (error) {
-      console.error("Error accepting post: ", error);
+      console.error("Error ban post: ", error);
       message.error(
-        "Failed to accept post. Please check server logs for details."
+        "Failed to ban post. Please check server logs for details."
       );
     } finally {
       setLoading(false);

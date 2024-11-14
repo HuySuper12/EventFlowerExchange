@@ -13,6 +13,7 @@ import {
   Input,
 } from "antd";
 import api from "../../config/axios";
+import { ExportOutlined } from "@ant-design/icons";
 
 const PostsManager = () => {
   const [posts, setPosts] = useState([]);
@@ -152,6 +153,38 @@ const PostsManager = () => {
     setRejectReason("");
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      "Request ID",
+      "User ID",
+      "Product ID",
+      "Posted At",
+      "Status",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Add headers as the first row
+      ...posts.map(post => [
+        post.requestId,
+        post.userId,
+        post.productId,
+        formatDate(post.createdAt),
+        post.status,
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "posts.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const renderList = () => {
     const paginatedPosts = posts.slice(
       (currentPage - 1) * pageSize,
@@ -267,6 +300,13 @@ const PostsManager = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Posts</h1>
+      <Button
+        icon={<ExportOutlined />}
+        onClick={exportToCSV}
+        style={{ marginBottom: "16px" }}
+      >
+        Export CSV
+      </Button>
       {renderList()}
       <Modal
         title="Product Details"

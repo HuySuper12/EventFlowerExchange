@@ -33,7 +33,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetMonthlyOrderStatistics")]
-        //[Authorize(Roles = ApplicationRoles.Manager)]
+        [Authorize(Roles = ApplicationRoles.Manager)]
         public ActionResult<List<StatisticSystem>> GetMonthlyOrderStatistics()
         {
             var result = _service.GetMonthlyOrderStatisticsFromAPI();
@@ -54,7 +54,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewAllOrder")]
-        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<IActionResult> ViewAllOrderAsync()
         {
             await UpdateOrderStatusAutomaticAsync();
@@ -71,7 +71,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByBuyerEmail")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewOrderByBuyerIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -84,7 +84,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderBySellerEmail")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> ViewOrderBySellerIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -97,7 +97,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByShipperEmail")]
-        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        [Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<IActionResult> ViewOrderByShipperIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -110,7 +110,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByStatusAndBuyerEmail")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ViewOrderByStatus(string status, string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -124,7 +124,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("SearchOrderByOrderId")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> SearchOrderByOrderId(int orderId)
         {
             await UpdateOrderStatusAutomaticAsync();
@@ -137,7 +137,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("DivideProductHasSameSeller")]
-        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
         public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
         {
             return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
@@ -145,7 +145,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
 
         [HttpPost("CheckOutOrder")]
-        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
         {
             var list = new List<CheckOutBefore>();
@@ -187,6 +187,180 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return Ok(checkOutAfter);
         }
 
+        [HttpPost("CreateListOrder")]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateListOrderAsync(string value, DeliveryInformation deliveryInformation)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
+            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
+
+            if (account != null)
+            {
+                var list = new List<int>();
+                string[] s = value.Split(',');  //Phan don hang can tao
+
+                for (int i = 0; i < s.Length; i++)
+                {
+                    var listProduct = new List<int>();
+                    string[] productIdList = s[i].Split('-');
+                    for (int j = 0; j < productIdList.Length; j++)
+                    {
+                        listProduct.Add(int.Parse(productIdList[j]));
+                    }
+
+                    deliveryInformation.Product = listProduct;
+
+                    await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
+
+                }
+                return true;
+
+            }
+            return false;
+        }
+
+        [HttpPost("CreateOrder")]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CreateOrderAsync(DeliveryInformation deliveryInformation)
+        {
+            var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
+            var checkVoucher = await _voucherService.SearchVoucherByCodeFromAPIAsync(deliveryInformation.VoucherCode);
+            if (account != null)
+            {
+                return await _service.CreateOrderFromAPIAsync(deliveryInformation, checkVoucher);
+            }
+            return false;
+        }
+
+        [HttpPost("CreateOrderBySeller")]
+        [Authorize(Roles = ApplicationRoles.Seller)]
+        public async Task<ActionResult<bool>> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller)
+        {
+            var accountBuyer = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.BuyerEmail });
+            var accountSeller = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.SellerEmail });
+            if (accountBuyer != null)
+            {
+                var product = await _productService.SearchProductByIdFromAPIAsync(new GetProduct() { ProductId = createOrderBySeller.ProductId });
+                if (product.SellerId == accountSeller.Id)
+                {
+                    //Tao don hang neu cung chu ko tao
+                    var order = await _service.ViewOrderByBuyerIdFromAPIAsync(new Account() { Id = accountBuyer.Id });
+                    for (int i = 0; i < order.Count; i++)
+                    {
+                        //Lay thong tin don hang 
+                        var orderDetail = await _service.ViewOrderDetailFromAPIAsync(new Order() { OrderId = order[i].OrderId });
+                        if (orderDetail.Count != 0)
+                        {
+                            if (order[i].BuyerId == accountBuyer.Id && product.ProductId == orderDetail[0].ProductId)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return await _service.CreateOrderBySellerFromAPIAsync(createOrderBySeller);
+                }
+            }
+            return false;
+        }
+
+        [HttpPut("UpdateOrderStatusCreatedBySeller")]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId, string status)
+        {
+            //Cap nhat trang thai status
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                return await _service.UpdateOrderStatusByUserFromAPIAsync(order, status);
+            }
+            return false;
+        }
+
+
+        //Hoan tien
+        [HttpPut("CancelOrderByBuyer")]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
+        public async Task<ActionResult<bool>> CancelOrderByBuyerAsync(int orderId, string reason, string role)
+        {
+            var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
+            if (order != null)
+            {
+                if (order.Status == "Pending")
+                {
+                    order.Status = "Cancel";
+                    order.IssueReport = reason;
+                    await _service.UpdateOrderStatusFromAPIAsync(order);
+
+                    var orderItem = await _service.ViewOrderDetailFromAPIAsync(order);
+                    for (int i = 0; i < orderItem.Count; i++)
+                    {
+                        var product = await _productService.SearchProductByIdFromAPIAsync(orderItem[i]);
+                        product.Status = "Enable";
+                        await _productService.UpdateProductFromAPIAsync(product);
+                    }
+
+                    if (role.ToLower() == "buyer")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel successfully"
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+                    else if (role.ToLower() == "seller")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled successfully"
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+                    else if (role.ToLower() == "shipper")
+                    {
+                        var accountBuyer = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.BuyerId });
+                        CreateNotification notiBuyer = new CreateNotification()
+                        {
+                            UserEmail = accountBuyer.Email,
+                            Content = "Your order has been cancel because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiBuyer);
+
+                        var accountSeller = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = order.SellerId });
+                        CreateNotification notiSeller = new CreateNotification()
+                        {
+                            UserEmail = accountSeller.Email,
+                            Content = "Your product has been canceled because " + reason.ToLower()
+                        };
+                        await _notificationService.CreateNotificationFromApiAsync(notiSeller);
+                    }
+
+                    await SendOrderPriceToBuyer(order);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();

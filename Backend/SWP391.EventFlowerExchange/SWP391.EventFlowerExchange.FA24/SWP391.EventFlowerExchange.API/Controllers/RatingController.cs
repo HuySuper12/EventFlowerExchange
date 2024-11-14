@@ -24,7 +24,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewRatingByUserEmail")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ViewRatingByUserEmail(string email)
         {
             Account acc = new Account();
@@ -44,7 +44,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("CheckRatingByUserEmail")]
-        //[Authorize]
+        [Authorize]
         public async Task<bool> CheckRatingByUserEmail(string email)
         {
             Account acc = new Account();
@@ -81,7 +81,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("PostRating")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> PostRating(CreateRating rate)  //KÊU QUÝ MINH TRUYỀN EMAIL VÀO BUYER ID. ĐỂ KHỎI PHẢI SỬA TÊN CreateRating Ở TRONG REPOSITORY
         {
             Account acc = new Account();

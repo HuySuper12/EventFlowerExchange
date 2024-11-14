@@ -5,9 +5,16 @@ import api from "../../../config/axios";
 import Footer from "../../../component/footer";
 import SlidebarSeller from "../../../component/slidebar-seller";
 import { Button, Image, Table, Form, Input, Modal } from "antd";
+import { Tab, Tabs } from "../../../component/tab";
 
 const ProductSeller = () => {
   const [products, setProducts] = useState([]);
+  const [productsEnable, setProductsEnable] = useState([]);
+  const [productsDisable, setProductsDisable] = useState([]);
+  const [productsBanned, setProductsBanned] = useState([]);
+  const [productsInProgress, setProductsInProgress] = useState([]);
+  const [productsRejected, setProductsRejected] = useState([]);
+  const [productsExpired, setProductsExpired] = useState([]);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
   const navigate = useNavigate();
@@ -29,8 +36,121 @@ const ProductSeller = () => {
     fetchProducts();
   }, [email]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("Product/GetProductList/Enable/Seller", {
+          params: { email: email },
+        });
+        setProductsEnable(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get(
+          "Product/GetProductList/Disable/Seller",
+          {
+            params: { email: email },
+          }
+        );
+        setProductsDisable(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("Product/GetProductList/Banned/Seller", {
+          params: { email: email },
+        });
+        setProductsBanned(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get(
+          "Product/GetProductList/InProgress/Seller",
+          {
+            params: { email: email },
+          }
+        );
+        setProductsInProgress(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get(
+          "Product/GetProductList/Rejected/Seller",
+          {
+            params: { email: email },
+          }
+        );
+        setProductsRejected(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get(
+          "Product/GetProductList/Expired/Seller",
+          {
+            params: { email: email },
+          }
+        );
+        setProductsExpired(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [email]);
+
   const handleViewDetails = (productId) => {
-    const product = products.find((p) => p.productId === productId);
+    const allProducts = [
+      ...products,
+      ...productsEnable,
+      ...productsDisable,
+      ...productsBanned,
+      ...productsInProgress,
+      ...productsRejected,
+      ...productsExpired,
+    ];
+
+    const product = allProducts.find((p) => p.productId === productId);
+
     setProductDetails(product);
     setDetailsVisible(true);
   };
@@ -102,19 +222,22 @@ const ProductSeller = () => {
     {
       title: "Action",
       key: "action",
-      render: (record) => (
-        <>
-          <Button onClick={() => handleViewDetails(record.productId)}>
-            Detail
-          </Button>
-          <Button
-            className="mt-[10px]"
-            onClick={() => handleCreateOrder(record.productId)}
-          >
-            Create order
-          </Button>
-        </>
-      ),
+      render: (record) => {
+        console.log("Record:", record);
+        return (
+          <>
+            <Button onClick={() => handleViewDetails(record.productId)}>
+              Detail
+            </Button>
+            <Button
+              className="mt-[10px]"
+              onClick={() => handleCreateOrder(record.productId)}
+            >
+              Create order
+            </Button>
+          </>
+        );
+      },
     },
   ];
 
@@ -128,6 +251,8 @@ const ProductSeller = () => {
     );
   };
 
+  console.log("Products:", products);
+
   return (
     <div>
       <Header />
@@ -135,7 +260,55 @@ const ProductSeller = () => {
         <SlidebarSeller />
         <div className="ml-[50px] w-[1100px] shadow-md p-[20px]">
           <p className="text-3xl ml-[500px] mb-[40px]">ALL PRODUCTS</p>
-          <Table dataSource={products} columns={columns} pagination={4} />
+
+          <Tabs>
+            <Tab label="Deal Product">
+              <Table dataSource={products} columns={columns} pagination={4} />
+            </Tab>
+
+            <Tab label="Enabled Product">
+              <Table
+                dataSource={productsEnable}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+            <Tab label="Disabled Product">
+              <Table
+                dataSource={productsDisable}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+            <Tab label="Banned Product">
+              <Table
+                dataSource={productsBanned}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+            <Tab label="In Progress Product">
+              <Table
+                dataSource={productsInProgress}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+            <Tab label="Rejected Product">
+              <Table
+                dataSource={productsRejected}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+            <Tab label="Expired Product">
+              <Table
+                dataSource={productsExpired}
+                columns={columns}
+                pagination={4}
+              />
+            </Tab>
+          </Tabs>
         </div>
       </div>
 

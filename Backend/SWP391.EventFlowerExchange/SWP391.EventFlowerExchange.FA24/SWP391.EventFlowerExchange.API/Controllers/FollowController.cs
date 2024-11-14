@@ -22,7 +22,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewFollowerByUserEmail")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewFollowerByUserEmail(string email)
         {
             Account acc = new Account();

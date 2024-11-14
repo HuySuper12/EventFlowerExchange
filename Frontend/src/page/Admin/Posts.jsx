@@ -11,8 +11,11 @@ import {
   Image,
   Form,
   Input,
+  Select,
 } from "antd";
 import api from "../../config/axios";
+
+const { CheckableTag } = Tag;
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -23,6 +26,8 @@ const Posts = () => {
   const [rejectVisible, setRejectVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [selectedTags, setSelectedTags] = useState(["All"]);
   const pageSize = 8;
 
   const fetchPosts = async () => {
@@ -152,14 +157,59 @@ const Posts = () => {
     setRejectReason("");
   };
 
+  const handleTagChange = (tag, checked) => {
+    let nextSelectedTags;
+
+    if (tag === "All") {
+      nextSelectedTags = checked ? ["All"] : [];
+    } else {
+      nextSelectedTags = checked
+        ? [...selectedTags.filter((t) => t !== "All"), tag]
+        : selectedTags.filter((t) => t !== tag);
+
+      if (nextSelectedTags.length === 0) {
+        nextSelectedTags = ["All"];
+      }
+    }
+
+    setSelectedTags(nextSelectedTags);
+  };
+
   const renderList = () => {
-    const paginatedPosts = posts.slice(
+    const filteredPosts = selectedTags.includes("All")
+      ? posts
+      : posts.filter((post) => selectedTags.includes(post.status));
+
+    const paginatedPosts = filteredPosts.slice(
       (currentPage - 1) * pageSize,
       currentPage * pageSize
     );
 
     return (
       <>
+        <div className="mb-4">
+          {["All", "Pending", "Accepted", "Rejected"].map((tag) => (
+            <CheckableTag
+              key={tag}
+              checked={selectedTags.includes(tag)}
+              onChange={(checked) => handleTagChange(tag, checked)}
+              className={`px-3 py-1 mr-2 mb-2 border rounded-full cursor-pointer bg-white ${
+                tag === "Pending"
+                  ? "text-yellow-500 border-yellow-500 hover:text-yellow-600"
+                  : tag === "Accepted"
+                  ? "text-green-500 border-green-500 hover:text-green-600"
+                  : tag === "Rejected"
+                  ? "text-red-500 border-red-500 hover:text-red-600"
+                  : "text-gray-500 border-gray-500"
+              }`}
+            >
+              {tag}
+              {selectedTags.includes(tag) && (
+                <span className="ml-2 text-sm">x</span>
+              )}
+            </CheckableTag>
+          ))}
+        </div>
         <Spin spinning={loading}>
           <Table
             columns={[
@@ -240,7 +290,7 @@ const Posts = () => {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={posts.length}
+            total={filteredPosts.length}
             onChange={(page) => setCurrentPage(page)}
           />
         </div>

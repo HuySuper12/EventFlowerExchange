@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
@@ -30,7 +31,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("BuyerReturnAction")]
-        //[Authorize(Roles = ApplicationRoles.Buyer)]
+        [Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> BuyerReturnAction(int orderId)
         {
             var getOrder = new Order { OrderId = orderId };
@@ -52,7 +53,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateDeliveryLogForRefund")]
-        //[Authorize(Roles = ApplicationRoles.Staff)]
+        [Authorize(Roles = ApplicationRoles.Staff)]
         public async Task<ActionResult<bool>> CreateDeliveryLogForRefund(CreateDeliveryLog createDeliveryLog)
         {
             var deliveryLogResult = await deliveryLogService.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
@@ -91,7 +92,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateDeliveryLogRefundDeliveringStatus")]
-        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        [Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogRefundDeliveringStatus(int orderId)
         {
             var deliveryLog = await deliveryLogService.ViewDeliveryLogDeliveringByOrderIdFromAsync(new Order() { OrderId = orderId });
@@ -120,7 +121,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateDeliveryLogRefundSuccessStatus")]
-        //[Authorize(Roles = ApplicationRoles.Shipper)]
+        [Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogRefundSuccessStatus(int orderId, string url)
         {
             var deliveryLog = await deliveryLogService.ViewDeliveryLogDeliveringByOrderIdFromAsync(new Order() { OrderId = orderId });
@@ -160,7 +161,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("StaffApproveRefundRequest")]
-        //[Authorize(Roles = ApplicationRoles.Staff)]
+        [Authorize(Roles = ApplicationRoles.Staff)]
         public async Task<ActionResult<bool>> StaffApproveRefundRequest(string staffEmail, int orderId)
         {
             var getOrder = new Order { OrderId = orderId };
@@ -182,7 +183,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("UpdateSellerRefundConfirmationStatus")]
-        //[Authorize(Roles = ApplicationRoles.Seller)]
+        [Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> UpdateSellerRefundConfirmationStatus(int orderId)
         {
             var getOrder = new Order { OrderId = orderId };

@@ -73,6 +73,7 @@ import ProfileShipper from "./page/Delivery/Profile";
 import ResetPasswordShipper from "./page/Delivery/ResetPassword";
 import Report from "./page/Admin/Report";
 import Chat_Hello from "./page/Buyer-Seller/chat-hello";
+import ReportManager from "./page/Manager/Report";
 const { Content } = Layout;
 
 function App() {
@@ -347,6 +348,7 @@ function App() {
         { path: "shippers", element: <ShippersManager darkMode={darkMode} /> },
         { path: "payments", element: <PaymentsManager darkMode={darkMode} /> },
         { path: "requests", element: <RequestsManager darkMode={darkMode} /> },
+        { path: "report", element: <ReportManager darkMode={darkMode} /> },
       ],
     },
   ]);

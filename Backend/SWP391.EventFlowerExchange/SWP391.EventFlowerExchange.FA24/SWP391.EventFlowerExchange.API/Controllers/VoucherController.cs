@@ -18,14 +18,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetAllVoucher")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllVoucher()
         {
             return Ok(await _service.ViewAllVoucherFromAPIAsync());
         }
 
         [HttpGet("GetAllVoucherValid")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAllVoucherValid(decimal price)
         {
             var list = await _service.ViewAllVoucherFromAPIAsync();
@@ -41,7 +41,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("SearchVoucherById/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> SearchVoucherByIdAsync(string id)
         {
             try
@@ -61,7 +61,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("SearchVoucherByCode/{code}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> SearchVoucherByCodeAsync(string code)
         {
             var result = await _service.SearchVoucherByCodeFromAPIAsync(code);
@@ -73,7 +73,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateVoucher")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<bool>> CreateVoucherAsync(CreateVoucher voucher)
         {
             var voucherResult = await _service.SearchVoucherByCodeFromAPIAsync(voucher.Code);
@@ -85,7 +85,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateVoucher")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<bool>> UpdateVoucherAsync(Voucher voucher)
         {
             var searchVoucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = voucher.VoucherId });
@@ -98,7 +98,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpDelete("RemoveVoucher/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<bool>> RemoveVoucherAsync(string id)
         {
             var voucher = await _service.SearchVoucherByIdFromAPIAsync(new Voucher() { VoucherId = int.Parse(id) });

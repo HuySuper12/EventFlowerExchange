@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, List, Avatar, Typography, Table } from "antd";
+import { Row, Col, Card, List, Avatar, Typography, Table, Button } from "antd";
 import {
   LineChart,
   Line,
@@ -12,11 +12,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import api from "../../config/axios";
+import Papa from "papaparse";
 
 const DashboardManager = () => {
   const [orders, setOrders] = useState([]);
   const [ordersData, setOrdersData] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
+  const [monthlyCustomersData, setMonthlyCustomersData] = useState([]);
   const [recentProducts, setRecentProducts] = useState([]);
 
   useEffect(() => {
@@ -42,6 +44,22 @@ const DashboardManager = () => {
         );
       } catch (error) {
         console.error("Error fetching revenue data:", error);
+      }
+    };
+
+    const fetchMonthlyCustomersData = async () => {
+      try {
+        const response = await api.get(
+          "Account/GetMonthlyRegisterCustomerStatistics"
+        );
+        setMonthlyCustomersData(
+          response.data.map((item) => ({
+            name: item.name,
+            customers: item.customer,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching monthly customers data:", error);
       }
     };
 
@@ -84,9 +102,23 @@ const DashboardManager = () => {
 
     fetchOrdersData();
     fetchRevenueData();
+    fetchMonthlyCustomersData();
     fetchRecentOrders();
     fetchRecentProducts();
   }, []);
+
+  const exportToCSV = (data, filename) => {
+    const csv = Papa.unparse(data);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${filename}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const columns = [
     {
@@ -133,8 +165,12 @@ const DashboardManager = () => {
           }
         }
         return (
-          <div className={`border ${borderClass} p-2 rounded-md flex justify-center items-center w-[100px]`}>
-            <Typography.Text className={colorClass}>{text || "Unknown"}</Typography.Text>
+          <div
+            className={`border ${borderClass} p-2 rounded-md flex justify-center items-center w-[100px]`}
+          >
+            <Typography.Text className={colorClass}>
+              {text || "Unknown"}
+            </Typography.Text>
           </div>
         );
       },
@@ -151,13 +187,6 @@ const DashboardManager = () => {
     },
   ];
 
-  const monthlyCustomersData = [
-    { name: "Week 1", customers: 40 },
-    { name: "Week 2", customers: 60 },
-    { name: "Week 3", customers: 80 },
-    { name: "Week 4", customers: 100 },
-  ];
-
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
@@ -165,6 +194,12 @@ const DashboardManager = () => {
       <Row gutter={16}>
         <Col span={8}>
           <Card title="Monthly Revenue">
+            <Button
+              className="ml-[300px] mb-[20px]"
+              onClick={() => exportToCSV(revenueData, "Monthly_Revenue")}
+            >
+              Export to CSV
+            </Button>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -178,6 +213,12 @@ const DashboardManager = () => {
         </Col>
         <Col span={8}>
           <Card title="Monthly Orders">
+            <Button
+              className="ml-[300px] mb-[20px]"
+              onClick={() => exportToCSV(ordersData, "Monthly_Orders")}
+            >
+              Export to CSV
+            </Button>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={ordersData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -191,6 +232,14 @@ const DashboardManager = () => {
         </Col>
         <Col span={8}>
           <Card title="New Monthly Customers">
+            <Button
+              className="ml-[300px] mb-[20px]"
+              onClick={() =>
+                exportToCSV(monthlyCustomersData, "Monthly_Customers")
+              }
+            >
+              Export to CSV
+            </Button>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={monthlyCustomersData}>
                 <CartesianGrid strokeDasharray="3 3" />
