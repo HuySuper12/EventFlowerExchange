@@ -175,14 +175,18 @@ const ShippersManager = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Shippers</h1>
-      <Button
-        icon={<ExportOutlined />}
+      <div className="flex justify-between">
+        <Button onClick={showCreateModal} type="primary" className="mb-4">Add New Shipper</Button>
+        <Button
+          icon={<ExportOutlined />}
         onClick={exportToCSV}
         type="primary"
         className="mb-4"
       >
         Export CSV
       </Button>
+      </div>
+      
       <Table columns={columns} dataSource={shippers} rowKey="id" />
 
       {/* Modal for creating new shipper */}

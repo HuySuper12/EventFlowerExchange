@@ -191,7 +191,7 @@ const Cart = () => {
 
           <div className="mx-auto max-w-screen-xl px-4 2xl:px-0 ml-[500px]">
             {/* Status */}
-            <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-800 dark:text-gray-400 sm:text-base">
+            <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-800 dark:text-gray-400 sm:text-base ml-[100px]">
               <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
                 <span className="flex items-center after:mx-2 text-gray-800">
                   <img
@@ -202,7 +202,7 @@ const Cart = () => {
                   Cart
                 </span>
               </li>
-              <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+              <li className=" flex items-center text-primary-700 after:mx-6 after:hidden after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
                 {" "}
                 <span className="flex items-center after:mx-2 text-gray-800">
                   <img
@@ -213,14 +213,7 @@ const Cart = () => {
                   Checkout
                 </span>
               </li>
-              <li className="flex shrink-0 items-center text-gray-800">
-                <img
-                  src="https://thumbs.dreamstime.com/b/check-icon-vector-mark-perfect-black-pictogram-illustration-white-background-148914823.jpg"
-                  alt=""
-                  className="w-[40px]"
-                />
-                Order summary
-              </li>
+              
             </ol>
           </div>
 

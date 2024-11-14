@@ -25,5 +25,6 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<bool> PaymentSalaryFromAPIAsync();
 
         public Task<bool> IsSalaryPaid(int year, int month);
+
     }
 }

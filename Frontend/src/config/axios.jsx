@@ -5,7 +5,7 @@ const baseUrl = "https://localhost:7219/api/";
 const config = {
   baseUrl: baseUrl,
 };
-
+  
 const api = axios.create(config);
 
 api.defaults.baseURL = baseUrl;

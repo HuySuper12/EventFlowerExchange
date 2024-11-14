@@ -89,7 +89,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 return string.Empty;
             }
 
-            if(user.Status == false)
+            if (user.Status == false)
             {
                 return string.Empty;
             }
@@ -267,7 +267,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             await SendEmailAsync(email, subject, message);
 
             return true;
-            
+
         }
 
         public async Task<bool> VerifyOTPAsync(string email, string otp)
@@ -299,7 +299,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             var result = await userManager.ResetPasswordAsync(user, token, newPassword); //Khi reset password, Identity yeu cau Generate ra chuoi Token
 
-            if (result.Succeeded) 
+            if (result.Succeeded)
             {
                 user.OtpCode = null;
                 user.OtpExpiration = null;
@@ -445,7 +445,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             var result = new List<Account>();
             var accounts = await _context.Accounts
-                .Where(b => b.Address.ToLower().Contains(address.ToLower()))
+                .Where(b => b.Address.ToLower().Contains(address.ToLower()) || address.ToLower().Contains(b.Address.ToLower()))
                 .ToListAsync();
 
             if (accounts != null)
@@ -468,5 +468,26 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
             return result;
         }
+
+        public async Task<List<GetRegisterCustomerStatistic>> GetMonthlyRegisterCustomerStatisticsAsync()
+        {
+            _context = new Swp391eventFlowerExchangePlatformContext();
+
+            var customers = await this.ViewAllAccountByRoleAsync(ApplicationRoles.Buyer);
+
+            var statistics = customers
+                .Where(a => a.CreatedAt.HasValue)
+                .GroupBy(a => new { a.CreatedAt.Value.Year, a.CreatedAt.Value.Month })
+                .Select(g => new GetRegisterCustomerStatistic
+                {
+                    name = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"),
+                    customer = g.Count()
+                })
+                .ToList();
+
+            return await Task.FromResult(statistics);
+        }
     }
 }
+    
+

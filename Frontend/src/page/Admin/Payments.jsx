@@ -63,7 +63,7 @@ const Payments = () => {
           <span style={{
             color: isCompleted ? 'green' : 'red', 
           }}>
-            {isCompleted ? 'Completed' : 'Failed'} 
+            {isCompleted ? 'In' : 'Out'} 
             {!isCompleted && record.note && <span>(Note: {record.note})</span>}
           </span>
         );

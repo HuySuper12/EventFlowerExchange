@@ -34,7 +34,7 @@ namespace SWP391.EventFlowerExchange.Infrastructure
 
         public Task<List<GetProduct?>> GetOldestProductsAsync();
 
-
+        public Task<List<GetProduct?>> GetBannedProductListBySellerEmailAsync(Account value);
 
         //BỔ SUNG
         public Task<List<GetProduct?>> GetEnableProductListBySellerEmailAsync(Account value);
@@ -42,8 +42,6 @@ namespace SWP391.EventFlowerExchange.Infrastructure
         public Task<List<GetProduct?>> GetDisableProductListBySellerEmailAsync(Account value);
 
         public Task<List<GetProduct?>> GetExpiredProductListBySellerEmailAsync(Account value);
-
-        public Task<List<GetProduct?>> GetBannedProductListBySellerEmailAsync(Account value);
 
         public Task<ImageProduct> SearchProductImageByIdAsync(GetProduct product);
 

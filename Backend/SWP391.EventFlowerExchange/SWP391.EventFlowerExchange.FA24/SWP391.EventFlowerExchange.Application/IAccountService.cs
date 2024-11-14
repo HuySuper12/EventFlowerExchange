@@ -32,6 +32,7 @@ namespace SWP391.EventFlowerExchange.Application
         public Task<IdentityResult> UpdateAccountFromAPIAsync(Account account);
         public Task<List<Account>> ViewAllAccountFromAPIAsync();
         public Task<List<Account>> ViewAllAccountByRoleFromAPIAsync(string role);
+        public Task<List<GetRegisterCustomerStatistic>> GetMonthlyRegisterCustomerStatisticsFromAPIAsync();
         public Task<IdentityResult> RemoveAccountFromAPIAsync(Account account);
         public Task<IdentityResult> DeleteAccountFromAPIAsync(Account account);
         public Task<List<Account>> SearchAccountsByAddressFromAPIAsync(string address);

@@ -33,7 +33,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetMonthlyOrderStatistics")]
-        [Authorize(Roles = ApplicationRoles.Manager)]
+        //[Authorize(Roles = ApplicationRoles.Manager)]
         public ActionResult<List<StatisticSystem>> GetMonthlyOrderStatistics()
         {
             var result = _service.GetMonthlyOrderStatisticsFromAPI();
@@ -54,7 +54,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewAllOrder")]
-        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<IActionResult> ViewAllOrderAsync()
         {
             await UpdateOrderStatusAutomaticAsync();
@@ -71,7 +71,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByBuyerEmail")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewOrderByBuyerIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -84,7 +84,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderBySellerEmail")]
-        [Authorize(Roles = ApplicationRoles.Seller)]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<IActionResult> ViewOrderBySellerIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -97,7 +97,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByShipperEmail")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<IActionResult> ViewOrderByShipperIdAsync(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account { Email = email });
@@ -110,7 +110,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewOrderByStatusAndBuyerEmail")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> ViewOrderByStatus(string status, string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -124,7 +124,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("SearchOrderByOrderId")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> SearchOrderByOrderId(int orderId)
         {
             await UpdateOrderStatusAutomaticAsync();
@@ -137,15 +137,14 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("DivideProductHasSameSeller")]
-        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager + "," + ApplicationRoles.Buyer)]
         public async Task<ActionResult<string>> DivideProductHasSameSeller(List<int> productIdList)
         {
             return await _service.DivideProductHasSameSellerFromAPIAsync(productIdList);
         }
 
-
         [HttpPost("CheckOutOrder")]
-        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<IActionResult> CheckOutOrderAsync(CheckOutBefore checkOutBefore, string value)
         {
             var list = new List<CheckOutBefore>();
@@ -188,7 +187,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateListOrder")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CreateListOrderAsync(string value, DeliveryInformation deliveryInformation)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
@@ -220,7 +219,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CreateOrderAsync(DeliveryInformation deliveryInformation)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = deliveryInformation.Email });
@@ -233,7 +232,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateOrderBySeller")]
-        [Authorize(Roles = ApplicationRoles.Seller)]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateOrderBySellerFromAPIAsync(CreateOrderBySeller createOrderBySeller)
         {
             var accountBuyer = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createOrderBySeller.BuyerEmail });
@@ -264,7 +263,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateOrderStatusCreatedBySeller")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles =ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> UpdateOrderStatusAsync(int orderId, string status)
         {
             //Cap nhat trang thai status
@@ -276,10 +275,9 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             return false;
         }
 
-
         //Hoan tien
         [HttpPut("CancelOrderByBuyer")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<ActionResult<bool>> CancelOrderByBuyerAsync(int orderId, string reason, string role)
         {
             var order = await _service.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
@@ -361,6 +359,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return false;
         }
+
         private async Task UpdateOrderStatusAutomaticAsync()
         {
             var deliveryList = await _deliveryLogService.ViewAllDeliveryLogFromAsync();

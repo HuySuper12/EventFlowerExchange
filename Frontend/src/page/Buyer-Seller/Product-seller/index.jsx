@@ -229,12 +229,14 @@ const ProductSeller = () => {
             <Button onClick={() => handleViewDetails(record.productId)}>
               Detail
             </Button>
-            <Button
-              className="mt-[10px]"
-              onClick={() => handleCreateOrder(record.productId)}
-            >
-              Create order
-            </Button>
+            {record.price === 0 && (
+              <Button
+                className="mt-[10px]"
+                onClick={() => handleCreateOrder(record.productId)}
+              >
+                Create order
+              </Button>
+            )}
           </>
         );
       },
