@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
 
 namespace SWP391.EventFlowerExchange.Infrastructure
 {
@@ -84,8 +85,17 @@ namespace SWP391.EventFlowerExchange.Infrastructure
                 }
             }
 
+            _context = new Swp391eventFlowerExchangePlatformContext();
+            if (transactions[0].CreatedAt.HasValue)
+            {
+                var salary = _context.Payments.FirstOrDefault(x => x.CreatedAt.Value.Year == transactions[0].CreatedAt.Value.Year && x.CreatedAt.Value.Month == transactions[0].CreatedAt.Value.Month && x.PaymentType == 3);
+                if (salary != null)
+                {
+                    totalPrice -= (decimal)salary.Amount;
+                }
+            }
             return totalPrice;
-        }
 
+        }
     }
 }

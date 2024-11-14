@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
-using SWP391.EventFlowerExchange.Infrastructure;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -41,19 +39,28 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("GetPaymentListBy/{type}")]
-        [Authorize(Roles = ApplicationRoles.Staff)]
-
         public async Task<IActionResult> GetPaymentListByType(int type)
         {
             return Ok(await _vnPayservice.GetAllPaymentListFromAPIAsync(type));
         }
 
-        [HttpGet("GetPaymentListBy/")]
-        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        [HttpGet("GetPaymentListBy")]
         public async Task<IActionResult> GetPayementByTypeAndEmail(int type, string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
             return Ok(await _vnPayservice.GetPayementByTypeAndEmailFromAPIAsync(type, account));
+        }
+
+        [HttpGet("PaymentSalaryForStaffAndShipper")]
+        public async Task<IActionResult> PaymentSalary()
+        {
+            return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
+        }
+
+        [HttpGet("CheckSalary")]
+        public async Task<bool> IsSalaryPaid(int year, int month)
+        {
+            return await _vnPayservice.IsSalaryPaid(year, month);
         }
 
         [HttpGet("payment-callback")]
@@ -65,7 +72,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             {
                 response.Status = false;
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
-                return Redirect("https://event-flower-exchange.vercel.app/");
+                if (response.PaymentType == 1)
+                {
+                    return Redirect("http://localhost:5173/failed-transaction");
+                }
+                return Redirect("http://localhost:5173/admin/request-pending");
             }
             var account = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = response.UserId });
 
@@ -78,6 +89,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                 // Here you can save the order to the database if needed
                 await _vnPayservice.CreatePaymentFromAPIAsync(response);
                 await _accountService.UpdateAccountFromAPIAsync(account);
+                return Redirect("http://localhost:5173/success-transaction");
+
             }
             else //RUT TIEN
             {
@@ -101,25 +114,11 @@ namespace SWP391.EventFlowerExchange.API.Controllers
                         Content = $"Your withdrawal request has been accepted."
                     };
                     await _notification.CreateNotificationFromApiAsync(withdrawalNotification);
+
                 }
+                return Redirect("http://localhost:5173/admin/request-pending");
+
             }
-            return Redirect("https://anime47.tv/xem-phim-kekkon-yubiwa-monogatari-ep-02/204546.html");
-        }
-
-        [HttpGet("PaymentSalaryForStaffAndShipper")]
-        [Authorize(Roles = ApplicationRoles.Manager)]
-
-        public async Task<IActionResult> PaymentSalary()
-        {
-            return Ok(await _vnPayservice.PaymentSalaryFromAPIAsync());
-        }
-
-        [HttpGet("CheckSalary")]
-        [Authorize(Roles = ApplicationRoles.Manager)]
-
-        public async Task<bool> IsSalaryPaid(int year, int month)
-        {
-            return await _vnPayservice.IsSalaryPaid(year, month);
         }
 
     }

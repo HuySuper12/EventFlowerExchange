@@ -1,6 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Footer() {
+  const navigate = useNavigate(); // Thêm () ở đây
+  const handlePolicy = () => {
+    navigate("/policy");
+  };
+  
   return (
     <>
       <div className="border border-gray-300 ml-[300px] mr-[100px] w-[1110px] h-[0.2px] mt-[100px]"></div>
@@ -26,7 +32,7 @@ function Footer() {
             <li>Home</li>
             <li>About us</li>
             <li>Delivery</li>
-            <li>Privacy policy</li>
+            <li className="cursor-pointer" onClick={handlePolicy}>Privacy policy</li>
           </ul>
         </div>
 

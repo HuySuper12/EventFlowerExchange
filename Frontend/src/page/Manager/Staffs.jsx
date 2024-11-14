@@ -176,6 +176,8 @@ const StaffsManager = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Staffs</h1>
+      <div className="flex justify-between">
+        <Button onClick={showCreateModal} type="primary" className="mb-4">Add New Staff</Button>
       <Button
         icon={<ExportOutlined />}
         onClick={exportToCSV}
@@ -184,6 +186,10 @@ const StaffsManager = () => {
       >
         Export CSV
       </Button>
+      </div>
+      
+      
+      
       <Table columns={columns} dataSource={staffs} rowKey="id" />
 
       {/* Modal for creating new staff */}

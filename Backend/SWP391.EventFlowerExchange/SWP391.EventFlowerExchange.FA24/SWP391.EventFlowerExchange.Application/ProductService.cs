@@ -85,11 +85,6 @@ namespace SWP391.EventFlowerExchange.Application
             return _repo.GetDisableProductListBySellerEmailAsync(value);
         }
 
-        public Task<List<GetProduct?>> GetInProgressProductListBySellerEmailFromAPIAsync(Account value)
-        {
-            return GetInProgressProductListBySellerEmailFromAPIAsync(value);
-        }
-
         public Task<bool> UpdateProductFromAPIAsync(GetProduct product)
         {
             return _repo.UpdateProductAsync(product);

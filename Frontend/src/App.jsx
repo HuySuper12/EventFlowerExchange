@@ -74,6 +74,7 @@ import ResetPasswordShipper from "./page/Delivery/ResetPassword";
 import Report from "./page/Admin/Report";
 import Chat_Hello from "./page/Buyer-Seller/chat-hello";
 import ReportManager from "./page/Manager/Report";
+import PolicyPage from "./page/Buyer-Seller/policy";
 const { Content } = Layout;
 
 function App() {
@@ -235,6 +236,10 @@ function App() {
     {
       path: "cancelorder/:id",
       element: <CancelOrder_Page />,
+    },
+    {
+      path: "policy",
+      element: <PolicyPage />,
     },
 
     {

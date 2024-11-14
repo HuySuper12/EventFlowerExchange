@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SWP391.EventFlowerExchange.Application;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
-using SWP391.EventFlowerExchange.Infrastructure;
 
 namespace SWP391.EventFlowerExchange.API.Controllers
 {
@@ -50,7 +49,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateRequest_Withdraw")]
-        [Authorize(Roles = ApplicationRoles.Seller)]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateNewRequest(RequestPayment value)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = value.UserEmail });
@@ -67,7 +66,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateRequest")]
-        [Authorize]
+        //[Authorize(Roles = ApplicationRoles.Seller)]
         public async Task<ActionResult<bool>> CreateRequest(CreateRequest value)
         {
             bool request = false;
@@ -95,7 +94,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateRequest")]
-        [Authorize(Roles = ApplicationRoles.Staff)]
+        //[Authorize]
         public async Task<ActionResult<bool>> UpdateRequest(CreateRequest value)
         {
             var user = await _accountService.GetUserByIdFromAPIAsync(new Account() { Id = value.UserId });

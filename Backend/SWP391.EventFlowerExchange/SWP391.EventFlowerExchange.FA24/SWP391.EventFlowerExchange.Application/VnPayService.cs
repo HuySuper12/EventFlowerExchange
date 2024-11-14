@@ -1,5 +1,6 @@
 ﻿using ECommerceMVC.Helpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SWP391.EventFlowerExchange.Domain.Entities;
 using SWP391.EventFlowerExchange.Domain.ObjectValues;
@@ -160,22 +161,40 @@ namespace SWP391.EventFlowerExchange.Application
             }
 
             var manager = await _accountService.ViewAllAccountByRoleFromAPIAsync("Manager");
-            if (manager[0].Salary > (salaryAllStaff + salaryAllShipper))
-                manager[0].Salary -= salaryAllStaff + salaryAllShipper;
+            var totalSalary = (decimal)(salaryAllStaff + salaryAllShipper);
+            CreatePayment createPayment = new CreatePayment()
+            {
+                CreatedAt = DateTime.Now,
+                PaymentCode = new Random().Next(1000000, 9999999).ToString(),
+                Amount = totalSalary,
+                PaymentContent = "Pay salaries to all employees",
+                PaymentType = 3,
+                UserId = manager[0].Id,
+            };
+
+            if (manager[0].Balance > totalSalary)
+            {
+                manager[0].Balance -= totalSalary;
+                createPayment.Status = true;
+                await _accountService.UpdateAccountFromAPIAsync(manager[0]);
+            }
             else
             {
+                createPayment.Status = false;
+                await _repo.CreatePayementAsync(createPayment);
                 return false;
             }
+            await _repo.CreatePayementAsync(createPayment);
             return true;
         }
-
+        
         public async Task<bool> IsSalaryPaid(int year, int month)
         {
             var manager = await _accountService.ViewAllAccountByRoleFromAPIAsync("Manager");
 
 
             // Tìm bản ghi thanh toántương ứng với năm và tháng được chỉ định
-            var list = await GetPayementByTypeAndEmailFromAPIAsync(3, manager[0]);
+            var list = await GetPayementByTypeAndEmailFromAPIAsync(3, manager[0] );
             var payment = list.FirstOrDefault(x => x.CreatedAt.HasValue &&
                                      x.CreatedAt.Value.Year == year &&
                                      x.CreatedAt.Value.Month == month);

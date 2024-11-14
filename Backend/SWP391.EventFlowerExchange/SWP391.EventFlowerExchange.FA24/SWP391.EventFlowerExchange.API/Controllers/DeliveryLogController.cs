@@ -26,7 +26,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewAllDeliveryLog")]
-        [Authorize(Roles = ApplicationRoles.Manager + "," + ApplicationRoles.Staff)]
+        //[Authorize(Roles = ApplicationRoles.Manager + "," + ApplicationRoles.Staff)]
         public async Task<IActionResult> ViewAllDeliveryLogAsync()
         {
             return Ok(await _service.ViewAllDeliveryLogFromAsync());
@@ -44,9 +44,8 @@ namespace SWP391.EventFlowerExchange.API.Controllers
             }
             return BadRequest("Not found!!!");
         }
-
         [HttpGet("ViewDeliveryLogByOrderId")]
-        [Authorize(Roles = ApplicationRoles.Buyer)]
+        //[Authorize(Roles = ApplicationRoles.Buyer)]
         public async Task<IActionResult> ViewDeliveryLogByOrderIdAsync(int orderId)
         {
             var result = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
@@ -58,7 +57,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewDeliveryTime")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<DeliveryTime>> ViewDeliveryTimeAsync(int id)
         {
             var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = id });
@@ -70,7 +69,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpGet("ViewDeliveryLogDeliveringByShipperEmail")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<DeliveryLog>> ViewDeliveryLogDeliveringByShipperId(string email)
         {
             var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = email });
@@ -83,12 +82,12 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPost("CreateDeliveryLog")]
-        [Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
+        //[Authorize(Roles = ApplicationRoles.Staff + "," + ApplicationRoles.Manager)]
         public async Task<ActionResult<bool>> CreateDeliveryLogAsync(CreateDeliveryLog createDeliveryLog)
         {
             var deliveryLogResult = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = (int)createDeliveryLog.OrderId });
 
-            if (deliveryLogResult == null)
+            if (deliveryLogResult == null) 
             {
                 var account = await _accountService.GetUserByEmailFromAPIAsync(new Account() { Email = createDeliveryLog.DeliveryPersonEmail });
                 DeliveryLog deliveryLog = new DeliveryLog()
@@ -122,7 +121,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateDeliveryLogDeliveringStatus")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogDeliveringStatusAsync(int orderId)
         {
             var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
@@ -151,7 +150,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateDeliveryLogSuccessStatus")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogSuccessStatusAsync(int orderId, string url)
         {
             var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
@@ -162,7 +161,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
 
             //Cap nhat thoi gian chuyen tien cho seller
             var order = await _orderService.SearchOrderByOrderIdFromAPIAsync(new Order() { OrderId = orderId });
-
+            
             if (order.UpdateAt == null)
             {
                 order.Status = "Success";
@@ -185,7 +184,7 @@ namespace SWP391.EventFlowerExchange.API.Controllers
         }
 
         [HttpPut("UpdateDeliveryLogFailStatus")]
-        [Authorize(Roles = ApplicationRoles.Shipper)]
+        //[Authorize(Roles = ApplicationRoles.Shipper)]
         public async Task<ActionResult<bool>> UpdateDeliveryLogFailStatusAsync(int orderId, string url, string reason)
         {
             var deliveryLog = await _service.ViewDeliveryLogByOrderIdFromAsync(new Order() { OrderId = orderId });
