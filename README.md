@@ -33,21 +33,31 @@ The platform tackles flower waste from events like weddings and conferences, whe
 + Intuitive admin interface for managing products, orders, and users.
 
 📷 Screenshots
-1. Home Page: 
+1. Backend API
+![](image/Swagger1.png)
+![](image/Swagger2.png)
+![](image/Swagger3.png)
+![](image/Swagger4.png)
+![](image/Swagger5.png)
+![](image/Swagger6.png)
+![](image/Swagger7.png)
+![](image/Swagger8.png)
+![](image/Swagger9.png)
+2. Home Page: 
 ![](image/HomePage.png)
 ![](image/HomePage1.png)
-2. Chi tiết sản phẩm
+3. Chi tiết sản phẩm
 ![](image/ProductDetail.png)
-3. Giỏ hàng 
+4. Giỏ hàng 
 ![](image/Cart.png)
 ![](image/Cart1.png)
-4. Checkout
+5. Checkout
 ![](image/Checkout.png)
-5. Chat
+6. Chat
 ![](image/Chat.png)
-6. Trang dành cho shipper
+7. Trang dành cho shipper
 ![](image/DeliveryPage.png)
-7. Tranh dành cho Manager
+8. Tranh dành cho Manager
 ![](image/ManagerPage.png)
 
  
