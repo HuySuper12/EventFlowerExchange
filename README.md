@@ -19,17 +19,25 @@ The platform tackles flower waste from events like weddings and conferences, whe
 + Google: Login and authenticate user information
   
 🚀 Outstanding features:
+
 🌿 User Management:
+
 + Secure authentication and authorization with JWT.
 + User support through intuitive interface.
+  
 🌸 Buy and sell flowers:
+
 + Rich product catalog, support searching and filtering.
 + Chat directly with sellers and buyers to negotiate product prices.
+
 📦 Cart & Checkout:
+
 + Support cart management with quantity, value and order summary.
 + Fast payment via VN Pay and MoMo.
 + Support delivery system in Ho Chi Minh area.
+  
 ⚙️ System Administration:
+
 + Intuitive admin interface for managing products, orders, and users.
 
 📷 Screenshots
@@ -51,6 +59,7 @@ The platform tackles flower waste from events like weddings and conferences, whe
 ![](image/ManagerPage.png)
 
 🌐 Contribute
+
 We welcome everyone to contribute to improve the project!
 + HuySuper12
 + LeThanhCong1506
