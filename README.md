@@ -50,6 +50,4 @@ The platform tackles flower waste from events like weddings and conferences, whe
 7. Tranh dành cho Manager
 ![](image/ManagerPage.png)
 
-
-Quản trị viên - Bảng điều khiển
  
