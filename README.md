@@ -37,7 +37,7 @@ The platform tackles flower waste from events like weddings and conferences, whe
 ![](image/HomePage.png)
 ![](image/HomePage1.png)
 2. Chi tiết sản phẩm
-![](image/DetailProduct.png)
+![](image/ProductDetail.png)
 3. Giỏ hàng 
 ![](image/Cart.png)
 ![](image/Cart1.png)
