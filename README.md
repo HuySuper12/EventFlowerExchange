@@ -44,18 +44,18 @@ The platform tackles flower waste from events like weddings and conferences, whe
 1. Home Page: 
 ![](image/HomePage.png)
 ![](image/HomePage1.png)
-2. Chi tiết sản phẩm
+2. Product Details:
 ![](image/ProductDetail.png)
-3. Giỏ hàng 
+3. Cart 
 ![](image/Cart.png)
 ![](image/Cart1.png)
 4. Checkout
 ![](image/Checkout.png)
 5. Chat
 ![](image/Chat.png)
-6. Trang dành cho shipper
+6. Shipper page
 ![](image/DeliveryPage.png)
-7. Tranh dành cho Manager
+7. Manager page
 ![](image/ManagerPage.png)
 
 🌐 Contribute
