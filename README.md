@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/d1cf2a5a-77f1-4d62-9210-7e11a071867d)🌸 Event Flower Exchange
+🌸 Event Flower Exchange
 The platform tackles flower waste from events like weddings and conferences, where excess fresh flowers are discarded. It connects surplus flower providers (gardeners, large flower shops, event organizers) with buyers seeking affordable flowers. The platform helps reduce waste and meet market demand for fresh flowers at lower prices.
 
 🛠️ Technology & Tools
