@@ -46,7 +46,7 @@ The platform tackles flower waste from events like weddings and conferences, whe
 5. Chat
 ![](image/Chat.png)
 6. Trang dành cho shipper
-![](image/DeliveryPage.png.png)
+![](image/DeliveryPage.png)
 7. Tranh dành cho Manager
 ![](image/ManagerPage.png)
 
