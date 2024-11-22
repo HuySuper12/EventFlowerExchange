@@ -4,21 +4,21 @@
 
   🛠️ Technology & Tools
 
-  1. Frontend:
+1. Frontend:
 
 - ReactJS: Build user interfaces.
 - Tailwind CSS: Design beautiful and responsive interfaces.
 - Axios: Connect to API communication.
 - Firebase Storage: Store images.
 
-  2. Backend:
+2. Backend:
 
 - ASP.NET Core Web API: Powerful backend platform.
 - SQL Server: Database management system.
 - ASP.NET Identity: User and role management.
 - JWT: Token-based security.
 
-  3. Additional features:
+3. Additional features:
 
 - VNPay: Integrate online payment.
 - Google: Login and authenticate user information.
