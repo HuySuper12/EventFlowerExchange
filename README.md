@@ -47,7 +47,7 @@
 
   📷 Screenshots
 
-  1. Back-end API:
+1. Back-end API:
    
    ![](image/Swagger1.png)
    ![](image/Swagger2.png)
@@ -59,16 +59,16 @@
    ![](image/Swagger8.png)
    ![](image/Swagger9.png)
    
-  2. Home Page:
+2. Home Page:
    
    ![](image/HomePage.png)
    ![](image/HomePage1.png)
    
-  3. Product Detail Page:
+3. Product Detail Page:
    
    ![](image/ProductDetail.png)
    
-  4. Cart Page:
+4. Cart Page:
    
    ![](image/Cart.png)
    ![](image/Cart1.png)
